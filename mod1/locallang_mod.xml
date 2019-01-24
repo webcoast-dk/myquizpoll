@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for module &quot;web_txmyquizpollM1&quot; - header, description</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">My quiz and poll</label>
+			<label index="mlang_labels_tabdescr">View user results and statistics; import- and export</label>
+			<label index="mlang_labels_tablabel">View user results</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="mlang_tabs_tab">Quiz et sondages</label>
+			<label index="mlang_labels_tabdescr">Utilisateur Voir les résultats et les statistiques; Import et export</label>
+			<label index="mlang_labels_tablabel">Utilisateur Voir les résultats</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="mlang_tabs_tab">Quiz und Umfrage</label>
+			<label index="mlang_labels_tabdescr">Anzeige der Benutzerdaten und Statistiken; Import- und Exportfunktion</label>
+			<label index="mlang_labels_tablabel">Anzeige der Benutzerdaten</label>
+		</languageKey>
+		<languageKey index="dk" type="array">
+			<label index="mlang_tabs_tab">Min quiz og meningsmåling</label>
+			<label index="mlang_labels_tabdescr">Vis brugerens resultater og statistik, import og eksport</label>
+			<label index="mlang_labels_tablabel">Vis brugerens resultater</label>
+        </languageKey>
+		<languageKey index="no" type="array">
+			<label index="mlang_tabs_tab">Min quiz og avstemning</label>
+			<label index="mlang_labels_tabdescr">Se på bruker resultater og statistikk, import og eksport</label>
+			<label index="mlang_labels_tablabel">Se på bruker resultater</label>
+        </languageKey>
+        <languageKey index="it" type="array">
+			<label index="mlang_tabs_tab">I miei quiz e sondaggi</label>
+			<label index="mlang_labels_tabdescr">Visualizza i risultati degli utenti e le statistiche, importazione ed esportazione</label>
+			<label index="mlang_labels_tablabel">Visualizza i risultati degli utenti</label>
+        </languageKey>
+        <languageKey index="es" type="array">
+			<label index="mlang_tabs_tab">Mi cuestionario y encuesta</label>
+			<label index="mlang_labels_tabdescr">Ver resultados y estadísticas de usuario, importación y exportación</label>
+			<label index="mlang_labels_tablabel">Ver resultados de usuario</label>
+        </languageKey>
+        <languageKey index="nl" type="array">
+			<label index="mlang_tabs_tab">Mijn quiz en poll</label>
+			<label index="mlang_labels_tabdescr">Bekijk gebruikers resultaten en statistieken, import en export</label>
+			<label index="mlang_labels_tablabel">Bekijk gebruikers resultaten</label>
+        </languageKey>
+        <languageKey index="cz" type="array">
+			<label index="mlang_tabs_tab">My kvíz a průzkum</label>
+			<label index="mlang_labels_tabdescr">Zobrazit informace o výsledcích a statistik, import a export</label>
+			<label index="mlang_labels_tablabel">Zobrazit informace</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+			<label index="mlang_tabs_tab">Mój quiz i ankiety</label>
+			<label index="mlang_labels_tabdescr">Zobacz wyniki i statystyki użytkownika, import i eksport</label>
+			<label index="mlang_labels_tablabel">Zobacz wyniki użytkownika</label>
+        </languageKey>
+        <languageKey index="si" type="array">
+			<label index="mlang_tabs_tab">Moj kviz in anketa</label>
+			<label index="mlang_labels_tabdescr">Poglej uporabnikov rezultati in statistike, uvoza in izvoza</label>
+			<label index="mlang_labels_tablabel">Poglej uporabnikov rezultati</label>
+        </languageKey>
+        <languageKey index="fi" type="array">
+			<label index="mlang_tabs_tab">Minun tietokilpailu ja kyselyn</label>
+			<label index="mlang_labels_tabdescr">Näytä käyttäjän tuloksia ja tilastoja, tuonti ja vienti</label>
+			<label index="mlang_labels_tablabel">Näytä käyttäjän tuloksia</label>
+        </languageKey>
+        <languageKey index="tr" type="array">
+			<label index="mlang_tabs_tab">Benim sınav ve anket</label>
+			<label index="mlang_labels_tabdescr">Kullanıcı sonuçları ve istatistikleri; ithalat ve ihracat</label>
+			<label index="mlang_labels_tablabel">Kullanıcı sonuçları</label>
+        </languageKey>
+        <languageKey index="se" type="array">
+			<label index="mlang_tabs_tab">Min frågesport och omröstning</label>
+			<label index="mlang_labels_tabdescr">Visa användarens resultat och statistik, import och export</label>
+			<label index="mlang_labels_tablabel">Visa användarens resultat</label>
+        </languageKey>
+        <languageKey index="pt" type="array">
+			<label index="mlang_tabs_tab">My quiz e votação</label>
+			<label index="mlang_labels_tabdescr">Ver resultados de usuário e estatísticas, importação e exportação</label>
+			<label index="mlang_labels_tablabel">Ver resultados de usuário</label>
+        </languageKey>
+        <languageKey index="ru" type="array">
+			<label index="mlang_tabs_tab">Мой тест опрос</label>
+			<label index="mlang_labels_tabdescr">Посмотреть результаты и статистика, импорт и экспорт</label>
+			<label index="mlang_labels_tablabel">Посмотреть результаты</label>
+        </languageKey>
+        <languageKey index="ro" type="array">
+			<label index="mlang_tabs_tab">Meu testul şi sondaj</label>
+			<label index="mlang_labels_tabdescr">Vezi rezultatele de utilizator şi a statisticilor; import şi export</label>
+			<label index="mlang_labels_tablabel">Vezi rezultatele de utilizator</label>
+        </languageKey>
+	</data>
+</T3locallang>

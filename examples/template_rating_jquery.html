@@ -1,0 +1,316 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+<p>You need jQuery for this example. This example uses the extension t3jquery. The jQuery code and design of this example is from here:
+http://net.tutsplus.com/demos/test_poll/
+http://net.tutsplus.com/tutorials/javascript-ajax/creating-a-dynamic-poll-with-jquery-and-php/
+Test it with this TypoScript (without the first 3 lines if you always integrate jQuery):</p>
+<pre>
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.11 = USER
+page.11.userFunc = tx_t3jquery->addJqJS
+plugin.tx_myquizpoll_pi1 {
+  isPoll = 1
+  templateFile = EXT:myquizpoll/examples/template_rating_jquery.html
+  tableAnswers = tx_myquizpoll_voting
+}
+plugin.tx_myquizpoll_pi1.myVars.answers {
+  input_id = 1
+  input_label = 1
+}
+plugin.tx_myquizpoll_pi1.rating {
+	extKey = tx_ttnews
+	parameter = tt_news
+}
+</pre>
+Or with:
+<pre>
+plugin.tx_myquizpoll_pi1.rating {
+	extKey =
+	parameter = id
+}
+</pre>
+Or with:
+<pre>
+plugin.tx_myquizpoll_pi1.rating {
+	extKey =
+	parameter =
+}
+</pre>
+<p>Note: no breaks allowed in the question. Breaks: JavaScript-Errors...</p>
+
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br/>
+1. Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br/>
+2. Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+3. Reference to TEMPLATE_PAGE_TIME_LIMIT. REF_PAGE_LIMIT will be empty if "pageTimeSeconds = 0".<br/>
+4. Multiple reference to TEMPLATE_QUESTION.<br/>
+5. Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT (dontShowUserData = 0), to TEMPLATE_SUBMIT (dontShowUserData = 1) or to TEMPLATE_NO_SUBMIT (if no rights)<br/>
+6. Dont delete the marker HIDDENFIELDS !!!!!!!<br/>
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE#### begin of "template for question(s)" since v.0.2.0 -->
+<script type="text/javascript">
+// Global variable definitions
+// DB column numbers
+var OPT_ID = 0;
+var OPT_TITLE = 1;
+var OPT_VOTES = 2;
+var voted = false;
+var votedID;
+var container='#poll-container';
+
+function is_array(input){
+    return typeof(input)=='object'&&(input instanceof Array);
+}
+
+function CookieSchreiben(n,w,e){
+ var a = new Date();
+ a = new Date(a.getTime() +e);
+ document.cookie = n+'='+w+'; expires='+a.toGMTString()+';';
+}
+
+function CookieLesen(n){
+ a = document.cookie;
+ res = '';
+ while(a != '') {
+  while(a.substr(0,1) == ' '){a = a.substr(1,a.length);}
+  cookiename = a.substring(0,a.indexOf('='));
+  if(a.indexOf(';') != -1)
+  {cookiewert = a.substring(a.indexOf('=')+1,a.indexOf(';'));}
+  else{cookiewert = a.substr(a.indexOf('=')+1,a.length);}
+  if(n == cookiename){res = cookiewert;}
+  i = a.indexOf(';')+1;
+  if(i == 0){i = a.length}
+  a = a.substring(i,a.length);
+ }
+ return(res);
+}
+
+function CookieLoeschen(n){
+ document.cookie = n+'=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+}
+</script>
+
+###REF_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+
+<form action="###FORM_URL###" method="get" name="myquiz" id="mypoll" onsubmit="return false;" role="form">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+
+<div id="voting-result" style="padding-top:10px;"><a href="#" id="zeigeAn">###POLLRESULT###</a></div> 
+
+<script type="text/javascript">
+$(document).ready(function(){
+  //votedID = $.cookie('my_vote_id');
+  //votedID=parseInt(CookieLesen('my_vote_###VAR_QID###_###VAR_FID###_###VAR_LANG###'));
+  //if (!(votedID>0)) {
+//	CookieSchreiben('my_vote_###VAR_QID###_###VAR_FID###_###VAR_LANG###', -1, 1000*60*60);	// set a cookie: voting is only with this cookie possible!
+  //}
+  
+  $("#mypoll").submit(formProcess); // setup the submit handler
+  $("#zeigeAn").click(function( event ) {
+    event.preventDefault();
+    container='#voting-result';
+    $(container).empty();
+    $.getJSON('/index.php?eID=myquizpoll_eID&qid=###VAR_QID###&fid=###VAR_FID###&pid=###VAR_RESPID###&lang=###VAR_LANG###',loadResults);
+  });
+  
+  if ($("#poll-results").length > 0 ) {
+    animateResults();
+  }
+  
+  votedID=parseInt(CookieLesen('my_vote_###VAR_QID###_###VAR_FID###_###VAR_LANG###'));
+  if (votedID>0) {
+	$('#voting-result').hide();
+	container='#poll-container';
+    $(container).empty();
+	$(".###PREFIX###-submit").fadeOut("fast");
+    $.getJSON('/index.php?eID=myquizpoll_eID&qid=###VAR_QID###&fid=###VAR_FID###&pid=###VAR_RESPID###&lang=###VAR_LANG###',loadResults);
+  }
+});
+
+function formProcess(event){
+ if (!voted) {
+  voted=true;
+  event.preventDefault();
+  votedID = $("input[name='tx_myquizpoll_pi1[answer1]']:checked").attr("value");
+  container='#poll-container';
+  
+  $('#voting-result').hide();
+  $(".###PREFIX###-submit").fadeOut("fast");
+  $(container).fadeOut("slow",function(){
+    $(this).empty();
+    
+    // Ajaxabfrage stellen
+	$.ajax({
+		url: "/index.php",		// Achtung mit RealURL!
+		type: "GET",			// Daten per GET verschicken
+		data: {
+			'eID': "myquizpoll_eID",	// die erstellte eID
+			'qid': ###VAR_QID###,  // = document.myquiz.elements['tx_myquizpoll_pi1[uid1]'].value,	// uid
+			'fid': '###VAR_FID###',
+			'pid': ###VAR_RESPID###,
+			'lang': ###VAR_LANG###,
+			'remote_ip': ###REMOTE_IP###,
+			'block_ip': '###BLOCK_IP###',
+			'vote': votedID	// Benutzereingabe
+		},
+		dataType: "json",		// das gibts zurück
+
+		success: function(response) {
+		  if(is_array(response) && response.length > 0) {
+			loadResults(response);
+			CookieSchreiben('my_vote_###VAR_QID###_###VAR_FID###_###VAR_LANG###', votedID, 1000*60*60*24*30);	// set a cookie for this question for 30 days
+			//$.cookie('my_vote_id', votedID, {expires: 31});
+		  } else {
+			alert('Sorry, da ist was schief gelaufen!');
+		  }
+		},
+
+		error: function(error) {
+			alert("Sorry, hat nicht funktioniert!");
+		}
+	});
+  });
+ }
+}
+
+function animateResults(){
+  $("#poll-results div").each(function(){
+      var percentage = $(this).next().text();
+      $(this).css({width: "0%"}).animate({width: percentage}, 'slow');
+  });
+}
+
+function loadResults(data) {
+  var total_votes = 0;
+  var percent;
+  
+  for (id in data) {
+    total_votes = total_votes+parseInt(data[id][OPT_VOTES]);
+  }
+  teiler = parseInt(total_votes);
+  if (teiler==0) teiler=100;  // keine abstimmungen
+  var results_html = '<div id="poll-results"><dl style="position:relative; width:195px;">';
+  for (id in data) {
+    percent = Math.round((parseInt(data[id][OPT_VOTES])/teiler)*100);
+	results_html = results_html+'<dt style="clear:both; position:relative; float:left; width:20px; line-height:20px; margin-right:15px; font-weight:bold; text-align:right;">'+data[id][OPT_TITLE]+'</dt>';
+	results_html = results_html+'<dd style="position:relative; float:left; width:160px; height:20px; margin:0 0 15px 0; background:url(/fileadmin/template/images/grau.png) no-repeat;">';
+	results_html = results_html+'<div id="bar'+data[id][OPT_ID]+'" style="background-color:#006B04; text-align:right; font-weight:bold; height:20px; width:0%;';
+    if (data[id][OPT_ID] == votedID) {
+      results_html = results_html+'background-color:#0066cc;';
+    }
+    results_html = results_html+'">&nbsp;</div><span style="position:absolute; right:3px; top:0; overflow:hidden;">'+percent+'%</span></dd>'+"\n";
+  }
+  
+  results_html = results_html+'</dl><p style="clear:both;">###NUM_VOTES### '+total_votes+"</p></div>\n";
+  
+  $(container).append(results_html).fadeIn("slow",function(){animateResults();});
+}
+</script>
+<!-- ###TEMPLATE_QUESTION_PAGE#### end -->
+
+
+
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</div>
+<div id="poll-container">
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+</div>
+###REF_QUESTION_IMAGE_END###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="7">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr />
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br />
+<input type="submit" value="###SUBMIT###" class="###PREFIX###-submit" />
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+...
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" since v.0.2.0 -->
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" since v.0.2.0 -->
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT_URL### begin -->
+...
+<!-- ###TEMPLATE_POLLRESULT_URL### end -->
+
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+...
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT### begin of "poll result list" -->
+...
+<!-- ###TEMPLATE_POLLRESULT### end -->
+
+</body>
+</html>

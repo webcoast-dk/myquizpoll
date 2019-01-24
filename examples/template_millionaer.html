@@ -1,0 +1,517 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+
+<p>This is a cool example template for a "Wer wird Millioär?"-Quiz. Test it with this TS (and your own images):</p>
+<pre>
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_millionaer.html
+plugin.tx_myquizpoll_pi1.pageQuestions = 1
+plugin.tx_myquizpoll_pi1.dontShowCorrectAnswers = 1
+plugin.tx_myquizpoll_pi1.dateFormat = d.m.Y
+plugin.tx_myquizpoll_pi1.useJokers = 1
+plugin.tx_myquizpoll_pi1.pageTimeSeconds = 31
+plugin.tx_myquizpoll_pi1.quizTimeMinutes = 9
+plugin.tx_myquizpoll_pi1.cancelWhenWrong = 1
+plugin.tx_myquizpoll_pi1.noNegativePoints = 2
+plugin.tx_myquizpoll_pi1.showHighscore = 1
+#plugin.tx_myquizpoll_pi1.doubleEntryCheck = 1
+plugin.tx_myquizpoll_pi1.myVars.answers {
+ buchstabe = A,B,C,D
+ nummer = 1,2,3,4
+ tr_an = <tr><td width="20">&nbsp;</td>, 
+ tr_aus = ,<td width="20">&nbsp;</td></tr>
+ input_radio = onclick="changeBG(1);" id="answer1",onclick="changeBG(2);"  id="answer2",onclick="changeBG(3);" id="answer3",onclick="changeBG(4);" id="answer4"
+ input_wrap = <label for="answer1">|</label>,<label for="answer2">|</label>,<label for="answer3">|</label>,<label for="answer4">|</label>
+}
+
+page.includeCSS {
+  file2 = EXT:myquizpoll/examples/quiz_mill.css
+}
+</pre>
+
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br/>
+1. Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br/>
+2. Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+3. Reference to TEMPLATE_PAGE_TIME_LIMIT. REF_PAGE_LIMIT will be empty if "pageTimeSeconds = 0".<br/>
+4. Multiple reference to TEMPLATE_QUESTION.<br/>
+5. Reference to TEMPLATE_JOKERS. REF_JOKERS will be empty if "useJokers = 0".<br/>
+6. Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT (dontShowUserData = 0), to TEMPLATE_SUBMIT (dontShowUserData = 1) or to TEMPLATE_NO_SUBMIT (if no rights)<br/>
+7. Dont delete the marker HIDDENFIELDS !!!!!!!<br/>
+8. Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+9. Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if isPoll = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s)" since v.0.2.0 -->
+###REF_ERRORS###
+<form action="###FORM_URL###" method="post" name="myquiz">
+<table border="0" width="100%">
+ <tr>
+  <td align="center"> 
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+###REF_QUESTIONS###
+  </td>
+  <td align="center" valign="middle" width="150">
+###REF_JOKERS###
+  </td>
+ </tr>
+</table>
+###REF_SUBMIT_FIELDS###
+<script type="text/javascript">
+ function quizcheck0(quizform,nr,max){
+  for (i = 1; i <= max; i++){
+	feld = 'tx_myquizpoll_pi1[answer'+nr+'_'+i+']';
+    if(quizform.elements[feld].checked){
+      return true;
+      break;
+    }
+  }
+  return false;
+ }
+ function quizcheck1(quizform,nr,max){
+  feld = 'tx_myquizpoll_pi1[answer'+nr+']';
+  for (i = 0; i < quizform.elements[feld].length; i++){
+    if (quizform.elements[feld][i].checked){
+      return true;
+      break;
+    }
+  }
+  return false;
+ }
+ function quizcheck3(quizform,nr){
+  feld = 'tx_myquizpoll_pi1[answer'+nr+']';
+  if (quizform.elements[feld].value.length>0){
+    return true;
+  }
+  return false;
+ }
+ function quizcheck4(quizform,nr,max){
+  result = true;
+  for (i = 1; i <= max; i++){
+   feld = 'tx_myquizpoll_pi1[answer'+nr+'_'+i+']';
+   ergebnis = false;
+   for (j = 0; j <= 1; j++){
+    if (quizform.elements[feld][j].checked){
+      ergebnis = true;
+    }
+   }
+   if (ergebnis == false) result = false;
+  }
+  return result;
+ }
+ function quizerror(no) {
+	window.alert('###QUESTION### '+no+': ###MISSING_ANSWER###');
+	return false;
+ }
+ function quizsumbit(quizform) {
+  ###SUBMIT_JSC###
+  quizform.submit();
+  return true;
+ }
+</script>
+###HIDDENFIELDS###
+</form>
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+<p>Result page:<br/>
+1. Empty or reference to TEMPLATE_CHEATING.<br/>
+2. Reference to TEMPLATE_POLL_SUBMITED (poll) or to TEMPLATE_QUIZ_USER_SUBMITED (quiz; if "dontShowUserData=0" and "dontShowUserResult=0", else empty).<br/>
+3. Multiple reference to TEMPLATE_QRESULT (empty if is poll or "dontShowCorrectAnswers=1").<br/>
+4. Reference to TEMPLATE_RESULT_POINTS or TEMPLATE_RESULT_POINTS_TOTAL (if is quiz and "dontShowPoints=0", else empty)<br/>
+5. Reference to TEMPLATE_SKIPPED (if "allowSkipping=1" and is quiz, else empty)<br/>
+6. Reference to TEMPLATE_NEXT (if "showAnswersSeparate=1" and is quiz, else empty)<br/>
+7. Reference to TEMPLATE_POLLRESULT (if is poll and "dontShowPollResult=0", else empty)<br/>
+8. Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if isPoll = 0 !!!<br/>
+Optional: ###REF_HIGHSCORE_URL### = Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+Optional: ###REF_QUIZ_LIMIT### = Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+</p>
+<!-- ###TEMPLATE_RESULT_PAGE### begin of "template for result of question(s)" since v.0.2.0 -->
+###REF_RES_ERRORS###
+###REF_INTRODUCTION###
+###REF_QRESULT###
+###REF_QPOINTS###
+###REF_SKIPPED###
+###REF_NEXT###
+###REF_POLLRESULT###
+###REF_POLLRESULT_URL###
+<!-- ###TEMPLATE_RESULT_PAGE### end -->
+
+<p>Last/final page (if pageQuestions > 0):<br/>
+1. Reference to TEMPLATE_NO_MORE. REF_NO_MORE will be empty if pageQuestions = 0 !!!<br/>
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis = 0 !!!<br/>
+3. Reference to TEMPLATE_HIGHSCORE. REF_HIGHSCORE will be empty if showHighscore = 0 !!!<br/>
+4. Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if dontShowHighscoreLink = 1 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### begin of "template for the last/final page of a quiz" since v.0.1.7 -->
+###REF_NO_MORE###
+<p>Du bist jetzt vermutlich Millionär, was?</p>
+###REF_QUIZ_ANALYSIS###
+###REF_HIGHSCORE###
+###REF_HIGHSCORE_URL###
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### end -->
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+	 </td>
+	 <td width="100">
+<div class="quiz_euro">###VAR_QUESTION###. Frage<br />###VAR_CATEGORY###<!-- br />###VAR_NEXT_POINTS### --></div>
+	 </td>
+	 <td width="50">&nbsp;</td>
+	 <td width="200" align="left">
+<div class="quiz_img">###REF_QUESTION_IMAGE_BEGIN###</div>
+	 </td>
+	</tr>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" width="500">
+	<tr>
+	 <td colspan="4" class="quiz_antwort" width="500" align="center">
+<div class="quiz_frage"><strong>###VAR_QUESTION_TITLE###:</strong> ###VAR_QUESTION_NAME###</div>
+	 </td>
+	</tr>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+###MY_TR_AN###<td width="230" class="quiz_antwort" align="left">
+<div id="quiz_antwort###MY_NUMMER###"><span style="color:#cccc00;font-weight:bold;">###MY_BUCHSTABE###:</span>###VAR_QUESTION_ANSWER###</div>
+</td>###MY_TR_AUS###
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+   </table>
+###REF_QUESTION_IMAGE_END###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+###VAR_QUESTION_IMAGE###
+<br />
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this markers too: ###REF_QR_ANSWER_ALL### or ###REF_QR_ANSWER_CORR### instead of REF_QR_ANSWER_CORR_ANSW,-CORR_NOTANSW,-NOTCORR_NOTANSW,-NOTCORR_ANSW (this will be automatically used by REF_QR_ANSWER_ALL in original order) !!!
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+###REF_QR_ANSWER_CORR_ANSW###
+###REF_QR_ANSWER_CORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_ANSW###
+###REF_QR_EXPLANATION###
+###REF_QR_POINTS###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+<!-- ###TEMPLATE_QR_CORR### begin of "an correct answer (answered and not answered)" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1###<b>###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR### end -->
+
+<!-- ###TEMPLATE_QR_CORR_ANSW### begin of "an correct answer which has been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1###<b>+###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### begin of "an correct answer which has not been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### begin of "an not correct answer which has been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1###<b><i>-###VAR_ANSWER_POINTS###</i></b>###P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### begin of "an not correct answer which has not been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_POINTS### begin of "points result for a question" -->
+<div class="###PREFIX###-label">###RES_QUESTION_POINTS###: ###VAR_QUESTION_POINTS### / ###VAR_MAX_QUESTION_POINTS###</div>
+<!-- ###TEMPLATE_QR_POINTS### end -->
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+<div class="###PREFIX###-explanation">###EXPLANATION###: ###VAR_EXPLANATION###</div>
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+
+<!-- ###TEMPLATE_RESULT_POINTS### begin of "reached points at first page" -->
+<p class="###PREFIX###-label">Dein Kontostand: ###VAR_TOTAL_POINTS### €</p>
+<hr />
+<!-- ###TEMPLATE_RESULT_POINTS### end -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### begin of "reached points at follow pages" -->
+<p class="###PREFIX###-label">Dein Kontostand: ###VAR_TOTAL_POINTS### €</p>
+<hr />
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+  <hr />
+  <table>
+	<tr> 
+	  <td class="###PREFIX###-label">###NAME###:</td>
+	  <td width="7">&nbsp;</td>
+	  <td><input type="text" name="###PREFIX###[name]" value="###DEFAULT_NAME###" class="###PREFIX###-field" />
+	  </td>
+	  <td width="7">&nbsp;</td>
+	  <td rowspan="3" valign="middle">
+	    <input type="button" value="###GO_ON###" class="###PREFIX###-submit" onclick="quizsumbit(this.form);" /> &nbsp;
+	    <input type="reset" value="###RESET###" class="###PREFIX###-reset" />
+	  </td>
+	</tr>
+	<tr> 
+	  <td class="###PREFIX###-label">###EMAIL###:</td>
+	  <td width="7">&nbsp;</td>
+	  <td><input type="text" name="###PREFIX###[email]" value="###DEFAULT_EMAIL###" class="###PREFIX###-field" />
+	  </td>
+	</tr>
+  </table>
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+<p class="###PREFIX###-label">###RESULT_FOR###:<br/>
+		###NAME###: ###REAL_NAME###<br/>
+		###EMAIL###: ###REAL_EMAIL###<br/>
+		###HOMEPAGE###: ###REAL_HOMEPAGE###</p>
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br/>
+<input type="submit" value="###SUBMIT###" class="###PREFIX###-submit" />
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+<br/>
+<form action="###FORM_URL###" method="post" name="myquiz">
+<input type="submit" value="###GO_ON###" class="###PREFIX###-submit" />
+<input type="hidden" name="###PREFIX###[qtuid]" value="###QTUID###" />
+<input type="hidden" name="###PREFIX###[cmd]" value="next" />
+<input type="hidden" name="no_cache" value="1" />
+</form>
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin of "you must be logged in" -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin of "reload cheatting" -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_SKIPPED### begin of "a question was put back" since v.0.2.2 -->
+<p class="###PREFIX###-label">###VAR_NO### ###SKIPPED###</p>
+<!-- ###TEMPLATE_SKIPPED### end -->
+
+
+<!-- ###TEMPLATE_JOKERS### begin of "Jokers for a question" since v.0.2.2 -->
+<div id="###PREFIX###-joker_50"><a href="javascript:nix();" onclick="###JOKER_50_LINK###" ><img src="/typo3conf/ext/myquizpoll/examples/joker_50.png" alt="###JOKER_50###" title="###JOKER_50###" class="joker_image" /></a></div> 
+<div id="###PREFIX###-joker_phone"><a href="javascript:nix();" onclick="###JOKER_PHONE_LINK###"><img src="/typo3conf/ext/myquizpoll/examples/joker_phone.png" alt="###JOKER_PHONE###" title="###JOKER_PHONE###" class="joker_image" /></a></div>
+<div id="###PREFIX###-joker_audience"><a href="javascript:nix();" onclick="###JOKER_AUDIENCE_LINK###"><img src="/typo3conf/ext/myquizpoll/examples/joker_audience.png" alt="###JOKER_AUDIENCE###" title="###JOKER_AUDIENCE###" class="joker_image" /></a></div>
+<div id="###PREFIX###-joker"><p class="###PREFIX###-label">Der Joker sagt:<br />
+<span id="###PREFIX###-joker_answer">none :-(</span></p></div>
+<div style="display:none;"><img src="/typo3conf/ext/myquizpoll/examples/antwort_or.jpg" alt="" /></div>
+<script type="text/javascript">
+###JAVASCRIPT###
+
+function nix() {
+  return;
+}
+
+function hideByJoker (field1,field2) {
+	document.getElementById(field1).style.display = 'none';
+	document.getElementById(field2).style.display = 'none';
+}
+
+function changeBG (answerno) {
+  if (answerno==1) {
+	document.getElementById('quiz_antwort1').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_or.jpg)';
+	document.getElementById('quiz_antwort2').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort3').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort4').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+  } else if (answerno==2) {
+	document.getElementById('quiz_antwort1').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort2').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_or.jpg)';
+	document.getElementById('quiz_antwort3').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort4').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+  } else if (answerno==3) {
+	document.getElementById('quiz_antwort1').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort2').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort3').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_or.jpg)';
+	document.getElementById('quiz_antwort4').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+  } else if (answerno==4) {
+	document.getElementById('quiz_antwort1').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort2').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort3').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_bl.jpg)';
+	document.getElementById('quiz_antwort4').style.backgroundImage = 'url(/typo3conf/ext/myquizpoll/examples/antwort_or.jpg)';
+  }
+  if (confirm("Diese Antwort einloggen? Bist du sicher?")) {
+	document.myquiz.submit();
+  }
+  return;
+}
+</script>
+<!-- ###TEMPLATE_JOKERS### end -->
+
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" since v.0.2.0 -->
+<script type="text/javascript">
+  var leftSecs1 = ###VAR_SECS###;
+  function absenden1() {
+	document.myquiz.submit();
+	return;
+  }
+  function checkTime1() {
+	leftSecs1 -= 1;
+	if (leftSecs1 <= 0) {
+		alert("###TIME_UP1###");
+		absenden1();
+	} else {
+		setTimeout("checkTime1()", 1000);
+	}
+	return;
+  }
+  setTimeout("checkTime1()", 1000);
+</script>
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" since v.0.2.0 -->
+<script type="text/javascript">
+  var startTime = new Date();
+  var startTimeSec = Math.round(startTime.getTime()/1000);
+  function absenden2() {
+	document.myquiz.submit();
+	return;
+  }
+  function checkTime2() {
+    var currentTime = new Date();
+	leftSecs2 = ###VAR_SECS### + startTimeSec - Math.round(currentTime.getTime()/1000);
+	if (leftSecs2 <= 10) {
+		document.getElementById('quiz_seconds').innerHTML = '<span style="font-weight:bold;color:red;">'+leftSecs2+'</span>';
+	} else {
+		document.getElementById('quiz_seconds').innerHTML = leftSecs2;
+	}
+	if (leftSecs2 <= 0) {
+		alert("###TIME_UP2###");
+		absenden2();
+	} else {
+		setTimeout("checkTime2()", 1000);
+	}
+	return;
+  }
+  setTimeout("checkTime2()", 1000);
+</script>
+   <table border="0" cellpadding="0" cellspacing="0" width="500">
+    <tr>
+	 <td align="center" width="150">
+<div id="quiz_seconds">###VAR_SECS###</div>
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+No more questions. You can use here these Markers too: ###RESTART_QUIZ###, ###CORRECT_ANSWERS###,
+###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of a quiz: no more questions left" -->
+<p class="###PREFIX###-label">###NO_MORE###</p>
+<!-- ###QUIZ_ANSWERS### begin -->
+ <div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+ <div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_CORR###
+ ###REF_QR_EXPLANATION###
+ ###REF_DELIMITER###
+<!-- ###QUIZ_ANSWERS### end -->
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_END### begin of "negative canceling: quiz taker has no more rights" since 0.2.0 -->
+<p class="###PREFIX###-label">###REACHED1### ###VAR_TOTAL_POINTS### / <!-- ###VAR_OMAX_POINTS### --> 1.000.000 €</p>
+<p class="###PREFIX###-label">###QUIZ_END### versuch es gleich nocheinmal. <!-- ###RESTART_QUIZ### --></p>
+<!-- ###TEMPLATE_QUIZ_END### end -->
+
+
+<P>Highscore-list. You can use this markers too: VAR_PERCENT, VAR_MAX, VAR_O_MAX, VAR_TIME</p>
+<!-- ###TEMPLATE_HIGHSCORE### begin of "highscore list" -->
+
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### begin -->
+<div class="score###MY_EVEN_ODD###">
+<span style="float: left; width:20px;">###VAR_COUNT###.</span>
+###REF_HIGHSCORE_QUIZ_TAKER###
+<span style="float: left; width:95px; text-align:right;">###VAR_POINTS### €&nbsp;</span>
+<span style="float: left; width:105px; text-align:right;">###VAR_DATE###</span>
+</div>
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### end -->
+
+<!-- ###TEMPLATE_HIGHSCORE### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### begin (optional)  -->
+
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### end -->
+
+
+Allowed Markers here: ###VAR_NAME###, ###VAR_EMAIL###, ###VAR_HOMEPAGE###, ###VAR_TO_HOMEPAGE###, ###VAR_NAME_AND_EMAIL###
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### begin -->
+<span style="float: left; width:230px;">###VAR_NAME_AND_EMAIL###</span>
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_URL### begin -->
+<p class="###PREFIX###-label">###HIGHSCORE_URL###</p>
+<!-- ###TEMPLATE_HIGHSCORE_URL### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT_URL### begin -->
+<p class="###PREFIX###-label">###POLLRESULT_URL###</p>
+<!-- ###TEMPLATE_POLLRESULT_URL### end -->
+
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+<p class="###PREFIX###-label">###THANK_YOU###</p>
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+<p>Also avaiable marker: VAR_ANSWER1,VAR_ANSWER2,VAR_ANSWER3,VAR_ANSWER4,VAR_ANSWER5 and VAR_HITS1,VAR_HITS2,VAR_HITS3,VAR_HITS4,VAR_HITS5 and VAR_PERCENT1,VAR_PERCENT2,VAR_PERCENT3,VAR_PERCENT4,VAR_PERCENT5</p>
+<!-- ###TEMPLATE_POLLRESULT### begin of "poll result list" -->
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+<br/>
+<table class="###PREFIX###-table">
+<tr class="###PREFIX###-tr">
+<th class="###PREFIX###-th">###ANSWER###</th>
+<th class="###PREFIX###-th">###VOTES###</th>
+</tr>
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### begin -->
+<tr class="###PREFIX###-tr###MY_EVEN_ODD###"><td class="###PREFIX###-td">###VAR_ANSWER###</td><td class="###PREFIX###-td">###VAR_HITS### (###VAR_PERCENT###%)</td></tr>
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### end -->
+</table>
+<!-- ###TEMPLATE_POLLRESULT### end -->
+
+
+<!-- ###TEMPLATE_CAPTCHA_NOT_OK### begin -->
+<p class="###PREFIX###-label">###CAPTCHA_NOT_OK###</p>
+<!-- ###TEMPLATE_CAPTCHA_NOT_OK### end -->
+
+</body>
+</html>

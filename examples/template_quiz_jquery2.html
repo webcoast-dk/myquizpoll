@@ -1,0 +1,454 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+<p>You need jQuery for this example. This example uses the extension t3jquery.
+Note: this example works only with radio-buttons, checkboxes and select-options questions!
+Test it with this TypoScript:</p>
+<pre>
+plugin.tx_myquizpoll_pi1.isPoll = 0
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_quiz_jquery2.html
+plugin.tx_myquizpoll_pi1.myVars.answers {
+	input_id = 1
+	input_label = 5
+#  input_radio = id="answer1",id="answer2",id="answer3",id="answer4",id="answer5",id="answer6"
+#  input_checkbox = id="answer1",id="answer2",id="answer3",id="answer4",id="answer5",id="answer6"
+#  input_wrap = <label for="answer1" id="at1">|</label>,<label for="answer2" id="at2">|</label>,<label for="answer3" id="at3">|</label>,<label for="answer4" id="at4">|</label>,<label for="answer5" id="at5">|</label>,<label for="answer6" id="at6">|</label>
+}
+plugin.tx_myquizpoll_pi1.userData.askAtQuestion = 0
+plugin.tx_myquizpoll_pi1.pageQuestions = 1
+
+# if you dont always include jQuery:
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.11 = USER
+page.11.userFunc = tx_t3jquery->addJqJS
+</pre>
+
+<h3>Templates for whole sites</h3>
+
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s) and the first page with user data" since v.0.2.0 -->
+<script type="text/javascript">
+// array keys of the response array:
+var OPT_ID = 0;				// answer no.
+var OPT_TITLE = 1;			// answer text
+var OPT_CORRECT = 2;		// correct flag
+var OPT_POINTS = 3;			// points for this answer
+var OPT_EXPLANATION = 4;	// explanation of the question
+var OPT_QTID = 5;			// quiz taker id, only for array key 0
+var OPT_TOTAL_POINTS = 6;	// points for this question, only for array key 0
+var OPT_TOTAL_CORRECT = 7;	// all correct answers, only for array key 0
+var OPT_ALL_POINTS = 8;		// all points till now, only for array key 0
+var checkedID;				// checked answer no.
+var qtype = '';				// question type
+var qtuid = ###QTUID###;	// quiz taker uid
+var qnr = 0;				// no. of answers
+var qnr_sel = 0;			// no. of checked answers
+function is_array(input){ return typeof(input)=='object'&&(input instanceof Array); }
+</script>
+
+###REF_ERRORS###
+<form action="###FORM_URL###" method="get" name="myquiz" id="myquiz" onsubmit="return false;" role="form">
+###REF_QUESTIONS###
+###REF_JOKERS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+
+<div id="quiz_response"> </div>
+<div id="quiz_error" style="color:red; display:none;"><br /><br /><b>Fehler:</b> bitte erst eine Antwort auswählen!!!</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#sendmyquiz").click(function() {
+		switch (qtype) {		// only question type 0,1 and 2 are supported!
+			case 0:	$("#myquiz input[type='checkbox']:checked").each(function() {
+						qnr_sel++;
+						if (qnr_sel==1)
+							checkedID = $(this).val();
+						else
+							checkedID += ',' + $(this).val();
+					});
+					break;
+			case 1:	checkedID = $("input[name='tx_myquizpoll_pi1[answer1]']:checked").attr("value");
+					qnr_sel = 1;
+					break;
+			case 2:	$("#myquiz select option:selected").each(function () {
+						checkedID = $(this).attr("value");
+						qnr_sel++;
+					});
+					break;
+		}
+		if (typeof checkedID=='undefined') {
+		    $("#quiz_error").show();
+		    return false;
+		}
+		$("#quiz_error").hide();
+		//window.alert('checked: '+checkedID);	// debug
+		
+		// Ajaxabfrage stellen
+		$.ajax({
+			url: "index.php",		// Achtung mit RealURL!
+			type: "GET",			// Daten per GET verschicken
+			data: {
+				'eID': 'myquiz_eID',	// the eID
+				'qtid': qtuid,			// quiz taker uid
+				'qid': ###VAR_QID###,	// question uid
+				'pid': ###VAR_RESPID###,	// results pid
+				'lang': ###VAR_LANG###,		// language
+				'no_negative': ###NO_NEGATIVE###,	// negative points?
+				'remote_ip': ###REMOTE_IP###,	// take remote IP address?
+				'block_ip': '###BLOCK_IP###',	// block some IPs?
+				'vote': checkedID,	// Selected answers
+				'qnr': qnr,			// no. of answers
+				'joker1': (($(document.forms["myquiz"].elements["###PREFIX###[joker1]"]).length>0) ? document.forms["myquiz"].elements["###PREFIX###[joker1]"].value : 0),
+				'joker2': (($(document.forms["myquiz"].elements["###PREFIX###[joker2]"]).length>0) ? document.forms["myquiz"].elements["###PREFIX###[joker2]"].value : 0),
+				'joker3': (($(document.forms["myquiz"].elements["###PREFIX###[joker3]"]).length>0) ? document.forms["myquiz"].elements["###PREFIX###[joker3]"].value : 0)
+			},
+			dataType: "json",		// return value
+
+			success: function(response) {
+			  if(is_array(response) && response.length > 0) {
+				loadResults(response);
+			  } else {
+				alert('Sorry, da ist was schief gelaufen!');
+			  }
+			},
+
+			error: function(error) {
+				alert("Sorry, hat nicht funktioniert!");
+			}
+		});
+		return false;
+	});
+});
+
+function loadResults(data) {
+  var i=0;
+  var results_html = '';
+  var correctArray = new Array(qnr+1);
+  var checkedArray = new Array(qnr+1);
+  var relationArray = new Array(qnr+1);
+  for (i=1; i<=qnr; i++) {		// set default value
+	correctArray[i] = false;
+	checkedArray[i] = false;
+	relationArray[i] = 0;
+  }
+  var tmpArray = data[0][OPT_TOTAL_CORRECT].toString().split(',');
+  for (i=0; i<tmpArray.length; i++) {	// mark the correct ones
+	correctArray[tmpArray[i]] = true;
+  }
+  tmpArray = checkedID.toString().split(',');
+  for (i=0; i<tmpArray.length; i++) {	// mark the checked ones
+	checkedArray[tmpArray[i]] = true;
+	relationArray[tmpArray[i]] = i;
+  }
+  //for (i=1; i<=qnr_sel; i++) window.alert('checked answer: '+data[i-1][OPT_TITLE]);	// debug
+
+  $(".###PREFIX###-subres").hide();
+  $(".###PREFIX###-jokers").hide();
+  $("#quiz_response").hide();
+
+  if (data[0][OPT_ID]==-1) {
+	results_html = "<p>Die Frage wurde zurückgestellt...</p><br />\n";
+  } else {
+	if (qtype==2) {	// select-option
+	   for (i=1; i<=qnr; i++) {
+		if (correctArray[i]) {
+		  var this_is_it = $("#myquiz select option[value='"+i+"']").text();
+		  results_html = '<p>Die richtige Antwort lautet: '+this_is_it+"</p>\n";
+		  break;
+		}
+	   }
+	} else {			// radio-button or check-box
+	   for (i=1; i<=qnr; i++) {
+		if (correctArray[i] && checkedArray[i]) {
+		  $('#quiz_antwort'+i+' label').css({'color' : 'green', 'font-weight' : 'bold'});
+		} else if (correctArray[i] && !checkedArray[i]) {
+		  $('#quiz_antwort'+i+' label').css({'background-color' : 'yellow', 'font-weight' : 'bold'});
+		} else if (!correctArray[i] && checkedArray[i]) {
+		  $('#quiz_antwort'+i+' label').css({'color' : 'red', 'text-decoration' : 'line-through'});
+		} else {
+		  $('#quiz_antwort'+i+' label').css("text-decoration","line-through");	
+		}
+	   }
+	}
+	
+	if (data[0][OPT_EXPLANATION].length > 0) {
+		results_html = results_html + '<p>Die Erklärung dazu:</p><p>';
+		results_html = results_html + data[0][OPT_EXPLANATION];
+		results_html = results_html + '</p>';
+	}  
+	results_html = results_html + '<p>Erhaltene Punkte bei dieser Frage: '+data[0][OPT_TOTAL_POINTS]+'. Punkte bisher: '+data[0][OPT_ALL_POINTS]+"</p><br />\n";
+  }
+  
+  results_html = results_html + '<form action="###FORM_URL###" method="post" name="myquiz" role="form">';
+  results_html = results_html + '<button type="button" class="btn btn-primary" onclick="this.form.submit();">weiter</button>';
+  results_html = results_html + '<input type="hidden" name="###PREFIX###[qtuid]" value="'+data[0][OPT_QTID]+'" />';
+  results_html = results_html + '<input type="hidden" name="###PREFIX###[cmd]" value="next" />';
+  results_html = results_html + "</form>\n";
+  $("#quiz_response").append(results_html).fadeIn("slow");
+}
+</script>
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+<!-- ###TEMPLATE_RESULT_PAGE#### begin of "template for result of question(s)" since v.0.2.0 -->
+not in use
+<!-- ###TEMPLATE_RESULT_PAGE#### end -->
+
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### begin of "template for the last/final page of a quiz" since v.0.1.7 -->
+###REF_ERRORS###
+<form action="###FORM_URL###" method="post" name="myquiz" role="form">
+###REF_NO_MORE###
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+<script type="text/javascript">
+//<![CDATA[
+ function quizsumbit(quizform) {
+  quizform.submit();
+  return true;
+ }
+//]]>
+</script>
+</form>
+###REF_HIGHSCORE###
+###REF_HIGHSCORE_URL###
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### end -->
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer" id="quiz_antwort###VAR_QA_NR###">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+
+<script type="text/javascript">
+  qtype = ###VAR_QUESTION_TYPE###;
+  qnr = ###VAR_QUESTION_ANSWERS###;
+</script>
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="15">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr />
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+
+If user results should be hidden, set hidden = 1. Example: see template_statistics.html.
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+  <br />
+  <div class="###PREFIX###-user">
+	<div class="###PREFIX###-label">###NAME###:</div>
+	<div><input type="text" name="###PREFIX###[name]" value="###DEFAULT_NAME###" class="###PREFIX###-field" /></div>
+	<div class="###PREFIX###-label">###EMAIL###:</div>
+	<div><input type="text" name="###PREFIX###[email]" value="###DEFAULT_EMAIL###" class="###PREFIX###-field" /></div>
+	<div class="###PREFIX###-label">###HOMEPAGE###:</div>
+	<div><input type="text" name="###PREFIX###[homepage]" value="###DEFAULT_HOMEPAGE###" class="###PREFIX###-field" /></div>
+  <!-- ###CAPTCHA_INSERT### this subpart is removed if CAPTCHA is not enabled! -->
+	<div class="###PREFIX###-label">###SR_FREECAP_NOTICE###<br />
+		###SR_FREECAP_CANT_READ###</div>
+	<div><input type="text" id="###PREFIX###_captcha_response" name="###PREFIX###[captcha_response]" title="###SR_FREECAP_NOTICE###" value="" class="###PREFIX###-field" /><br />
+		###SR_FREECAP_IMAGE###
+		###SR_FREECAP_ACCESSIBLE###</div>
+  <!-- ###CAPTCHA_INSERT### -->
+  </div>
+  <button type="button" class="btn btn-primary" onclick="quizsumbit(this.form);">###GO_ON###</button>
+  <div class="###PREFIX###-clearer"> &nbsp;<br /> </div>
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+<p class="###PREFIX###-label">###RESULT_FOR###:<br />
+		###NAME###: ###REAL_NAME###<br />
+		###EMAIL###: ###REAL_EMAIL###<br />
+		###HOMEPAGE###: ###REAL_HOMEPAGE###</p>
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin of "sumbit form (quiz or poll); used if TEMPLATE_QUIZ_USER_TO_SUBMIT is not used" -->
+<br>
+<div class="###PREFIX###-subres">
+<button type="button" class="btn btn-primary" id="sendmyquiz">###SUBMIT###</button>
+<button type="button" class="btn btn-danger" onclick="this.form.reset();">###RESET###</button>
+<!-- input type="submit" value="###SUBMIT###" class="###PREFIX###-submit" /> &nbsp;
+<input type="reset" value="###RESET###" class="###PREFIX###-reset" / -->
+</div>
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin of "you must be logged in" -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin of "reload cheatting" -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" since v.0.2.0 -->
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" since v.0.2.0 -->
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_JOKERS### begin of "Jokers for a question" since v.0.2.2 -->
+<p class="###PREFIX###-label ###PREFIX###-jokers">###USE_JOKERS###: 
+ <span id="###PREFIX###-joker_50">- <a href="javascript:nix();" onclick="###JOKER_50_LINK###">###JOKER_50###</a></span>
+ <span id="###PREFIX###-joker_phone">- <a href="javascript:nix();" onclick="###JOKER_PHONE_LINK###">###JOKER_PHONE###</a></span>
+ <span id="###PREFIX###-joker_audience">- <a href="javascript:nix();" onclick="###JOKER_AUDIENCE_LINK###">###JOKER_AUDIENCE###</a></span></p>
+<div id="###PREFIX###-joker"><p class="###PREFIX###-label">###ANSWER_JOKER###: <span id="###PREFIX###-joker_answer">none :-(</span></p></div>
+<hr />
+<script type="text/javascript">
+function nix() { return; }
+function changeBG (answerno) { return; }
+function hideByJoker (field1,field2) {
+	document.getElementById(field1).style.display = 'none';
+	document.getElementById(field2).style.display = 'none';
+	return;
+}
+###JAVASCRIPT###
+</script>
+<!-- ###TEMPLATE_JOKERS### end -->
+
+
+No more questions. You can use here these Markers too: ###RESTART_QUIZ###,
+###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of an quiz: no more questions left" -->
+<p class="###PREFIX###-label">###NO_MORE### <!-- ###CORRECT_ANSWERS###: --></p>
+<!-- ###QUIZ_ANSWERS### begin -->
+ <div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+ <div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_CORR###
+ ###REF_QR_EXPLANATION###
+ ###REF_DELIMITER###
+<!-- ###QUIZ_ANSWERS### end -->
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+<P>Highscore-list. You can use this markers too in TEMPLATE_HIGHSCORE_ENTRY: ###VAR_PERCENT###, ###VAR_MAX###, ###VAR_O_MAX###, ###VAR_TIME###,
+ ###VAR_FE_UID###, ###VAR_PAGE_NAME### (page with plugin) and ###VAR_FOLDER_NAME### (page of result records).</p>
+<p>And if you use groupBy: ###VAR_NUM_QUIZ### (num. of solved quizes).</p>
+<!-- ###TEMPLATE_HIGHSCORE### begin of "highscore list" -->
+<table class="###PREFIX###-table">
+###REF_HIGHSCORE_CAPTION###
+<tr class="###PREFIX###-tr">
+<th class="###PREFIX###-th">###NUMBER###</th>
+<th class="###PREFIX###-th">###POINTS###</th>
+<th class="###PREFIX###-th">###PERCENT###</th>
+<th class="###PREFIX###-th">###NAME###</th>
+<th class="###PREFIX###-th">###DATE###</th>
+</tr>
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### begin -->
+<tr class="###PREFIX###-tr###MY_EVEN_ODD###">
+<td class="###PREFIX###-td align-right">###VAR_COUNT###</td>
+<td class="###PREFIX###-td align-right">###VAR_POINTS###</td>
+<td class="###PREFIX###-td align-right">###VAR_O_PERCENT###</td>
+<td class="###PREFIX###-td">###REF_HIGHSCORE_QUIZ_TAKER###</td>
+<td class="###PREFIX###-td">###VAR_DATE###</td>
+</tr>
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### end -->
+</table>
+<!-- ###TEMPLATE_HIGHSCORE### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### begin (optional)  -->
+<caption class="###PREFIX###-caption">###HIGHSCORE_CAPTION### ###VAR_HIGHSCORE_LIMIT###</caption>
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### end -->
+
+
+Allowed Markers here: ###VAR_NAME###, ###VAR_EMAIL###, ###VAR_HOMEPAGE###, ###VAR_TO_HOMEPAGE###, ###VAR_NAME_AND_EMAIL###
+<p>And if you use groupBy: ###LINK_DETAIL### (link to a detailed highscore).</p>
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### begin -->
+###VAR_NAME_AND_EMAIL###
+###VAR_TO_HOMEPAGE###
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_URL### begin -->
+<p class="###PREFIX###-label">###HIGHSCORE_URL###</p>
+<!-- ###TEMPLATE_HIGHSCORE_URL### end -->
+
+
+Show all questions and correct answers in the email.
+(You can use ###REF_QR_ANSWER_ALL### instead of ###REF_QR_ANSWER_CORR### and you can use ###VAR_QUESTION### and ###VAR_QUESTIONS###)
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### begin of "all questions and answers" since v.0.4.1 -->
+ ###REF_QUESTION_IMAGE_BEGIN###
+ <div>###VAR_QUESTION_TITLE###: ###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_CORR###
+ ###REF_QR_EXPLANATION###
+ ###REF_QUESTION_IMAGE_END###
+ ###REF_DELIMITER###
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### end -->
+
+
+<p>Email to admin (if email.send_admin > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis and showEvaluation = 0 !<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_ADMIN_EMAIL### begin of "template email for the admin" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###EMAIL_TAKEN### ###QUIZ_NAME###
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_ADMIN_EMAIL### end -->
+
+
+<p>Email to quiz taker (if email.send_user > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis and showEvaluation = 0 !<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_USER_EMAIL### begin of "template email for the quiz taker" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_USER_EMAIL### end -->
+
+</body>
+</html>

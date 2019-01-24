@@ -1,0 +1,280 @@
+<html>
+<head>
+	<title>SimpleModal poll template</title>
+</head>
+<body>
+<h2>SimpleModal advanced poll EXAMPLE TEMPLATE</h2>
+<p>You need jQuery for this example. This example uses the extension t3jquery. 
+Furthermore you need SimpleModal from here:
+http://www.ericmmartin.com/projects/simplemodal/
+Download it and copy it to your fileadmin-folder.
+Test it with this TypoScript:</p>
+<pre>
+plugin.tx_myquizpoll_pi1 {
+	templateFile = EXT:myquizpoll/examples/template_poll_simplemodal.html
+	isPoll = 0
+	useCookiesInDays = 7
+	userData.askAtQuestion = 0
+	email.send_admin = 1
+	advancedStatistics = 1
+	myVars.answers {
+		input_id = 1
+		input_label = 1
+		input_checkbox = class="my_checkbox"
+		input_text = class="my_text"
+		input_area = rows="3"
+	}
+	dontShowCorrectAnswers = 1
+	showAllCorrectAnswers = 1
+}
+page.includeCSS.simplemodal = EXT:myquizpoll/examples/poll_simplemodal.css
+
+// Customise this line:
+page.includeJS.simplemodal = fileadmin/template/files/simplemodal.js
+
+// And if you don´t always include jQuery:
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.11 = USER
+page.11.userFunc = tx_t3jquery->addJqJS
+</pre>
+
+
+
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s) and the first page with user data" since v.0.2.0 -->
+<form action="###FORM_URL###" method="post" name="myquiz" id="fancyUmfrage">
+<h1>Umfrage</h1>
+###REF_ERRORS###
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	$("#fancyUmfrage").modal({
+		overlayClose:true,
+		opacity:80,
+		overlayCss: {backgroundColor:"#999"}
+	});
+});
+</script>
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+<!-- ###TEMPLATE_RESULT_PAGE### -->
+<!-- ###TEMPLATE_RESULT_PAGE### -->
+
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### begin of "template for the last/final page of a quiz" since v.0.1.7 -->
+<form action="###FORM_URL###" method="get" name="myquiz" id="fancyUmfrage">
+###REF_ERRORS###
+###REF_QUIZ_ANALYSIS###
+</form>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	$("#fancyUmfrage").modal({
+		overlayClose:true,
+		opacity:80,
+		overlayCss: {backgroundColor:"#999"}
+	});
+});
+</script>
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### end -->
+
+
+
+
+<h3>Template-Snippets</h3>
+
+<p>Instead of VAR_ANSWER_POINTS you can use VAR_QUESTION_POINTS or VAR_NEXT_POINTS (test it).
+And you can use ###VAR_QUESTION_IMAGE###, ###VAR_QUESTION###, ###VAR_QUESTIONS###, ###VAR_QUESTION_NUMBER###, ###VAR_QUESTION_TYPE###, ###VAR_QUESTION_ANSWERS###,
+ ###VAR_CATEGORY### (current category) and ###VAR_NEXT_CATEGORY### (next category).</p>
+<p>In ###TEMPLATE_QUESTION_ANSWER### you can use this too: ###VAR_QA_CATEGORY###, ###VAR_QA_NR###</p>
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<div class="my_leer">&nbsp;</div>
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+<p>You can use this marker too in the following templates: ###VAR_QA_CATEGORY### (and ###VAR_QA_NR###)</p>
+<!-- ###TEMPLATE_QR_CORR### begin of "a correct answer (answered and not answered)" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QR_CORR### end -->
+
+<!-- ###TEMPLATE_QR_CORR_ANSW### begin of "a correct answer which has been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QR_CORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### begin of "a correct answer which has not been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### begin of "a not correct answer which has been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span></div>
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### begin of "a not correct answer which has not been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span></div>
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_POINTS### begin of "points result for a question" -->
+
+<!-- ###TEMPLATE_QR_POINTS### end -->
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+<!-- ###TEMPLATE_QR_STAR_AVERAGE### begin average of star rating" -->
+
+<!-- ###TEMPLATE_QR_STAR_AVERAGE### end -->
+
+
+<!-- ###TEMPLATE_RESULT_POINTS### begin of "reached points at first page" -->
+
+<!-- ###TEMPLATE_RESULT_POINTS### end -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### begin of "reached points at following pages" -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### end -->
+
+
+If user results should be hidden, set hidden = 1. Example: see template_statistics.html.
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+  <br />
+  <div class="###PREFIX###-user">
+	<div class="###PREFIX###-label">###NAME###:</div>
+	<div><input type="text" name="###PREFIX###[name]" value="###DEFAULT_NAME###" class="###PREFIX###-field" /></div>
+	<div class="###PREFIX###-label">###EMAIL###:</div>
+	<div><input type="text" name="###PREFIX###[email]" value="###DEFAULT_EMAIL###" class="###PREFIX###-field" /></div>
+	<div class="###PREFIX###-label">###HOMEPAGE###:</div>
+	<div><input type="text" name="###PREFIX###[homepage]" value="###DEFAULT_HOMEPAGE###" class="###PREFIX###-field" /></div>
+  <!-- ###CAPTCHA_INSERT### this subpart is removed if CAPTCHA is not enabled! -->
+	<div class="###PREFIX###-label">###SR_FREECAP_NOTICE###<br />
+		###SR_FREECAP_CANT_READ###</div>
+	<div><input type="text" id="###PREFIX###_captcha_response" name="###PREFIX###[captcha_response]" title="###SR_FREECAP_NOTICE###" value="" class="###PREFIX###-field" /><br />
+		###SR_FREECAP_IMAGE###
+		###SR_FREECAP_ACCESSIBLE###</div>
+  <!-- ###CAPTCHA_INSERT### -->
+  </div>
+  <div class="###PREFIX###-buttons">
+	<input type="button" name="###PREFIX###-next" value="###GO_ON###" class="###PREFIX###-submit" onclick="quizsumbit(this.form);" /><br />
+	<input type="reset" name="###PREFIX###-reset" value="###RESET###" class="###PREFIX###-reset" /></br />
+	<input type="button" name="###PREFIX###[back-button]" value="###GO_BACK###" class="tx_myquizpoll_pi1-back" ###BACK_STYLE### onclick="quizback(this.form);" />
+  </div>
+  <div class="###PREFIX###-clearer"> <!-- clear both --> </div>
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+<p class="###PREFIX###-label">Folgende Umfrage wurde soeben abgesendet:</p>
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin of "sumbit form (quiz or poll); used if TEMPLATE_QUIZ_USER_TO_SUBMIT is not used" -->
+<div class="my_leer">&nbsp;</div>
+<input type="submit" value="###SUBMIT###" class="submit" /> 
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin of "you must be logged in" -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin of "reload cheatting" -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_CAPTCHA_NOT_OK### begin -->
+<p class="###PREFIX###-label"><b>###CAPTCHA_NOT_OK###</b></p>
+<!-- ###TEMPLATE_CAPTCHA_NOT_OK### end -->
+
+
+
+
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of a quiz: no more questions left" -->
+
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+
+
+<!-- ###TEMPLATE_ALLANSWERS### begin of "all questions and answers" since v.0.3.0 -->
+
+<!-- ###TEMPLATE_ALLANSWERS### end -->
+
+
+
+
+
+Show all questions and correct answers in the email.
+(You can use ###REF_QR_ANSWER_ALL### instead of ###REF_QR_ANSWER_CORR### and you can use ###VAR_QUESTION### and ###VAR_QUESTIONS###)
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### begin of "all questions and answers" since v.0.4.1 -->
+ <div>###VAR_QUESTION_TITLE###: ###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_ALL###
+ ###REF_DELIMITER###
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### end -->
+
+
+<p>Email to admin (if email.send_admin > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis and showEvaluation = 0 !<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_ADMIN_EMAIL### begin of "template email for the admin" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###EMAIL_TAKEN### ###QUIZ_NAME###
+###REF_INTRODUCTION###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_ADMIN_EMAIL### end -->
+
+
+<p>Email to quiz taker (if email.send_user > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis and showEvaluation = 0 !<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_USER_EMAIL### begin of "template email for the quiz taker" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_USER_EMAIL### end -->
+
+</body>
+</html>

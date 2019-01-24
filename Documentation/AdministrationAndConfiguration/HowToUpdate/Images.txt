@@ -1,0 +1,6 @@
+﻿.. |img-15|     image:: ../../Images/manual_html_2d6cdf62.jpg
+.. :align: left
+.. :border: 0
+.. :name: Grafik5
+.. :width: 100%
+

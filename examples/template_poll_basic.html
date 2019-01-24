@@ -1,0 +1,212 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+
+<p>This is another cool example template for a poll.
+<pre>
+plugin.tx_myquizpoll_pi1.isPoll = 1
+plugin.tx_myquizpoll_pi1.showPollResultLink = 1
+plugin.tx_myquizpoll_pi1.myVars.answers {
+  input_id = 1
+  input_label = 1
+}
+plugin.tx_myquizpoll_pi1.useCookiesInDays = 28
+plugin.tx_myquizpoll_pi1.secondPollMode = 1
+plugin.tx_myquizpoll_pi1.tableAnswers = tx_myquizpoll_voting
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_poll_basic.html
+</pre>
+</p>
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br/>
+1. Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br/>
+2. Multiple reference to TEMPLATE_QUESTION.<br/>
+3. Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT (dontShowUserData = 0), to TEMPLATE_SUBMIT (dontShowUserData = 1) or to TEMPLATE_NO_SUBMIT (if no rights)<br/>
+4. Dont delete the marker HIDDENFIELDS !!!!!!!<br/>
+5. Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+Optional: ###REF_POLLRESULT_URL### = Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if is quiz or showPollResultLink = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE#### begin of "template for question(s)" since v.0.2.0 -->
+###REF_ERRORS###
+<form action="###FORM_URL###" method="post" name="myquiz" role="form">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+###REF_POLLRESULT_URL###
+</div>
+</form>
+<!-- ###TEMPLATE_QUESTION_PAGE#### end -->
+
+<p>Result page:<br/>
+1. Empty or reference to TEMPLATE_CHEATING.<br/>
+2. Reference to TEMPLATE_POLL_SUBMITED (poll) or to TEMPLATE_QUIZ_USER_SUBMITED (quiz; if "dontShowUserData=0" and "dontShowUserResult=0", else empty).<br/>
+3. Multiple reference to TEMPLATE_QRESULT (empty if is poll or "dontShowCorrectAnswers=1").<br/>
+4. Reference to TEMPLATE_RESULT_POINTS or TEMPLATE_RESULT_POINTS_TOTAL (if is quiz and "dontShowPoints=0", else empty)<br/>
+5. Reference to TEMPLATE_NEXT (if "showAnswersSeparate=1" and is quiz, else empty)<br/>
+6. Reference to TEMPLATE_POLLRESULT (if is poll and "dontShowPollResult=0", else empty)<br/>
+Optional: Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if is quiz or showPollResultLink = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_RESULT_PAGE#### begin of "template for result of question(s)" since v.0.2.0 -->
+###REF_RES_ERRORS###
+###REF_INTRODUCTION###
+###REF_QRESULT###
+###REF_QPOINTS###
+###REF_NEXT###
+###REF_POLLRESULT###
+###REF_POLLRESULT_URL###
+<!-- ###TEMPLATE_RESULT_PAGE#### end -->
+
+
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+<div style="float:left; width:400px; height:440px; padding:10px 20px 0 0;">###VAR_QUESTION_IMAGE###</div>
+<div style="float:left; width:250px; height:440px; padding:5px;">
+ <div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+ <div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+ <div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+<!-- ###TEMPLATE_QUESTION### end -->
+
+
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+nix
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br />
+<button type="button" class="btn btn-primary ###PREFIX###-submit" onclick="this.form.submit();">###SUBMIT###</button>
+<br /><br />
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT_URL### begin -->
+<p class="###PREFIX###-label">###POLLRESULT_URL###</p>
+<!-- ###TEMPLATE_POLLRESULT_URL### end -->
+
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+<p class="###PREFIX###-label">###THANK_YOU### ###QUESTION_NAME### ###VAR_QUESTION_NAME###<br />
+###USER_ANSWER### ###VAR_USER_ANSWER###</p>
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+
+
+<!-- ###TEMPLATE_POLLRESULT### begin of "poll result list" -->
+<div style="float:left; width:440px; height:540px; padding:50px 20px 0 0;">###VAR_QUESTION_IMAGE###</div>
+<div style="float:left; width:270px; height:630px; padding:5px;">
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### begin -->
+<div class="###PREFIX###-answer" style="clear:both;padding:3px 0;">
+	<div style="padding:7px 0 3px 0;">###VAR_ANSWER###: ###VAR_PERCENT###% (###VAR_HITS###)</div>
+	<div style="background:#fff;border:1px solid #000;"><div id="pollanswer-###VAR_COUNT###" style="width:0%;background:#ccc;">&nbsp;</div> </div>
+</div>
+<script type="text/javascript"> document.getElementById("pollanswer-###VAR_COUNT###").style.width=parseInt(parseFloat(###VAR_PERCENT###))+"%"; </script>
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### end -->
+
+<script type="text/javascript">
+  if (###VAR_SELECTED### > 0) {
+	document.getElementById("pollanswer-###VAR_SELECTED###").style.backgroundColor='#000099';
+  }
+</script>
+
+<div class="###PREFIX###-question" style="clear:both; padding:10px 0 0 0;">###VOTES###: ###VAR_VOTES###</div>
+###REF_QR_EXPLANATION###
+</div>
+<!-- ###TEMPLATE_POLLRESULT### end -->
+
+
+<p>You can use ###VAR_LINKTAG### too.</p>
+<!-- ###TEMPLATE_ARCHIVE### begin of "poll archive list" since v.2.3.0 -->
+
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### begin -->
+<div class="###PREFIX###-archive-list-entry"><a href="###VAR_LINK###">###VAR_TITLE###</a></div>
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### end -->
+
+<!-- ###TEMPLATE_ARCHIVE### end -->
+
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+<div class="###PREFIX###-explanation">###EXPLANATION###: ###VAR_EXPLANATION###</div>
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+
+Show all questions and correct answers in the email.
+(You can use ###REF_QR_ANSWER_ALL### instead of ###REF_QR_ANSWER_CORR### and you can use ###VAR_QUESTION### and ###VAR_QUESTIONS###)
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### begin of "all questions and answers" since v.0.4.1 -->
+ ###REF_QUESTION_IMAGE_BEGIN###
+ <div>###VAR_QUESTION_TITLE###: ###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_ALL###
+ ###REF_QR_EXPLANATION###
+ ###REF_QUESTION_IMAGE_END###
+ ###REF_DELIMITER###
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### end -->
+
+
+<p>Email to admin (if email.send_admin > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis = 0 !!!<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_ADMIN_EMAIL### begin of "template email for the admin" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###EMAIL_TAKEN### ###QUIZ_NAME###
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_ADMIN_EMAIL### end -->
+
+
+<p>Email to quiz taker (if email.send_user > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis = 0 !!!<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_USER_EMAIL### begin of "template email for the admin" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_USER_EMAIL### end -->
+
+</body>
+</html>

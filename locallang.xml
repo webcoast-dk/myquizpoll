@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for extension 'myquizpoll'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="pi1_title">My quiz and poll</label>
+			<label index="pi1_plus_wiz_description">You can use this extension as quiz or poll</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="pi1_title">Mes quiz et sondages</label>
+			<label index="pi1_plus_wiz_description">Vous pouvez utiliser cette extension comme quiz ou sondage</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="pi1_title">Mein Quiz und Umfrage</label>
+			<label index="pi1_plus_wiz_description">Diese Extension kann als Quiz oder Umfrage benutzt werden</label>
+		</languageKey>
+		<languageKey index="dk" type="array">
+			<label index="pi1_title">Min quiz og meningsmåling</label> 
+			<label index="pi1_plus_wiz_description">Du kan bruge denne udvidelse, som quiz eller poll</label>
+        </languageKey>
+		<languageKey index="no" type="array">
+			<label index="pi1_title">Min quiz og avstemning</label>
+			<label index="pi1_plus_wiz_description">Du kan bruke denne utvidelsen som spørreleken eller målingen</label>
+        </languageKey>
+        <languageKey index="it" type="array">
+			<label index="pi1_title">I miei quiz e sondaggi</label>
+			<label index="pi1_plus_wiz_description">È possibile utilizzare questa estensione, come quiz o sondaggi</label>
+        </languageKey>
+        <languageKey index="es" type="array">
+			<label index="pi1_title">Mi cuestionario y encuesta</label>
+			<label index="pi1_plus_wiz_description">Puede utilizar esta extensión como concurso o encuesta</label>
+        </languageKey>
+        <languageKey index="nl" type="array">
+			<label index="pi1_title">Mijn quiz en poll</label>
+			<label index="pi1_plus_wiz_description">U kunt deze uitbreiding quiz of een poll</label>
+        </languageKey>
+        <languageKey index="cz" type="array">
+			<label index="pi1_title">My kvíz a průzkum</label>
+			<label index="pi1_plus_wiz_description">Můžete použít toto rozšíření jako kvíz nebo poll</label>
+        </languageKey>
+        <languageKey index="pl" type="array">
+			<label index="pi1_title">Mój quiz i ankiety</label>
+			<label index="pi1_plus_wiz_description">Możesz użyć tego rozszerzenia jako test lub ankietę</label>
+        </languageKey>
+        <languageKey index="si" type="array">
+			<label index="pi1_title">Moj kviz in anketa</label>
+			<label index="pi1_plus_wiz_description">Lahko uporabite to podaljšanje kot kviz ali anketo</label>
+        </languageKey>
+        <languageKey index="fi" type="array">
+			<label index="pi1_title">Minun tietokilpailu ja kyselyn</label>
+			<label index="pi1_plus_wiz_description">Voit käyttää tämän laajennuksen, koska tietovisa tai kyselyn</label>
+        </languageKey>
+        <languageKey index="tr" type="array">
+			<label index="pi1_title">Benim sınav ve anket</label>
+			<label index="pi1_plus_wiz_description">Siz quiz ya da anket olarak bu uzatma kullanabilirsiniz</label>
+        </languageKey>
+        <languageKey index="se" type="array">
+			<label index="pi1_title">Min frågesport och omröstning</label>
+			<label index="pi1_plus_wiz_description">Du kan använda denna förlängning som frågesport eller omröstning</label>
+        </languageKey>
+        <languageKey index="pt" type="array">
+			<label index="pi1_title">My quiz e votação</label>
+			<label index="pi1_plus_wiz_description">Você pode usar essa extensão como teste ou enquete</label>
+        </languageKey>
+        <languageKey index="ru" type="array">
+			<label index="pi1_title">Мой тест опрос</label>
+			<label index="pi1_plus_wiz_description">Вы можете использовать это расширение, как викторину или опрос</label>
+        </languageKey>
+        <languageKey index="ro" type="array">
+			<label index="pi1_title">Meu testul şi sondaj</label>
+			<label index="pi1_plus_wiz_description">Puteţi folosi această extensie ca test sau sondaj</label>
+        </languageKey>
+	</data>
+</T3locallang>

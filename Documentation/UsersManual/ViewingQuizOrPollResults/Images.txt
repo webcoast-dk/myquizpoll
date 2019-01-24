@@ -1,0 +1,6 @@
+﻿.. |img-11|     image:: ../../Images/manual_html_m31de08d7.jpg
+.. :align: left
+.. :border: 0
+.. :name: Grafik16
+.. :width: 100%
+

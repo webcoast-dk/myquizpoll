@@ -1,0 +1,307 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+<p>You need jQuery for this example. This example uses the extension t3jquery. The design of this example is from here:
+http://net.tutsplus.com/demos/test_poll/
+http://net.tutsplus.com/tutorials/javascript-ajax/creating-a-dynamic-poll-with-jquery-and-php/
+Test it with this TypoScript:</p>
+<pre>
+plugin.tx_myquizpoll_pi1.isPoll = 1
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_poll_jquery.html
+plugin.tx_myquizpoll_pi1.myVars.answers {
+  input_id = 1
+  input_label = 1
+}
+
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.11 = USER
+page.11.userFunc = tx_t3jquery->addJqJS
+</pre>
+<p>Note: no breaks allowed in the question. Breaks: JavaScript-Errors...<br />
+And use this CSS:</p>
+<pre>
+.graph {
+  width: 600px;
+  position: relative;
+}
+.bar-title {
+  clear:both;
+  position: relative;
+  float: left;
+  width: 150px;
+  line-height: 20px;
+  margin-right: 17px;
+  font-weight: bold;
+  text-align: right;
+}
+.bar-container {
+  position: relative;
+  float: left;
+  width: 250px;
+  height: 20px;
+  margin: 0px 0px 15px;
+}
+
+.bar-container div {
+  background-color:#006B04;
+  height: 20px;
+}
+.bar-container strong {
+  position: absolute;
+  right: -2px;
+  top: 0px;
+  overflow: hidden;
+}
+</pre>
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br/>
+1. Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br/>
+2. Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+3. Reference to TEMPLATE_PAGE_TIME_LIMIT. REF_PAGE_LIMIT will be empty if "pageTimeSeconds = 0".<br/>
+4. Multiple reference to TEMPLATE_QUESTION.<br/>
+5. Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT (dontShowUserData = 0), to TEMPLATE_SUBMIT (dontShowUserData = 1) or to TEMPLATE_NO_SUBMIT (if no rights)<br/>
+6. Dont delete the marker HIDDENFIELDS !!!!!!!<br/>
+7. Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+Optional: ###REF_POLLRESULT_URL### = Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if is quiz or showPollResultLink = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE#### begin of "template for question(s)" since v.0.2.0 -->
+###REF_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+<form action="###FORM_URL###" method="post" name="myquiz">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+<!-- ###TEMPLATE_QUESTION_PAGE#### end -->
+
+<p>Result page:<br/>
+1. Empty or reference to TEMPLATE_CHEATING.<br/>
+2. Reference to TEMPLATE_POLL_SUBMITED (poll) or to TEMPLATE_QUIZ_USER_SUBMITED (quiz; if "dontShowUserData=0" and "dontShowUserResult=0", else empty).<br/>
+3. Multiple reference to TEMPLATE_QRESULT (empty if is poll or "dontShowCorrectAnswers=1").<br/>
+4. Reference to TEMPLATE_RESULT_POINTS or TEMPLATE_RESULT_POINTS_TOTAL (if is quiz and "dontShowPoints=0", else empty)<br/>
+5. Reference to TEMPLATE_NEXT (if "showAnswersSeparate=1" and is quiz, else empty)<br/>
+6. Reference to TEMPLATE_POLLRESULT (if is poll and "dontShowPollResult=0", else empty)<br/>
+Optional: Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if is quiz or showPollResultLink = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_RESULT_PAGE#### begin of "template for result of question(s)" since v.0.2.0 -->
+###REF_RES_ERRORS###
+###REF_INTRODUCTION###
+###REF_QRESULT###
+###REF_QPOINTS###
+###REF_NEXT###
+###REF_POLLRESULT###
+<!-- ###TEMPLATE_RESULT_PAGE#### end -->
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="7">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr />
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+###REF_QR_ANSWER_CORR_ANSW###
+###REF_QR_ANSWER_CORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_ANSW###
+###REF_QR_EXPLANATION###
+###REF_QR_POINTS###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+<!-- ###TEMPLATE_QR_CORR### begin of "an correct answer (answered and not answered)" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1###<b>###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR### end -->
+
+<!-- ###TEMPLATE_QR_CORR_ANSW### begin of "an correct answer which has been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1###<b>+###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### begin of "an correct answer which has not been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### begin of "an not correct answer which has been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1###<b><i>-###VAR_ANSWER_POINTS###</i></b>###P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### begin of "an not correct answer which has not been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_POINTS### begin of "points result for a question" -->
+<div class="###PREFIX###-label">###RES_QUESTION_POINTS###: ###VAR_QUESTION_POINTS### / ###VAR_MAX_QUESTION_POINTS###</div>
+<!-- ###TEMPLATE_QR_POINTS### end -->
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+<div class="###PREFIX###-explanation">###EXPLANATION###: ###VAR_EXPLANATION###</div>
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+
+<!-- ###TEMPLATE_RESULT_POINTS### begin -->
+<p class="###PREFIX###-label">###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS###</p>
+<hr />
+<!-- ###TEMPLATE_RESULT_POINTS### end -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### begin -->
+<p class="###PREFIX###-label">###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)</p>
+<!--p class="###PREFIX###-label">###SO_FAR_REACHED1### ###VAR_OVERALL_PERCENT###% (###VAR_TOTAL_POINTS### / ###VAR_OMAX_POINTS###) ###SO_FAR_REACHED2###</p -->
+<hr />
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br />
+<button type="button" class="btn btn-primary ###PREFIX###-submit" onclick="this.form.submit();">###SUBMIT###</button>
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+<br/>
+<form action="###FORM_URL###" method="post" name="myquiz">
+<button type="button" class="btn btn-primary ###PREFIX###-submit" onclick="this.form.submit();">###GO_ON###</button>
+<input type="hidden" name="###PREFIX###[qtuid]" value="###QTUID###" />
+<input type="hidden" name="###PREFIX###[cmd]" value="next" />
+<input type="hidden" name="no_cache" value="1" />
+</form>
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" since v.0.2.0 -->
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" since v.0.2.0 -->
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+No more questions. You can use here these Markers too: ###RESTART_QUIZ###,
+###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of an quiz: no more questions left" -->
+<p class="###PREFIX###-label">###NO_MORE### <!-- ###CORRECT_ANSWERS###: --></p>
+<!-- ###QUIZ_ANSWERS### begin -->
+ <div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+ <div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_CORR###
+ ###REF_QR_EXPLANATION###
+ ###REF_DELIMITER###
+<!-- ###QUIZ_ANSWERS### end -->
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT_URL### begin -->
+<p class="###PREFIX###-label">###POLLRESULT_URL###</p>
+<!-- ###TEMPLATE_POLLRESULT_URL### end -->
+
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+<p class="###PREFIX###-label">###THANK_YOU### ###QUESTION_NAME### ###VAR_QUESTION_NAME###<br />
+###USER_ANSWER### ###VAR_USER_ANSWER###</p>
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT### begin of "poll result list" -->
+<div id="poll-container">Bitte warten oder JavaScript einschalten...</div>
+ 
+<script type="text/javascript">
+function showEntry(answer,counter,selected,percent) {
+  result = '<dt class="bar-title">'+answer+'</dt><dd class="bar-container"><div id="bar'+counter+'" style="width:0%;';
+  if (counter == selected) result = result + 'background-color:#ff0000;';
+  result = result + '">&nbsp;</div><strong>'+percent+'%</strong></dd>';
+  return result;
+}
+
+jQuery(document).ready(function() {
+ function animateResults(){
+  $("#poll-results div").each(function(){
+      var percentage = $(this).next().text();
+      $(this).css({width:"0%"}).animate({
+        width: percentage}, 'slow');
+  });
+ }
+ $("#poll-container").empty();
+ var results_html = '<div id="poll-results"> <p class="###PREFIX###-question"><span class="###PREFIX###-title">###VAR_QUESTION_TITLE###</span> ###VAR_QUESTION_NAME###</p> <dl class="graph">';
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### begin -->
+  results_html = results_html + showEntry('###VAR_ANSWER###',###VAR_COUNT###,###VAR_SELECTED###,'###VAR_PERCENT###');
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### end -->
+ results_html = results_html + ' </dl></div>';
+ $("#poll-container").append(results_html).fadeIn("slow",function(){ animateResults(); });
+});
+</script>
+
+<div class="###PREFIX###-question" style="clear:both;margin-top:15px;padding-top:15px;">Insgesamt haben bisher ###VAR_VOTES### Leute ihre Stimme abgegeben.</div>
+<!-- ###TEMPLATE_POLLRESULT### end -->
+
+
+<p>You can use ###VAR_LINKTAG### too.</p>
+<!-- ###TEMPLATE_ARCHIVE### begin of "poll archive list" since v.2.3.0 -->
+
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### begin -->
+<div class="###PREFIX###-archive-list-entry"><a href="###VAR_LINK###">###VAR_TITLE###</a></div>
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### end -->
+
+<!-- ###TEMPLATE_ARCHIVE### end -->
+
+</body>
+</html>

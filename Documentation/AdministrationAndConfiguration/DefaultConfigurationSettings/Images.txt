@@ -1,0 +1,6 @@
+﻿.. |img-12|     image:: ../../Images/manual_html_m5bd024a.png
+.. :align: left
+.. :border: 0
+.. :name: Grafik9
+.. :width: 100%
+

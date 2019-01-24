@@ -1,0 +1,9 @@
+page.headerData.1448 = COA
+
+page.headerData.1448.10 = TEXT
+page.headerData.1448.10.value = <link rel="stylesheet" href="{path:EXT:myquizpoll/res/css/jquery.ui.stars.min.css}" type="text/css" />
+page.headerData.1448.10.insertData = 1
+
+page.headerData.1448.30 = TEXT
+page.headerData.1448.30.value = <script type="text/javascript" src="{path:EXT:myquizpoll/res/js/jquery.ui.stars.min.js}"></script>	
+page.headerData.1448.30.insertData = 1

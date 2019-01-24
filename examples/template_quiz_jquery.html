@@ -1,0 +1,255 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+<p>You need jQuery and jQuery-Fancybox for this example. This example uses the extension t3jquery and sk_fancybox.
+Note: this example works only with radio-button-questions (only one answer possible)!
+Test it with this TypoScript:</p>
+<pre>
+plugin.tx_myquizpoll_pi1.isPoll = 0
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_quiz_jquery.html
+plugin.tx_myquizpoll_pi1.myVars.answers {
+  input_id = 1
+  input_label = 1
+}
+plugin.tx_myquizpoll_pi1.userData.askAtQuestion = 0
+# customise this both PIDs!
+plugin.tx_myquizpoll_pi1.resultsPID = 269
+plugin.tx_myquizpoll_pi1.finalPID = 271
+plugin.tx_myquizpoll_pi1.pageQuestions = 1
+plugin.tx_myquizpoll_pi1.answerChoiceMax = 4
+# if you dont always include jQuery:
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.11 = USER
+page.11.userFunc = tx_t3jquery->addJqJS
+</pre>
+
+<h3>Templates for whole sites</h3>
+
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s) and the first page with user data" since v.0.2.0 -->
+<script type="text/javascript">
+var OPT_ID = 0;				// answer no.
+var OPT_TITLE = 1;			// answer text
+var OPT_CORRECT = 2;		// correct flag
+var OPT_POINTS = 3;			// points for this answer
+var OPT_EXPLANATION = 4;	// explanation of the question
+var OPT_QTID = 5;			// quiz taker id, only for array key 0
+var OPT_TOTAL_POINTS = 6;	// total points, only for array key 0
+var OPT_TOTAL_CORRECT = 7;	// all correct answers, only for array key 0
+var OPT_ALL_POINTS = 8;		// all points till now, only for array key 0
+var checkedID;				// checked answer no.
+var qtitle = '';			// question title
+var qname = '';				// question description
+var qtuid = ###QTUID###;	// quiz taker id
+	
+function is_array(input){
+    return typeof(input)=='object'&&(input instanceof Array);
+}
+</script>
+
+###REF_ERRORS###
+<form action="###FORM_URL###" method="get" name="myquiz" id="myquiz" onsubmit="return false;">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+
+<div id="quiz_error" style="color:red; display:none;"><br /><br /><b>Fehler:</b> bitte erst eine Antwort auswählen!!!</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#myquiz").bind("submit", function() {
+		checkedID = $("input[name='tx_myquizpoll_pi1[answer1]']:checked").attr("value");
+		if (typeof checkedID=='undefined') {
+		    $("#quiz_error").show();
+		    $.fancybox.resize();
+		    return false;
+		}
+
+		$("#quiz_error").hide();
+		//$.fancybox.showActivity();
+
+		// Ajaxabfrage stellen
+		$.ajax({
+			url: "index.php",		// Achtung mit RealURL!
+			type: "GET",			// Daten per GET verschicken
+			data: {
+				'eID': "myquiz_eID",	// die erstellte eID
+				'qtid': qtuid,			// quiz taker uid
+				'qid': ###VAR_QID###,	// question uid
+				'pid': ###VAR_RESPID###,
+				'lang': ###VAR_LANG###,
+				'no_negative': ###NO_NEGATIVE###,
+				'remote_ip': ###REMOTE_IP###,
+				'block_ip': '###BLOCK_IP###',
+				'vote': checkedID	// Benutzereingabe
+			},
+			dataType: "json",		// das gibts zurück
+
+			success: function(response) {
+			  if(is_array(response) && response.length > 0) {
+				loadResults(response);
+			  } else {
+				alert('Sorry, da ist was schief gelaufen!');
+			  }
+			},
+
+			error: function(error) {
+				alert("Sorry, hat nicht funktioniert!");
+			}
+		});
+		return false;
+	});
+});
+
+function loadResults(data) {
+  var results_html = '<div id="quiz-results"><h3>'+qtitle+'</h3><p>'+qname+'</p><p>Die Antwort<br /><i>'+data[0][OPT_TITLE]+'</i><br />ist ';
+  if (data[0][OPT_CORRECT]==1) {
+	  results_html = results_html + 'richtig! Die Erklärung dazu:</p><p>';
+	  results_html = results_html + data[0][OPT_EXPLANATION];
+	  results_html = results_html + '</p><br /><form action="###FORM_URL###" method="post" name="myquiz">';
+	  results_html = results_html + '<input type="submit" value="weiter" class="###PREFIX###-submit" />';
+	  results_html = results_html + '<input type="hidden" name="###PREFIX###[qtuid]" value="'+data[0][OPT_QTID]+'" />';
+	  results_html = results_html + '<input type="hidden" name="###PREFIX###[cmd]" value="next" />';
+	  results_html = results_html + "</form>\n";
+  } else {
+	  results_html = results_html + '<b>leider falsch</b>! Versuch es erneut!</p>';
+	  results_html = results_html + '<br /><form action="#" method="post" name="mydummy">';
+	  results_html = results_html + '<input type="button" value="schließen" onclick="$.fancybox.close();" />';
+	  results_html = results_html + "</form>\n";
+	  qtuid = data[0][OPT_QTID];
+	  //document.myquiz.elements['###PREFIX###[qtuid]'].value = data[0][OPT_QTID];
+  }
+  results_html = results_html + "</div>\n";
+  $.fancybox(results_html, {
+	'transitionIn'      : 'elastic',
+	'transitionOut'     : 'elastic',
+	'overlayColor'      : '#FFF',
+	'overlayOpacity'    : 0.7
+  });
+}
+</script>
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+
+
+
+<!-- ###TEMPLATE_RESULT_PAGE#### begin of "template for result of question(s)" since v.0.2.0 -->
+not in use
+<!-- ###TEMPLATE_RESULT_PAGE#### end -->
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+
+<script type="text/javascript">
+  qtitle = '###VAR_QUESTION_TITLE###';
+  qname = '###VAR_QUESTION_NAME###';
+</script>
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="7">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr />
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+
+If user results should be hidden, set hidden = 1. Example: see template_statistics.html.
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+nö
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+nö
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin of "sumbit form (quiz or poll); used if TEMPLATE_QUIZ_USER_TO_SUBMIT is not used" -->
+<br />
+<input type="submit" value="###SUBMIT###" class="###PREFIX###-submit" /> &nbsp;
+<input type="reset" value="###RESET###" class="###PREFIX###-reset" />
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+<br />
+<form action="###FORM_URL###" method="post" name="myquiz">
+<input type="submit" value="###GO_ON###" class="###PREFIX###-submit" />
+<input type="hidden" name="###PREFIX###[qtuid]" value="###QTUID###" />
+<input type="hidden" name="###PREFIX###[cmd]" value="next" />
+<input type="hidden" name="no_cache" value="1" />
+###HIDDENFIELDS###
+</form>
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin of "you must be logged in" -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin of "reload cheatting" -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" since v.0.2.0 -->
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" since v.0.2.0 -->
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+No more questions. You can use here these Markers too: ###RESTART_QUIZ###,
+###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of an quiz: no more questions left" -->
+<p class="###PREFIX###-label">###NO_MORE### <!-- ###CORRECT_ANSWERS###: --></p>
+<!-- ###QUIZ_ANSWERS### begin -->
+ <div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+ <div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_CORR###
+ ###REF_QR_EXPLANATION###
+ ###REF_DELIMITER###
+<!-- ###QUIZ_ANSWERS### end -->
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+</body>
+</html>

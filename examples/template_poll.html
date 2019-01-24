@@ -1,0 +1,289 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+
+<p>This is a cool example template for a poll. You will need the resources "PlotKit - Javascript Chart Plotting" for this template.<br />
+You will find it here: http://www.liquidx.net/plotkit/<br />Download the latest version and copy the files to your fileadmin-folder.<br />
+You need another resource too: MochiKit. Take the current version from here: http://www.mochikit.com/download.html<br />
+Note: the excanvas.js from PlotKit is to old. Take the newest one from here: http://excanvas.sourceforge.net/</p>
+Copy all files to the fileadmin-folder and include them like this:<br />
+<pre>
+plugin.tx_myquizpoll_pi1 {
+  isPoll = 1
+  showPollResultLink = 1
+  useCookiesInDays = 28
+  templateFile = EXT:myquizpoll/examples/template_poll.html
+#  templateFile = fileadmin/template/files/this_poll_template.html
+}
+page.includeJS {
+  mochikit = fileadmin/template/MochiKit/MochiKit.js
+  plotkit = fileadmin/template/PlotKit/PlotKit_Packed.js
+  excanvas = fileadmin/template/JavaScript/excanvas.js
+}
+</pre>
+<p>Set pageQuestions=1 and use categories, if you want to show more questions on following pages!</p>
+
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br />
+1. Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br />
+2. Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br />
+3. Reference to TEMPLATE_PAGE_TIME_LIMIT. REF_PAGE_LIMIT will be empty if "pageTimeSeconds = 0".<br />
+4. Multiple reference to TEMPLATE_QUESTION.<br />
+5. Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT...<br />
+6. Don't delete the marker HIDDENFIELDS !!!!!!!<br />
+7. Reference to TEMPLATE_POLLRESULT_URL.<br />
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s)" since v.0.2.0 -->
+###REF_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+<form action="###FORM_URL###" method="post" name="myquiz">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+###REF_POLLRESULT_URL###
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+<p>Result page:<br />
+1. Empty or reference to TEMPLATE_CHEATING.<br />
+2. Reference to TEMPLATE_POLL_SUBMITED (poll) or to TEMPLATE_QUIZ_USER_SUBMITED (quiz).<br />
+3. Multiple reference to TEMPLATE_QRESULT (empty if is poll or "dontShowCorrectAnswers=1").<br />
+4. Reference to TEMPLATE_RESULT_POINTS or TEMPLATE_RESULT_POINTS_TOTAL (if is quiz and "dontShowPoints=0", else empty)<br />
+5. Reference to TEMPLATE_NEXT (if "showAnswersSeparate=1" and is quiz, else empty)<br />
+6. Reference to TEMPLATE_POLLRESULT (if is poll and "dontShowPollResult=0", else empty)<br />
+Optional: Reference to TEMPLATE_POLLRESULT_URL.<br />
+</p>
+<!-- ###TEMPLATE_RESULT_PAGE### begin of "template for result of question(s)" since v.0.2.0 -->
+###REF_RES_ERRORS###
+###REF_INTRODUCTION###
+###REF_QRESULT###
+###REF_QPOINTS###
+###REF_NEXT###
+###REF_POLLRESULT###
+<!-- ###TEMPLATE_RESULT_PAGE### end -->
+
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="7">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr/>
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+###REF_QR_ANSWER_CORR_ANSW###
+###REF_QR_ANSWER_CORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_ANSW###
+###REF_QR_EXPLANATION###
+###REF_QR_POINTS###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+<!-- ###TEMPLATE_QR_CORR### begin of "an correct answer (answered and not answered)" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1###<b>###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR### end -->
+
+<!-- ###TEMPLATE_QR_CORR_ANSW### begin of "an correct answer which has been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1###<b>+###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### begin of "an correct answer which has not been answered" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER### ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### begin of "an not correct answer which has been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1###<b><i>-###VAR_ANSWER_POINTS###</i></b>###P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### begin of "an not correct answer which has not been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_POINTS### begin of "points result for a question" -->
+<div class="###PREFIX###-label">###RES_QUESTION_POINTS###: ###VAR_QUESTION_POINTS### / ###VAR_MAX_QUESTION_POINTS###</div>
+<!-- ###TEMPLATE_QR_POINTS### end -->
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+<div class="###PREFIX###-explanation">###EXPLANATION###: ###VAR_EXPLANATION###</div>
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+
+<!-- ###TEMPLATE_RESULT_POINTS### begin -->
+
+<!-- ###TEMPLATE_RESULT_POINTS### end -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### begin -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br />
+<input type="submit" value="###SUBMIT###" class="###PREFIX###-submit">
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" since v.0.2.0 -->
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" since v.0.2.0 -->
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of an quiz: no more questions left" -->
+
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+
+
+<!-- ###TEMPLATE_POLLRESULT_URL### begin -->
+<p class="###PREFIX###-label">###POLLRESULT_URL###</p>
+<!-- ###TEMPLATE_POLLRESULT_URL### end -->
+
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+<p class="###PREFIX###-label">###THANK_YOU###</p>
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT### begin of "poll result list" -->
+<div style="text-align:center;">
+<div style="width:680px;height:380px; padding:5px;text-align:center;">
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+<br />
+<script type="text/javascript">
+//<![CDATA[
+//   "IECanvasHTC": "../PlotKit/iecanvas.htc",
+var options = {
+   "colorScheme": PlotKit.Base.palette(PlotKit.Base.baseColors()[0]), 
+   "padding": {left: 30, right: 10, top: 10, bottom: 30},
+   "xTicks": [
+{v:0, label:"###VAR_ANSWER1###"}, 
+{v:1, label:"###VAR_ANSWER2###"}, 
+{v:2, label:"###VAR_ANSWER3###"},
+{v:3, label:"###VAR_ANSWER4###"},
+{v:4, label:"###VAR_ANSWER5###"}
+],
+   "drawYAxis": true,
+   "pieRadius": 0.35
+};
+
+
+function drawBarGraph() {
+   var layout = new PlotKit.Layout("bar", options);
+   layout.addDataset("sqrt", [
+   [0, ###VAR_HITS1###], [1, ###VAR_HITS2###], [2, ###VAR_HITS3###], [3, ###VAR_HITS4###], [4, ###VAR_HITS5###]
+   ]);
+   layout.evaluate();
+   var canvas = MochiKit.DOM.getElement("bargraph");
+   var plotter = new PlotKit.SweetCanvasRenderer(canvas, layout, options);
+   plotter.render();
+}
+MochiKit.DOM.addLoadEvent(drawBarGraph);
+
+function drawPieGraph() {
+   var layout = new PlotKit.Layout("pie", options);
+   layout.addDataset("sqrt", [[0, ###VAR_HITS1###], [1, ###VAR_HITS2###], [2, ###VAR_HITS3###], [3, ###VAR_HITS4###], [4, ###VAR_HITS5###]]);
+   layout.evaluate();
+   var canvas = MochiKit.DOM.getElement("piegraph");
+   var plotter = new PlotKit.SweetCanvasRenderer(canvas, layout, options);
+   plotter.render();
+}
+
+// Damn opera 9 has a bug with javascript subclassing??
+// but works in sweet.html, grr!!
+if (navigator.userAgent.toLowerCase().indexOf("opera") == -1) {
+   MochiKit.DOM.addLoadEvent(drawPieGraph);
+}
+//]]>
+</script>
+<div style="float: left; padding-left: 5px;" width="60" height="300">&nbsp;&nbsp;</div>
+<div style="float: left; padding-left: 5px;" width="300" height="300"><canvas id="bargraph" width="300" height="300"></canvas></div>
+<div style="float: left; padding-left: 5px;" width="300" height="300"><canvas id="piegraph" width="300" height="300"></canvas></div>
+<div class="###PREFIX###-question">Insgesamt haben bisher ###VAR_VOTES### Leute ihre Stimme abgegeben.</div>
+</div>
+</div>
+<!-- ###TEMPLATE_POLLRESULT### end -->
+<p>(((Note: in version 0.9.1 is the file "iecanvas.htc" missing. You will find it here: http://media.liquidx.net/js/plotkit/iecanvas.htc)))</p>
+
+
+<p>You can use ###VAR_LINKTAG### too.</p>
+<!-- ###TEMPLATE_ARCHIVE### begin of "poll archive list" since v.2.3.0 -->
+
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### begin -->
+<div class="###PREFIX###-archive-list-entry"><a href="###VAR_LINK###">###VAR_TITLE###</a></div>
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### end -->
+
+<!-- ###TEMPLATE_ARCHIVE### end -->
+
+</body>
+</html>

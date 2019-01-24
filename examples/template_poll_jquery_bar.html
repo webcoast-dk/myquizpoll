@@ -1,0 +1,252 @@
+<html>
+<head>
+	<title>jQuery Poll example template</title>
+</head>
+<body>
+<h2>jQuery Poll EXAMPLE TEMPLATE</h2>
+<p>You need jQuery for this example. This example uses the extension t3jquery. 
+Furthermore you need jqPlot from here:
+http://www.jqplot.com/tests/rotated-tick-labels.php
+Download it and copy it to your fileadmin-folder.
+Test it with this TypoScript:</p>
+<pre>
+plugin.tx_myquizpoll_pi1 {
+	isPoll = 1
+	useCookiesInDays = 7
+	tableAnswers = tx_myquizpoll_voting
+	templateFile = EXT:myquizpoll/examples/template_poll_jquery_bar.html
+	myVars.separator = |
+	myVars.answers {
+		input_id = 1
+		input_label = 1
+	}
+	# customize this 2 lines:
+	myVars.list.komma = ,|,|,|,|
+	answerChoiceMax = 5
+}
+plugin.tx_myquizpoll_pi1._LOCAL_LANG.de.poll_url = Zum aktuellen Umfrage-Ergebnis
+page.includeCSS {
+  jqplot = fileadmin/template/jqplot/jquery.jqplot.min.css
+}
+page.includeJS {
+  jqplot = fileadmin/template/jqplot/jquery.jqplot.min.js
+  dateaxis = fileadmin/template/jqplot/plugins/jqplot.dateAxisRenderer.min.js
+  canvastext = fileadmin/template/jqplot/plugins/jqplot.canvasTextRenderer.min.js
+  canvasaxis = fileadmin/template/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js
+  cataxis = fileadmin/template/jqplot/plugins/jqplot.categoryAxisRenderer.min.js
+  bar = fileadmin/template/jqplot/plugins/jqplot.barRenderer.min.js
+}
+
+// And if you don´t always include jQuery:
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.11 = USER
+page.11.userFunc = tx_t3jquery->addJqJS
+</pre>
+<p>Note: no breaks allowed in the answers. Breaks: JavaScript-Errors...</p>
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br/>
+1. Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br/>
+2. Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+3. Reference to TEMPLATE_PAGE_TIME_LIMIT. REF_PAGE_LIMIT will be empty if "pageTimeSeconds = 0".<br/>
+4. Multiple reference to TEMPLATE_QUESTION.<br/>
+5. Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT (dontShowUserData = 0), to TEMPLATE_SUBMIT (dontShowUserData = 1) or to TEMPLATE_NO_SUBMIT (if no rights)<br/>
+6. Dont delete the marker HIDDENFIELDS !!!!!!!<br/>
+7. Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+Optional: ###REF_POLLRESULT_URL### = Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if is quiz or showPollResultLink = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE#### begin of "template for question(s)" -->
+###REF_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+<form action="###FORM_URL###" method="post" name="myquiz">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+<!-- ###TEMPLATE_QUESTION_PAGE#### end -->
+
+<p>Result page:<br/>
+1. Empty or reference to TEMPLATE_CHEATING.<br/>
+2. Reference to TEMPLATE_POLL_SUBMITED (poll) or to TEMPLATE_QUIZ_USER_SUBMITED (quiz; if "dontShowUserData=0" and "dontShowUserResult=0", else empty).<br/>
+3. Multiple reference to TEMPLATE_QRESULT (empty if is poll or "dontShowCorrectAnswers=1").<br/>
+4. Reference to TEMPLATE_RESULT_POINTS or TEMPLATE_RESULT_POINTS_TOTAL (if is quiz and "dontShowPoints=0", else empty)<br/>
+5. Reference to TEMPLATE_NEXT (if "showAnswersSeparate=1" and is quiz, else empty)<br/>
+6. Reference to TEMPLATE_POLLRESULT (if is poll and "dontShowPollResult=0", else empty)<br/>
+Optional: Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if is quiz or showPollResultLink = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_RESULT_PAGE#### begin of "template for result of question(s)" -->
+###REF_RES_ERRORS###
+###REF_INTRODUCTION###
+###REF_QRESULT###
+###REF_QPOINTS###
+###REF_NEXT###
+###REF_POLLRESULT###
+<!-- ###TEMPLATE_RESULT_PAGE#### end -->
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="17">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr />
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+<div class="###PREFIX###-title">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+###REF_QR_ANSWER_CORR_ANSW###
+###REF_QR_ANSWER_CORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_ANSW###
+###REF_QR_EXPLANATION###
+###REF_QR_POINTS###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br />
+<button type="button" class="btn btn-primary ###PREFIX###-submit" onclick="this.form.submit();">###SUBMIT###</button>
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+<br/>
+<form action="###FORM_URL###" method="post" name="myquiz">
+<button type="button" class="btn btn-primary ###PREFIX###-submit" onclick="this.form.submit();">###GO_ON###</button>
+<input type="hidden" name="###PREFIX###[qtuid]" value="###QTUID###" />
+<input type="hidden" name="###PREFIX###[cmd]" value="next" />
+<input type="hidden" name="no_cache" value="1" />
+</form>
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin of "double entry check based on IP-address" -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label"><strong>###CHEATING###</strong></p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" since v.0.2.0 -->
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" since v.0.2.0 -->
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+
+<!-- ###TEMPLATE_POLLRESULT_URL### begin -->
+<p class="###PREFIX###-label">###POLLRESULT_URL###</p>
+<!-- ###TEMPLATE_POLLRESULT_URL### end -->
+
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+<p class="###PREFIX###-label">###THANK_YOU### ###QUESTION_NAME### ###VAR_QUESTION_TITLE###<br />
+###USER_ANSWER### ###VAR_USER_ANSWER###</p>
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_POLLRESULT### begin of "poll result list" -->
+<div id="chart1b" style="width:500px;height:400px;">&nbsp;</div>
+ 
+<script type="text/javascript">
+$(document).ready(function(){
+var line1 = [
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### -->['###VAR_ANSWER###', ###VAR_HITS###]###MY_KOMMA### <!-- ###TEMPLATE_POLLRESULT_ENTRY### -->
+];
+var plot1b = $.jqplot('chart1b', [line1], {
+	    title: '###VAR_QUESTION_TITLE###',
+	    series:[{renderer:$.jqplot.BarRenderer}],
+	    axesDefaults: {
+	        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+	        tickOptions: {
+	          fontFamily: 'Georgia',
+	          fontSize: '10pt',
+	          angle: -30
+	        }
+	    },
+	    axes: {
+	      xaxis: {
+	        renderer: $.jqplot.CategoryAxisRenderer
+	      }
+	    }
+});
+});
+</script>
+
+<div class="###PREFIX###-question" style="clear:both;margin-top:10px;padding-top:10px;">
+	Insgesamt haben bisher ###VAR_VOTES### Leute ihre Stimme abgegeben.
+</div>
+<!-- ###TEMPLATE_POLLRESULT### end -->
+
+
+<p>You can use ###VAR_LINKTAG### too.</p>
+<!-- ###TEMPLATE_ARCHIVE### begin of "poll archive list" -->
+<p>Alte Umfragen:</p>
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### begin -->
+<div class="###PREFIX###-archive-list-entry"><a href="###VAR_LINK###">###VAR_TITLE###</a></div>
+<!-- ###TEMPLATE_ARCHIVE_ENTRY### end -->
+<!-- ###TEMPLATE_ARCHIVE### end -->
+
+
+<p>Email to admin (if email.send_admin > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED
+</p>
+<!-- ###TEMPLATE_ADMIN_EMAIL### begin of "template email for the admin" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###EMAIL_TAKEN### ###QUIZ_NAME###
+###REF_INTRODUCTION###
+</body></html>
+<!-- ###TEMPLATE_ADMIN_EMAIL### end -->
+
+<p>Email to quiz taker (if email.send_user > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED
+</p>
+<!-- ###TEMPLATE_USER_EMAIL### begin of "template email for the quiz taker" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###REF_INTRODUCTION###
+</body></html>
+<!-- ###TEMPLATE_USER_EMAIL### end -->
+
+</body>
+</html>

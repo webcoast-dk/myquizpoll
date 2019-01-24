@@ -1,0 +1,109 @@
+# Example of default set CSS styles (these go into the document header):
+plugin.tx_myquizpoll_pi1._CSS_DEFAULT_STYLE (
+  .tx_myquizpoll_pi1-title {
+	font-size: 110%;
+	font-weight: bold;
+  }
+  .tx_myquizpoll_pi1-title-hide { display:none; }
+  .tx_myquizpoll_pi1-question { }
+  .tx_myquizpoll_pi1-question { }
+  .tx_myquizpoll_pi1-answer,
+  .tx_myquizpoll_pi1-answer select  { }
+  .tx_myquizpoll_pi1-yesno,
+  .tx_myquizpoll_pi1-yes,
+  .tx_myquizpoll_pi1-no { }
+  .tx_myquizpoll_pi1-explanation {
+	font-style: italic;
+  }
+  .tx_myquizpoll_pi1-false {
+	text-decoration: line-through;
+	color: #777777;
+  }
+  .tx_myquizpoll_pi1-user { clear:both; float:left; width:360px; }
+  .tx_myquizpoll_pi1-user div {
+	float:left;
+	width:auto;
+	min-width:125px;
+	padding-bottom:4px;
+  }
+  .tx_myquizpoll_pi1-buttons {
+	float:left;
+	width:auto;
+  }
+  .tx_myquizpoll_pi1-label { }
+  .tx_myquizpoll_pi1-user .tx_myquizpoll_pi1-label { clear:both; }
+  .tx_myquizpoll_pi1-field {
+	border: 1px solid #B5B5B5;
+	background: #DBE2FF;
+  }
+  .tx_myquizpoll_pi1-field:focus {
+	border: 1px solid #555;
+	background: #DBE2FF;
+  }
+  .tx_myquizpoll_pi1-submit {
+	margin-bottom:4px;
+  }
+  .tx_myquizpoll_pi1-reset {
+	margin-bottom:4px;
+  }
+  .tx_myquizpoll_pi1-back {
+	margin-bottom:4px;
+  }
+  .tx_myquizpoll_pi1-table { }
+  .tx_myquizpoll_pi1-tr { }
+  .tx_myquizpoll_pi1-tr-act {
+	background: #ffffff;
+  }
+  .tx_myquizpoll_pi1-tr-even {
+	background: #DFB375;
+  }
+  .tx_myquizpoll_pi1-tr-odd {
+	background: #DBBFA9;
+  }
+  .tx_myquizpoll_pi1-caption {
+	border:thin dotted black;
+	background: #dc9d8c;
+	font-size: 110%;
+	font-weight: bold;
+	padding: 5px;
+  } 
+  .tx_myquizpoll_pi1-th {
+	background: #dc9d8c;
+	padding: 5px;
+  }  
+  .tx_myquizpoll_pi1-td {
+	padding: 5px;
+  } 
+  .tx_myquizpoll_pi1-left {
+	float: left;
+  } 
+  .tx_myquizpoll_pi1-right {
+	float: right;
+  } 
+  #tx_myquizpoll_pi1-joker {
+	display: none;
+  }
+  .tx_myquizpoll_pi1-details {
+  	font-size: 92%;
+  }
+  .tx_myquizpoll_pi1-details_hidden {
+  	display: none;
+  	border: 1px dotted #333;
+  	padding: 4px;
+  	margin: 4px;
+  }
+  .tx_myquizpoll_pi1-details_item-odd,
+  .tx_myquizpoll_pi1-details_item-even {
+	font-size: 92%;
+	padding: 3px;
+  }
+  .tx_myquizpoll_pi1-details_item-odd {
+  	color: #444;
+  	background: #fff;
+  }
+  .tx_myquizpoll_pi1-details_item-even {
+  	color: #000;
+  	background: #eee;
+  }
+  .tx_myquizpoll_pi1-clearer { clear:both; }
+)

@@ -1,0 +1,57 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+<p>A groupBy highscore list. Test it with this TypoScript:
+<pre>
+plugin.tx_myquizpoll_pi1 {
+  templateFile = EXT:myquizpoll/examples/template_highscore.html
+  listPID = 111
+}
+plugin.tx_myquizpoll_pi1.highscore {
+  entries = 20
+  sortBy = o_percent
+  groupBy = name
+}
+</pre>
+111 is the uid of the page with with user details highscore
+</p>
+
+
+<!-- ###TEMPLATE_HIGHSCORE### begin of "highscore list" -->
+<table class="###PREFIX###-table">
+###REF_HIGHSCORE_CAPTION###
+<tr class="###PREFIX###-tr">
+<th class="###PREFIX###-th">###NUMBER###</th>
+<th class="###PREFIX###-th">###POINTS###</th>
+<th class="###PREFIX###-th">###PERCENT###</th>
+<th class="###PREFIX###-th">Anzahl gelöster Quize</th>
+<th class="###PREFIX###-th">###NAME###</th>
+</tr>
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### begin -->
+<tr class="###PREFIX###-tr###MY_EVEN_ODD###">
+<td class="###PREFIX###-td align-right">###VAR_COUNT###</td>
+<td class="###PREFIX###-td align-right">###VAR_POINTS###</td>
+<td class="###PREFIX###-td align-right">###VAR_O_PERCENT###</td>
+<td class="###PREFIX###-td">###VAR_NUM_QUIZ###</td>
+<td class="###PREFIX###-td">###REF_HIGHSCORE_QUIZ_TAKER###</td>
+</tr>
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### end -->
+</table>
+<!-- ###TEMPLATE_HIGHSCORE### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### begin (optional)  -->
+<caption class="###PREFIX###-caption">###HIGHSCORE_CAPTION### ###VAR_HIGHSCORE_LIMIT###</caption>
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### end -->
+
+
+Allowed Markers here: ###VAR_NAME###, ###VAR_EMAIL###, ###VAR_HOMEPAGE###, ###VAR_TO_HOMEPAGE###, ###VAR_NAME_AND_EMAIL###
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### begin -->
+<a href="###LINK_DETAIL###"><img src="/typo3conf/ext/myquizpoll/mod1/icon-show1.jpg" alt="Details" title="Details" /></a> ###VAR_NAME###
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### end -->
+
+</body>
+</html>

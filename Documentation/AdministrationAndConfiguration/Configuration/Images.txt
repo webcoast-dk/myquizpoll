@@ -1,0 +1,12 @@
+﻿.. |img-13|     image:: ../../Images/manual_html_m2d763192.gif
+.. :align: left
+.. :border: 0
+.. :name: Grafik10
+.. :width: 100%
+
+.. |img-14|     image:: ../../Images/manual_html_6c973ffe.gif
+.. :align: left
+.. :border: 0
+.. :name: Grafik11
+.. :width: 100%
+

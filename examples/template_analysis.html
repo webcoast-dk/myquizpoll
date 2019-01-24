@@ -1,0 +1,547 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+
+<p>Test it with this TypoScript (replace 115 with another UID):</p>
+<pre>
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_analysis.html
+plugin.tx_myquizpoll_pi1.finishedMinPercent = 50:115
+plugin.tx_myquizpoll_pi1.showAnalysis = 49.9,100:115
+plugin.tx_myquizpoll_pi1.pageQuestions = 4
+plugin.tx_myquizpoll_pi1.sortBy = random
+plugin.tx_myquizpoll_pi1.userData.askAtQuestion = 1
+plugin.tx_myquizpoll_pi1.dontShowHighscoreLink = 1
+plugin.tx_myquizpoll_pi1.showAnswersSeparate = 1
+plugin.tx_myquizpoll_pi1.noNegativePoints = 1
+plugin.tx_myquizpoll_pi1.myVars.questions.eo_align = tx_myquizpoll_pi1-right,tx_myquizpoll_pi1-left
+plugin.tx_myquizpoll_pi1.myVars.questions.eo_border = inset,outset
+plugin.tx_myquizpoll_pi1.myVars.answers.eo_color = #eee,#ddd,#ccc,#bbb,#aaa
+plugin.tx_myquizpoll_pi1.myVars.list.even_odd = -odd,-even
+plugin.tx_myquizpoll_pi1.myVars.list.list_face = Comic Sans MS,Edda,Enviro
+plugin.tx_myquizpoll_pi1.pageTimeSeconds = 60
+plugin.tx_myquizpoll_pi1.quizTimeMinutes = 5
+plugin.tx_myquizpoll_pi1.sortHighscoreBy = time
+plugin.tx_myquizpoll_pi1._CSS_DEFAULT_STYLE (
+  .tx_myquizpoll_pi1-title {
+	font-size: 12pt;
+	font-weight: bold;
+	color: #757575;
+	font-family: helvetica,arial,sans-serif;
+  }
+  .tx_myquizpoll_pi1-question {
+	font-size: 11pt;
+	font-weight: normal;
+	color: #757575;
+	font-family: helvetica,arial,sans-serif;
+  }
+  .tx_myquizpoll_pi1-answer,
+  .tx_myquizpoll_pi1-answer select  {
+	font-size: 10pt;
+	font-weight: normal;
+	color: #757575;
+	font-family: helvetica,arial,sans-serif;
+  }
+  .tx_myquizpoll_pi1-explanation {
+	font-size: 11pt;
+	font-weight: normal;
+	font-style: italic;
+	color: #757575;
+	font-family: helvetica,arial,sans-serif;
+  }
+  .tx_myquizpoll_pi1-false {
+	text-decoration: line-through;
+	color: #777777;
+  }
+  .tx_myquizpoll_pi1-label {
+	font-size: 11pt;
+	font-weight: normal;
+	color: #757575;
+	font-family: helvetica,arial,sans-serif;
+  }
+  .tx_myquizpoll_pi1-field {
+	font-size: 11pt;
+	border: 1px solid #B5B5B5;
+	background: #DBE2FF;
+  }
+  .tx_myquizpoll_pi1-field:focus {
+	font-size: 11pt;
+	border: 1px solid #757575;
+	background: #DBE2FF;
+  }
+  .tx_myquizpoll_pi1-submit {
+	font-size: 11pt;
+	background: #eeeea0;
+	border: 1px solid #757575;
+  }
+  .tx_myquizpoll_pi1-reset {
+	font-size: 11pt;
+	background: #cd9f9f;
+	border: 1px solid #757575;
+  }
+  .tx_myquizpoll_pi1-table {
+  }
+  .tx_myquizpoll_pi1-tr {
+  }
+  .tx_myquizpoll_pi1-tr-act {
+	background: #ffffff;
+  }
+  .tx_myquizpoll_pi1-tr-even {
+	background: #ddd;
+  }
+  .tx_myquizpoll_pi1-tr-odd {
+	background: #aaa;
+  }
+  .tx_myquizpoll_pi1-caption {
+	border:thin dotted black;
+	background: #888;
+	font-size: 12pt;
+	font-weight: bold;
+	padding: 5px;
+  } 
+  .tx_myquizpoll_pi1-th {
+	background: #eee;
+	padding: 5px;
+  }  
+  .tx_myquizpoll_pi1-td {
+	padding: 5px;
+  } 
+  .tx_myquizpoll_pi1-left {
+	float: left;
+  } 
+  .tx_myquizpoll_pi1-right {
+	float: right;
+  } 
+)
+</pre>
+<p>And if you want that it is only one time useable:<br/>
+plugin.tx_myquizpoll_pi1.useCookiesInDays = 10
+</p>
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br/>
+Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br/>
+Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+Reference to TEMPLATE_PAGE_TIME_LIMIT. REF_PAGE_LIMIT will be empty if "pageTimeSeconds = 0".<br/>
+Multiple reference to TEMPLATE_QUESTION.<br/>
+Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT...<br/>
+Dont delete the marker HIDDENFIELDS !!!!!!!<br/>
+Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+Optional: ###REF_POLLRESULT_URL### = Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if isPoll = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s)" since v.0.1.8 -->
+###REF_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+<form action="###FORM_URL###" method="post" name="myquiz">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+<script type="text/javascript">
+//<![CDATA[
+ function quizcheck0(quizform,nr,max){
+  for (i = 1; i <= max; i++){
+	feld = 'tx_myquizpoll_pi1[answer'+nr+'_'+i+']';
+    if(quizform.elements[feld].checked){
+      return true;
+      break;
+    }
+  }
+  return false;
+ }
+ function quizcheck1(quizform,nr,max){
+  feld = 'tx_myquizpoll_pi1[answer'+nr+']';
+  for (i = 0; i < quizform.elements[feld].length; i++){
+    if (quizform.elements[feld][i].checked){
+      return true;
+      break;
+    }
+  }
+  return false;
+ }
+ function quizcheck3(quizform,nr){
+  feld = 'tx_myquizpoll_pi1[answer'+nr+']';
+  if (quizform.elements[feld].value.length>0){
+    return true;
+  }
+  return false;
+ }
+ function quizcheck4(quizform,nr,max){
+  result = true;
+  for (i = 1; i <= max; i++){
+   feld = 'tx_myquizpoll_pi1[answer'+nr+'_'+i+']';
+   ergebnis = false;
+   for (j = 0; j <= 1; j++){
+    if (quizform.elements[feld][j].checked){
+      ergebnis = true;
+    }
+   }
+   if (ergebnis == false) result = false;
+  }
+  return result;
+ }
+ function quizerror(no) {
+	window.alert('###QUESTION### '+no+': ###MISSING_ANSWER###');
+	return false;
+ }
+ 
+ function quizback(quizform) {
+  feld = 'tx_myquizpoll_pi1[back]';
+  var back = parseInt(quizform.elements[feld].value);
+  quizform.elements[feld].value = back + 1;
+  feld = 'tx_myquizpoll_pi1[back-hit]';
+  quizform.elements[feld].value = 1;
+  quizform.submit();
+  return true;
+ }
+ function quizsumbit(quizform) {
+  ###SUBMIT_JSC###
+  quizform.submit();
+  return true;
+ }
+//]]>
+</script>
+</form>
+###REF_HIGHSCORE_URL###
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+<p>Result page:<br/>
+Empty or reference to TEMPLATE_CHEATING.<br/>
+Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+Reference to TEMPLATE_POLL_SUBMITED (poll) or to TEMPLATE_QUIZ_USER_SUBMITED (quiz).<br/>
+Multiple reference to TEMPLATE_QRESULT (empty if is poll or "dontShowCorrectAnswers=1").<br/>
+Reference to TEMPLATE_RESULT_POINTS or TEMPLATE_RESULT_POINTS_TOTAL (if is quiz and "dontShowPoints=0", else empty)<br/>
+Reference to TEMPLATE_NEXT (if "showAnswersSeparate=1" and is quiz, else empty)<br/>
+Optional: ###REF_HIGHSCORE_URL### = Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+Optional: ###REF_POLLRESULT_URL### = Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if isPoll = 0 !!!<br/>
+Optional: ###REF_POLLRESULT###.
+</p>
+<!-- ###TEMPLATE_RESULT_PAGE### begin of "template for result of question(s)" since v.0.1.8 -->
+###REF_RES_ERRORS###
+###REF_QUIZ_LIMIT###
+<hr style="color:#006B04;background-color:#006B04;height:3px;border:1px solid #000;clear:both;" />
+###REF_INTRODUCTION###
+###REF_QRESULT###
+###REF_QPOINTS###
+###REF_NEXT###
+<!-- ###TEMPLATE_RESULT_PAGE### end -->
+
+<p>Last/final page:<br/>
+Reference to TEMPLATE_NO_MORE. REF_NO_MORE will be empty if pageQuestions = 0 !!!<br/>
+Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis = 0 !!!<br/>
+Reference to TEMPLATE_HIGHSCORE. REF_HIGHSCORE will be empty if showHighscore = 0 !!!<br/>
+Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if dontShowHighscoreLink = 1 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### begin of "template for the last/final page of a quiz" since v.0.1.7 -->
+###REF_NO_MORE###
+###REF_QUIZ_ANALYSIS###
+###REF_HIGHSCORE###
+###REF_HIGHSCORE_URL###
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### end -->
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+<div class="###MY_EO_ALIGN###">
+<div style="width:575px;border-style:###MY_EO_BORDER###;">
+###REF_QUESTION_IMAGE_BEGIN###
+<div><b>###VAR_QUESTION_TITLE###:</b> ###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div style="background-color:###MY_EO_COLOR###;">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+</div>
+</div>
+<br style="clear:both;" />
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table width="100%"><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="7">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr style="color:#006B04;background-color:#006B04;height:3px;border:1px solid #000;" />
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+<div class="###MY_EO_ALIGN###">
+<div style="width:575px;border-style:###MY_EO_BORDER###;">
+<div><b>###VAR_QUESTION_TITLE###:</b> ###VAR_QUESTION_NAME###</div>
+###REF_QR_ANSWER_CORR_ANSW###
+###REF_QR_ANSWER_CORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_ANSW###
+###REF_QR_EXPLANATION###
+###REF_QR_POINTS###
+</div>
+</div>
+<br style="clear:both;" />
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+<!-- ###TEMPLATE_QR_CORR### begin of "an correct answer (answered and not answered)" -->
+<div style="background-color:###MY_EO_COLOR###;">###VAR_QUESTION_ANSWER### ###P1###<b>###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR### end -->
+
+<!-- ###TEMPLATE_QR_CORR_ANSW### begin of "an correct answer which has been answered" -->
+<div style="background-color:###MY_EO_COLOR###;">###VAR_QUESTION_ANSWER### ###P1###<b>+###VAR_ANSWER_POINTS###</b>###P2###</div>
+<!-- ###TEMPLATE_QR_CORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### begin of "an correct answer which has not been answered" -->
+<div style="background-color:###MY_EO_COLOR###;">###VAR_QUESTION_ANSWER### ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### begin of "an not correct answer which has been answered" -->
+<div style="background-color:###MY_EO_COLOR###;"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1###<b><i>-###VAR_ANSWER_POINTS###</i></b>###P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### begin of "an not correct answer which has not been answered" -->
+<div style="background-color:###MY_EO_COLOR###;"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_POINTS### begin of "points result for a question" -->
+<div>###RES_QUESTION_POINTS###: ###VAR_QUESTION_POINTS### / ###VAR_MAX_QUESTION_POINTS###</div>
+<!-- ###TEMPLATE_QR_POINTS### end -->
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+<div>###EXPLANATION###: ###VAR_EXPLANATION###</div>
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+
+<!-- ###TEMPLATE_RESULT_POINTS### begin -->
+<p>###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS###</p>
+<hr style="color:#006B04;background-color:#006B04;height:3px;border:1px solid #000;clear:both;" />
+<!-- ###TEMPLATE_RESULT_POINTS### end -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### begin -->
+<p>###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)<br/>
+###SO_FAR_REACHED1### ###VAR_OVERALL_PERCENT###% (###VAR_TOTAL_POINTS### / ###VAR_OMAX_POINTS###) ###SO_FAR_REACHED2###</p>
+<hr style="color:#006B04;background-color:#006B04;height:3px;border:1px solid #000;clear:both;" />
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+  <br />
+  <div class="###PREFIX###-user">
+	<div class="###PREFIX###-label">###NAME###:</div>
+	<div><input type="text" name="###PREFIX###[name]" value="###DEFAULT_NAME###" class="###PREFIX###-field" /></div>
+	<div class="###PREFIX###-label">###EMAIL###:</div>
+	<div><input type="text" name="###PREFIX###[email]" value="###DEFAULT_EMAIL###" class="###PREFIX###-field" /></div>
+	<div class="###PREFIX###-label">###HOMEPAGE###:</div>
+	<div><input type="text" name="###PREFIX###[homepage]" value="###DEFAULT_HOMEPAGE###" class="###PREFIX###-field" /></div>
+  <!-- ###CAPTCHA_INSERT### this subpart is removed if CAPTCHA is not enabled! -->
+	<div class="###PREFIX###-label">###SR_FREECAP_NOTICE###<br />
+		###SR_FREECAP_CANT_READ###</div>
+	<div><input type="text" id="###PREFIX###_captcha_response" name="###PREFIX###[captcha_response]" title="###SR_FREECAP_NOTICE###" value="" class="###PREFIX###-field" /><br />
+		###SR_FREECAP_IMAGE###
+		###SR_FREECAP_ACCESSIBLE###</div>
+  <!-- ###CAPTCHA_INSERT### -->
+  </div>
+  <div class="###PREFIX###-buttons">
+	<input type="button" name="###PREFIX###-next" value="###GO_ON###" class="###PREFIX###-submit" onclick="quizsumbit(this.form);" /><br />
+	<input type="reset" name="###PREFIX###-reset" value="###RESET###" class="###PREFIX###-reset" /></br />
+	<input type="button" name="###PREFIX###[back-button]" value="###GO_BACK###" class="tx_myquizpoll_pi1-back" ###BACK_STYLE### onclick="quizback(this.form);" />
+  </div>
+  <div class="###PREFIX###-clearer"> <!-- clear both --> </div>
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+<p class="###PREFIX###-label">###RESULT_FOR###:<br />
+		###NAME###: ###REAL_NAME###<br />
+		###EMAIL###: ###REAL_EMAIL###<br />
+		###HOMEPAGE###: ###REAL_HOMEPAGE###</p>
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br/>
+<input type="submit" value="###SUBMIT###" class="###PREFIX###-submit">
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+<br/>
+<form action="###FORM_URL###" method="post" name="myquiz">
+<input type="submit" value="###GO_ON###" class="###PREFIX###-submit">
+<input type="hidden" name="###PREFIX###[qtuid]" value="###QTUID###">
+<input type="hidden" name="###PREFIX###[cmd]" value="next">
+<input type="hidden" name="no_cache" value="1">
+</form>
+<!-- ###TEMPLATE_NEXT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label">###CHEATING###</p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### begin of "time limitation of the wohle quiz" -->
+<script type="text/javascript">
+  var leftSecs1 = ###VAR_SECS###;
+  function absenden1() {
+	document.myquiz.submit();
+	return;
+  }
+  function checkTime1() {
+	leftSecs1 -= 1;
+	if (leftSecs1 <= 10) {
+		document.getElementById('minutes').innerHTML = '<b>'+leftSecs1+'</b> Sekunde(n)';
+	} else if (leftSecs1 <= 60) {
+		document.getElementById('minutes').innerHTML = leftSecs1+' Sekunden';
+	} else {
+		document.getElementById('minutes').innerHTML = Math.round(leftSecs1/60)+' Minute(n)';
+    }	
+	if (leftSecs1 <= 0) {
+//		document.myquiz.elements["tx_myquizpoll_pi1[cancel]"].value=1;
+		alert("Die Zeit ist abgelaufen! Das Quiz wird nun beendet!");
+		absenden1();
+	} else {
+		setTimeout("checkTime1()", 1000);
+	}
+	return;
+  }
+  setTimeout("checkTime1()", 1000);
+</script>
+Du hast noch <span id="minutes">###VAR_MIN###</span> Zeit, um das Quiz zu beenden. Danach wird es beendet.<br/>
+<!-- ###TEMPLATE_QUIZ_TIME_LIMIT### end -->
+
+
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### begin of "time limitation of one quiz page" -->
+<script type="text/javascript">
+  var startTime = new Date();
+  var startTimeSec = Math.round(startTime.getTime()/1000);
+  function absenden2() {
+	document.myquiz.submit();
+	return;
+  }
+  function checkTime2() {
+    var currentTime = new Date();
+	leftSecs2 = ###VAR_SECS### + startTimeSec - Math.round(currentTime.getTime()/1000);
+	if (leftSecs2 <= 10) {
+		document.getElementById('quiz_seconds').innerHTML = '<span style="font-weight:bold;color:red;">'+leftSecs2+'</span>';
+	} else {
+		document.getElementById('quiz_seconds').innerHTML = leftSecs2;
+	}
+	if (leftSecs2 <= 0) {
+		alert("###TIME_UP2###");
+		absenden2();
+	} else {
+		setTimeout("checkTime2()", 1000);
+	}
+	return;
+  }
+  setTimeout("checkTime2()", 1000);
+</script>
+Du hast noch <span id="quiz_seconds">###VAR_SECS###</span> Sekunden Zeit, um dieses Formular abzuschicken!<br />
+Sobald du 50% der maximal erreichbaren Punkte hast, gehts bei einem schwierigen Quiz weiter...<br />
+<hr style="color:#006B04;background-color:#006B04;height:3px;border:1px solid #000;" />
+<!-- ###TEMPLATE_PAGE_TIME_LIMIT### end -->
+
+
+No more questions. You can use here these Markers too: ###RESTART_QUIZ###,
+###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of an quiz: no more questions left" -->
+<p>###NO_MORE###</p>
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+
+You can use this Templates if you set "showAnalysis = 49.9,100". You can choose other percent values (than you have to rename the templates).
+If you want to make a redirect to another page write "showAnalysis = 0:1,33.34:2,66.67:3,100:4". 1,2,3 and 4 are UIDs of target pages.
+<!-- ###TEMPLATE_QUIZ_ANALYSIS_49.9### begin of "analyis -100% to 49.9%" since v.0.1.7 -->
+<p>###REACHED1### ###VAR_PERCENT###% (###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###) ###REACHED2###</p>
+<p>Damit hast du dich leider nicht für das Folge-Quiz qualifiziert. Dumm gelaufen...</p>
+<!-- ###TEMPLATE_QUIZ_ANALYSIS_49.9### end -->
+
+<!-- ###TEMPLATE_QUIZ_ANALYSIS_100### begin of "analyis 50% to 100%" since v.0.1.7 -->
+<p class="###PREFIX###-label">###REACHED1### ###VAR_PERCENT###% (###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###) ###REACHED2###</p>
+<p class="###PREFIX###-label">Hey, das ist ja ein super Ergebnis! Hier gehts weiter...</p>
+<!-- ###TEMPLATE_QUIZ_ANALYSIS_100### end -->
+
+
+You can use this template if you set "finishedMinPercent = 60" (60 is a percent value). If you want to make a redirect to another page set "finishedMinPercent = 60:1". 1 is the UID of the target page!
+<!-- ###TEMPLATE_QUIZ_FINISHEDMINPERCENT### begin of "positive canceling: template after reaching a min. percantage value" since v.0.1.7 -->
+<p class="###PREFIX###-label">###SO_FAR_REACHED1### ###VAR_PERCENT###% (###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###) ###SO_FAR_REACHED2###</p>
+<p class="###PREFIX###-label">###REACHED1### ###VAR_OVERALL_PERCENT###% (###VAR_TOTAL_POINTS### / ###VAR_OMAX_POINTS###) ###REACHED2###</p>
+<p class="###PREFIX###-label">Das reicht. Wie wärs nun hiermit: ...</p>
+<!-- ###TEMPLATE_QUIZ_FINISHEDMINPERCENT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_END### begin of "negative canceling: quiz taker has no more rights" since 0.1.8 -->
+<p>###QUIZ_END###</p>
+<!-- ###TEMPLATE_QUIZ_END### end -->
+
+
+Highscore-list. You can use this markers too: VAR_PERCENT, VAR_MAX, VAR_O_MAX
+<!-- ###TEMPLATE_HIGHSCORE### begin of "highscore list" -->
+<table class="###PREFIX###-table">
+###REF_HIGHSCORE_CAPTION###
+<tr class="###PREFIX###-tr">
+<th class="###PREFIX###-th">###NUMBER###</th>
+<th class="###PREFIX###-th">###POINTS###</th>
+<th class="###PREFIX###-th">###PERCENT###</th>
+<th class="###PREFIX###-th">###TIME###</th>
+<th class="###PREFIX###-th">###NAME###</th>
+<th class="###PREFIX###-th">###DATE###</th>
+</tr>
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### begin -->
+<tr class="###PREFIX###-tr###MY_EVEN_ODD###">
+<td class="###PREFIX###-td align-right">###VAR_COUNT###</td>
+<td class="###PREFIX###-td align-right">###VAR_POINTS###</td>
+<td class="###PREFIX###-td align-right">###VAR_O_PERCENT###</td>
+<td class="###PREFIX###-td align-right">###VAR_TIME###</td>
+<td class="###PREFIX###-td" style="font-family:###MY_LIST_FACE###;">###REF_HIGHSCORE_QUIZ_TAKER###</td>
+<td class="###PREFIX###-td">###VAR_DATE###</td>
+</tr>
+<!-- ###TEMPLATE_HIGHSCORE_ENTRY### end -->
+</table>
+<!-- ###TEMPLATE_HIGHSCORE### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### begin (optional)  -->
+<caption class="###PREFIX###-caption">###HIGHSCORE_CAPTION### ###VAR_HIGHSCORE_LIMIT###</caption>
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### end -->
+
+
+Allowed Markers here: ###VAR_NAME###, ###VAR_EMAIL###, ###VAR_HOMEPAGE###, ###VAR_TO_HOMEPAGE###, ###VAR_NAME_AND_EMAIL###
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### begin -->
+###VAR_NAME_AND_EMAIL###
+###VAR_TO_HOMEPAGE###
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_URL### begin -->
+<p class="###PREFIX###-label">###HIGHSCORE_URL###</p>
+<!-- ###TEMPLATE_HIGHSCORE_URL### end -->
+
+
+</body>
+</html>

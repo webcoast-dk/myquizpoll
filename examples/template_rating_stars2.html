@@ -1,0 +1,201 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>Rating EXAMPLE TEMPLATE</h2>
+<p>You need jQuery + jQuery.ui for this example. This example uses the extension t3jquery. The jQuery code and design of this example is from here:
+http://archive.plugins.jquery.com/project/Star_Rating_widget
+You can include it with the static template "My quiz and poll: star rating (rating)".
+Or copy it to your fileadmin folder and include it like this:
+<pre>
+page.includeCSS.file5 = fileadmin/template/ui-stars/jquery.ui.stars.min.css
+page.headerData.5 = TEXT
+page.headerData.5.value = <script type="text/javascript" src="fileadmin/template/ui-stars/jquery.ui.stars.min.js"></script>
+</pre>
+<p>Test it with this TypoScript:</p>
+<pre>
+plugin.tx_myquizpoll_pi1 {
+	CMD = list
+	isPoll = 1
+	tableAnswers = tx_myquizpoll_voting
+	templateFile = EXT:myquizpoll/examples/template_rating_stars2.html
+}
+plugin.tx_myquizpoll_pi1.myVars.answers {
+  input_id = 1
+  input_label = 1
+  select = id="stars-rate"
+}
+plugin.tx_myquizpoll_pi1.rating {
+	extKey = tx_ttnews
+	parameter = tt_news
+}
+</pre>
+Or with:
+<pre>
+plugin.tx_myquizpoll_pi1.rating {
+	extKey =
+	parameter = id
+}
+</pre>
+Or with:
+<pre>
+plugin.tx_myquizpoll_pi1.rating {
+	extKey =
+	parameter =
+}
+</pre>
+If you don't include jQery always:
+<pre>
+includeLibs.t3jquery = EXT:t3jquery/class.tx_t3jquery.php
+page.11 = USER
+page.11.userFunc = tx_t3jquery->addJqJS
+</pre>
+<p>Now create one question of the type "select-box" with 5 answers (first=one star; last=5 stars).<br />
+Note: no breaks and " or ' allowed in the answers => JavaScript-Errors...</p>
+
+
+
+
+<!-- ###TEMPLATE_POLLRESULT### begin of "poll result list" -->
+<script type="text/javascript">
+// Global variable definitions. DB column numbers
+var OPT_ID = 0;
+var OPT_TITLE = 1;
+var OPT_VOTES = 2;
+var total_votes = ###VAR_VOTES###;
+var total_sum = 0;
+var avg = 0;
+var nArray = new Array(###VAR_ANSWERS### + 1);
+
+function CookieSchreiben(n,w,e){
+ var a = new Date();
+ a = new Date(a.getTime() +e);
+ document.cookie = n+'='+w+'; expires='+a.toGMTString()+';';
+}
+
+function CookieLesen(n){
+ a = document.cookie;
+ res = '';
+ while(a != '') {
+  while(a.substr(0,1) == ' '){a = a.substr(1,a.length);}
+  cookiename = a.substring(0,a.indexOf('='));
+  if(a.indexOf(';') != -1)
+  {cookiewert = a.substring(a.indexOf('=')+1,a.indexOf(';'));}
+  else{cookiewert = a.substr(a.indexOf('=')+1,a.length);}
+  if(n == cookiename){res = cookiewert;}
+  i = a.indexOf(';')+1;
+  if(i == 0){i = a.length}
+  a = a.substring(i,a.length);
+ }
+ return(res);
+}
+
+function CookieLoeschen(n){
+ document.cookie = n+'=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+}
+</script>
+
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div id="poll-container">Lade Bewertungen...</div>
+<div style="clear:both;padding-top:10px;">Bewerte selber: <span id="stars-caption"></span></div>
+
+<form action="#" method="get" id="rat">
+<select name="tx_myquizpoll_pi1[answer1]" id="stars-rate">
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### begin -->
+<option value="###VAR_COUNT###" > ###VAR_ANSWER###</option>
+<script type="text/javascript">	total_sum += ###VAR_HITS### * ###VAR_COUNT###; nArray[###VAR_COUNT###] = '###VAR_ANSWER###'; </script>
+<!-- ###TEMPLATE_POLLRESULT_ENTRY### end -->
+</select>
+</form>
+
+<script type="text/javascript">
+  $(function(){
+	$("#rat").children().not("select, #stars-messages").hide();
+
+	// Create stars for: Rate this
+	$("#rat").stars({
+		inputType: "select",
+		cancelShow: false,
+		captionEl: $("#stars-caption"),
+		callback: function(ui, type, value)
+		{
+			// Disable Stars while AJAX connection is active
+			ui.disable();
+
+			// Display message to the user at the begining of request
+			$("#stars-messages").text("Speichere...").stop().css("opacity", 1).fadeIn(30);
+			
+			$.post("index.php", {'eID':'myquizpoll_eID', 'qid': ###VAR_QID###, 	'fid': '###VAR_FID###',	'pid': ###VAR_RESPID###, 'lang': ###VAR_LANG###, 'remote_ip': ###REMOTE_IP###, 'block_ip': '###BLOCK_IP###', 'vote': value}, function(data)
+			{
+				total_votes = 0;
+				total_sum = 0;
+				avg = 0;
+				
+				for (id in data) {
+					total_votes += parseInt(data[id][OPT_VOTES]);
+					total_sum += parseInt(data[id][OPT_VOTES]) * parseInt(data[id][OPT_ID]);
+				}
+				avg = Math.round(total_sum / total_votes);
+				
+				// Select stars from "Average rating" control to match the returned average rating value
+				$("#avg").stars("select", Math.round(avg));
+				
+				// Update other text controls...
+				$("#all_votes").text(total_votes);
+				$("#all_avg").text(Math.round((total_sum / total_votes) * 100) / 100);
+				
+				// Display confirmation message to the user
+				$("#stars-messages").text("Bewertung gespeichert (" + value + ")...").stop().css("opacity", 1).fadeIn(30);
+				
+				// Hide confirmation message and enable stars for "Rate this" control, after 2 sec...
+				setTimeout(function(){
+					$("#stars-messages").fadeOut(1000, function(){ui.enable()});
+					$("#rat").fadeOut(1000);
+				}, 2000);
+				
+				// Set a cookie for this question for 30 days
+				CookieSchreiben('myquizpoll###VAR_QID###_###VAR_FID###_###VAR_LANG###', value, 1000*60*60*24*30);
+			}, "json");
+		}
+	});
+
+	// Since the <option value="3"> was selected by default, we must remove selection from Stars.
+	$("#rat").stars("selectID", -1);
+
+	// Create element to use for confirmation stars-messages
+	$('<div id="stars-messages" style="clear:both;padding-top:7px;" />').appendTo("#rat");
+	
+	// Load own selection
+	var votedID=parseInt(CookieLesen('myquizpoll###VAR_QID###_###VAR_FID###_###VAR_LANG###'));
+	if (votedID>0) {
+		//$("#stars-rate option[value='"+votedID+"']").attr('selected', 'selected'); // bringt leider nichts!
+		$('#rat').hide();
+		$('#stars-caption').append('du hast schon abgestimmt ('+votedID+' Sterne)!');
+	}
+  });
+
+
+  if (total_votes>0) {
+	avg = Math.round(total_sum / total_votes);
+	var results_html = '<div id="poll-results"><span>###VOTES###: <span id="all_votes">'+total_votes+'</span><br />Durchschnitt: <span id="all_avg">';
+	results_html += Math.round((total_sum / total_votes) * 100) / 100 + '</span></span><br /><form id="avg">';
+	for (var i=1; i<=###VAR_ANSWERS###; i++) {
+		results_html += '<input type="radio" name="rate_avg" value="'+i+'" title="'+nArray[i]+'" disabled="disabled"';
+		if (i == avg) results_html += ' checked="checked"';
+		results_html += " />\n";
+	}  
+	results_html += "</form>\n";
+	$('#poll-container').replaceWith(results_html).fadeIn("slow");
+	$("#avg").children().not(":input").hide();
+	// Create stars for: Average rating
+	$("#avg").stars();
+  } else {
+	$('#poll-container').replaceWith('Keine Bewertungen bisher...').fadeIn("slow");
+  }
+</script>
+<!-- ###TEMPLATE_POLLRESULT### end -->
+
+
+</body>
+</html>

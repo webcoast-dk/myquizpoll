@@ -1,0 +1,203 @@
+<html>
+<head>
+	<title>Quiz example template</title>
+</head>
+<body>
+<h2>QUIZ EXAMPLE TEMPLATE</h2>
+<p>Test it with this Typoscript:<br/>
+plugin.tx_myquizpoll_pi1.sortBy = random
+plugin.tx_myquizpoll_pi1.pageQuestions = 1
+plugin.tx_myquizpoll_pi1.dontShowPoints = 1
+plugin.tx_myquizpoll_pi1.dontShowCorrectAnswers = 0
+plugin.tx_myquizpoll_pi1.showHighscore = 0
+plugin.tx_myquizpoll_pi1.dontShowHighscoreLink = 1
+plugin.tx_myquizpoll_pi1.userData.askAtQuestion = 0
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_basic.html
+</p>
+
+
+<h3>Templates for whole sites</h3>
+
+<p>Questions page:<br/>
+Empty or reference to TEMPLATE_CAPTCHA_NOT_OK.<br/>
+Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+Reference to TEMPLATE_PAGE_TIME_LIMIT. REF_PAGE_LIMIT will be empty if "pageTimeSeconds = 0".<br/>
+Multiple reference to TEMPLATE_QUESTION.<br/>
+Reference to TEMPLATE_QUIZ_USER_TO_SUBMIT?<br/>
+Dont delete the marker HIDDENFIELDS !!!!!!!<br/>
+Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+Optional: ###REF_POLLRESULT_URL### = Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if isPoll = 0 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s)" since v.0.1.8 -->
+###REF_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+<form action="###FORM_URL###" method="post" name="myquiz">
+###REF_QUESTIONS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+</form>
+###REF_HIGHSCORE_URL###
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+<p>Result page:<br/>
+Empty or reference to TEMPLATE_CHEATING.<br/>
+Reference to TEMPLATE_QUIZ_TIME_LIMIT. REF_QUIZ_LIMIT will be empty if "quizTimeMinutes = 0".<br/>
+Reference to TEMPLATE_POLL_SUBMITED (poll) or to TEMPLATE_QUIZ_USER_SUBMITED (quiz).<br/>
+Multiple reference to TEMPLATE_QRESULT (empty if is poll or "dontShowCorrectAnswers=1").<br/>
+Reference to TEMPLATE_RESULT_POINTS or TEMPLATE_RESULT_POINTS_TOTAL (if is quiz and "dontShowPoints=0", else empty)<br/>
+Reference to TEMPLATE_NEXT (if "showAnswersSeparate=1" and is quiz, else empty)<br/>
+Reference to TEMPLATE_POLLRESULT (if is poll and "dontShowPollResult=0", else empty)<br/>
+Reference to TEMPLATE_POLLRESULT_URL. REF_POLLRESULT_URL will be empty if isPoll = 0 !!!<br/>
+Optional: ###REF_HIGHSCORE_URL### = Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if is poll or dontShowHighscoreLink = 1 !!!<br/>
+</p>
+<!-- ###TEMPLATE_RESULT_PAGE### begin of "template for result of question(s)" since v.0.1.8 -->
+###REF_RES_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_INTRODUCTION###
+###REF_QRESULT###
+###REF_QPOINTS###
+###REF_NEXT###
+###REF_POLLRESULT###
+###REF_POLLRESULT_URL###
+<!-- ###TEMPLATE_RESULT_PAGE### end -->
+
+<p>Last/final page:<br/>
+Reference to TEMPLATE_NO_MORE. REF_NO_MORE will be empty if pageQuestions = 0 !!!<br/>
+Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis = 0 !!!<br/>
+Reference to TEMPLATE_HIGHSCORE. REF_HIGHSCORE will be empty if showHighscore = 0 !!!<br/>
+Reference to TEMPLATE_HIGHSCORE_URL. REF_HIGHSCORE_URL will be empty if dontShowHighscoreLink = 1 !!!<br/>
+</p>
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### begin of "template for the last/final page of a quiz" since v.0.1.7 -->
+###REF_NO_MORE###
+###REF_QUIZ_ANALYSIS###
+###REF_HIGHSCORE###
+###REF_HIGHSCORE_URL###
+<!-- ###TEMPLATE_QUIZ_FINAL_PAGE### end -->
+
+
+<h3>Template-Snippets</h3>
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###: 
+<span class="###PREFIX###-question">###VAR_QUESTION_NAME### ###P1######VAR_ANSWER_POINTS######P2###</span></div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="7">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr/>
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+<div class="###PREFIX###-label">###CORRECT_ANSWERS###</div>
+<ul class="###PREFIX###-answer">
+###REF_QR_ANSWER_CORR###
+</ul>
+###REF_QR_POINTS###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+<!-- ###TEMPLATE_QR_CORR### begin of "an correct answer which has been answered" -->
+<li>###VAR_QUESTION_ANSWER###</li>
+<!-- ###TEMPLATE_QR_CORR### end -->
+
+<!-- ###TEMPLATE_QR_CORR_ANSW### begin of "an correct answer which has been answered" -->
+<li>###VAR_QUESTION_ANSWER###</li>
+<!-- ###TEMPLATE_QR_CORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### begin of "an correct answer which has not been answered" -->
+<li>###VAR_QUESTION_ANSWER###</li>
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### begin of "an not correct answer which has been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1###<b><i>-###VAR_QUESTION_POINTS###</i></b>###P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### begin of "an not correct answer which has not been answered" -->
+<div class="###PREFIX###-answer"><span class="###PREFIX###-false">###VAR_QUESTION_ANSWER###</span> ###P1######NO_POINTS######P2###</div>
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_POINTS### begin of "points result for a question" -->
+<div class="###PREFIX###-label">###RES_QUESTION_POINTS###: ###VAR_QUESTION_POINTS### / ###VAR_MAX_QUESTION_POINTS###</div>
+<!-- ###TEMPLATE_QR_POINTS### end -->
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+<div class="###PREFIX###-explanation">###EXPLANATION###: ###VAR_EXPLANATION###</div>
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+
+<!-- ###TEMPLATE_RESULT_POINTS### begin -->
+<p class="###PREFIX###-label">###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS###</p><hr/>
+<!-- ###TEMPLATE_RESULT_POINTS### end -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### begin -->
+<p class="###PREFIX###-label">###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)</p><hr/>
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br/>
+<input type="submit" value="###SUBMIT###" class="###PREFIX###-submit">
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+<!-- ###TEMPLATE_NEXT### begin of "next button, when answers and questions are separated" since v.0.1.7 -->
+<br/>
+<form action="###FORM_URL###" method="post" name="myquiz">
+<input type="submit" value="###GO_ON###" class="###PREFIX###-submit">
+<input type="hidden" name="###PREFIX###[qtuid]" value="###QTUID###">
+<input type="hidden" name="###PREFIX###[cmd]" value="next">
+<input type="hidden" name="no_cache" value="1">
+</form>
+<!-- ###TEMPLATE_NEXT### end -->
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+<!-- ###TEMPLATE_NO_MORE### begin -->
+<p class="###PREFIX###-label">###NO_MORE###</p>
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+<p class="###PREFIX###-label">###THANK_YOU###</p>
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label">###CHEATING###</p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+</body>
+</html>

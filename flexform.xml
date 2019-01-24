@@ -1,0 +1,1829 @@
+<T3DataStructure>
+  <meta>
+    <langDisable>1</langDisable>
+  </meta>
+  <sheets>
+    <sDEF>
+      <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <what_to_display>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.what_to_display</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.what_to_display.0</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.what_to_display.1</numIndex>
+                            <numIndex index="1">NORMAL</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.what_to_display.2</numIndex>
+                            <numIndex index="1">allanswers</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.what_to_display.3</numIndex>
+                            <numIndex index="1">score</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.what_to_display.4</numIndex>
+                            <numIndex index="1">list</numIndex>
+                        </numIndex>
+                        <numIndex index="5" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.what_to_display.5</numIndex>
+                            <numIndex index="1">archive</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </what_to_display>
+        <isPoll>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.isPoll</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.isPoll.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.isPoll.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.isPoll.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </isPoll>
+        <tableAnswers>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.tableAnswers</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.tableAnswers.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">tx_myquizpoll_result</numIndex>
+                            <numIndex index="1">tx_myquizpoll_result</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">tx_myquizpoll_voting</numIndex>
+                            <numIndex index="1">tx_myquizpoll_voting</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </tableAnswers>
+        <templateFile>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.templateFile</label>
+				<config>
+					<type>input</type>
+					<default></default>
+					<wizards type="array">
+						<_PADDING>2</_PADDING>
+						<link type="array">
+							<type>popup</type>
+							<title>Link</title>
+							<icon>link_popup.gif</icon>
+							<module type="array">
+								<name>wizard_element_browser</name>
+								<urlParameters type="array">
+									<mode>wizard</mode>
+									<act>file</act>
+								</urlParameters>
+							</module>							
+							<params type="array">
+								<blindLinkOptions>page,url,mail,spec</blindLinkOptions>
+								<allowedExtensions>htm,html,tmpl,tpl</allowedExtensions>
+							</params>
+							<JSopenParams>height=300,width=500,status=0,menubar=0,scrollbars=1</JSopenParams>
+						</link>
+					</wizards>
+				</config>
+            </TCEforms>
+        </templateFile>
+        <nextPID>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.nextPID</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>pages</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </nextPID>
+        <finalPID>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.finalPID</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>pages</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </finalPID>
+        <listPID>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.listPID</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>pages</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </listPID>
+        <startPID>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.startPID</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>pages</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </startPID>
+        <pageQuestions>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.pageQuestions</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>2</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </pageQuestions>
+        <answerChoiceMax>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.answerChoiceMax</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>2</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </answerChoiceMax>
+       </el>
+      </ROOT>
+    </sDEF>
+    <sNEXT>
+     <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <sortBy>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.sortBy</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.sortBy.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.sortBy.sorting</numIndex>
+                            <numIndex index="1">sorting</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.sortBy.uid</numIndex>
+                            <numIndex index="1">uid</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.sortBy.title</numIndex>
+                            <numIndex index="1">title</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.sortBy.random</numIndex>
+                            <numIndex index="1">random</numIndex>
+                        </numIndex>
+						<numIndex index="5" type="array">
+                            <numIndex index="0">sorting DESC</numIndex>
+                            <numIndex index="1">sorting-desc</numIndex>
+                        </numIndex>
+						<numIndex index="6" type="array">
+                            <numIndex index="0">uid DESC</numIndex>
+                            <numIndex index="1">uid-desc</numIndex>
+                        </numIndex>
+						<numIndex index="7" type="array">
+                            <numIndex index="0">title DESC</numIndex>
+                            <numIndex index="1">title-desc</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </sortBy>
+        <pollStart>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.pollStart</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>2</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </pollStart>
+        <mixAnswers>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.mixAnswers</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.mixAnswers.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </mixAnswers>
+        <showAnswersSeparate>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAnswersSeparate</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAnswersSeparate.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAnswersSeparate.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAnswersSeparate.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showAnswersSeparate>
+        <dontShowCorrectAnswers>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowCorrectAnswers</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowCorrectAnswers.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowCorrectAnswers.yes</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowCorrectAnswers.no</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </dontShowCorrectAnswers>
+        <showAllCorrectAnswers>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAllCorrectAnswers</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAllCorrectAnswers.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAllCorrectAnswers.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAllCorrectAnswers.yes1</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAllCorrectAnswers.yes2</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showAllCorrectAnswers.yes3</numIndex>
+                            <numIndex index="1">3</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showAllCorrectAnswers>
+        <showDetailAnswers>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showDetailAnswers</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showDetailAnswers.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showDetailAnswers.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.showDetailAnswers.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showDetailAnswers>
+        <starRatingDetails>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.starRatingDetails</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.starRatingDetails.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.starRatingDetails.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.starRatingDetails.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </starRatingDetails>
+        <alwaysShowStarRatingDetails>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.alwaysShowStarRatingDetails</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.alwaysShowStarRatingDetails.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </alwaysShowStarRatingDetails>
+        <allowBack>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowBack</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowBack.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowBack.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowBack.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </allowBack>
+        <allowSkipping>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowSkipping</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowSkipping.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowSkipping.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.allowSkipping.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </allowSkipping>
+        <dontShowPoints>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowPoints</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowPoints.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowPoints.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.dontShowPoints.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </dontShowPoints>
+        <noNegativePoints>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.noNegativePoints</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.noNegativePoints.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.noNegativePoints.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.noNegativePoints.yes1</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.noNegativePoints.yes2</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.noNegativePoints.yes3</numIndex>
+                            <numIndex index="1">3</numIndex>
+                        </numIndex>
+                        <numIndex index="5" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.noNegativePoints.yes4</numIndex>
+                            <numIndex index="1">4</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </noNegativePoints>
+        <enforceSelection>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.enforceSelection</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.enforceSelection.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.enforceSelection.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.enforceSelection.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </enforceSelection>
+        <userSession>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.userSession</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.userSession.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.userSession.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.userSession.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </userSession>
+        <deleteResults>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.deleteResults</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.deleteResults.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.deleteResults.login</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.deleteResults.name</numIndex>
+                            <numIndex index="1">3</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </deleteResults>
+        <deleteDouble>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.deleteDouble</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.deleteDouble.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </deleteDouble>
+        <useCookiesInDays>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.useCookiesInDays</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>2</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </useCookiesInDays>
+        <cookieMode>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode.yes1</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode.yes2</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode.yes3</numIndex>
+                            <numIndex index="1">3</numIndex>
+                        </numIndex>
+                        <numIndex index="5" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode.yes4</numIndex>
+                            <numIndex index="1">4</numIndex>
+                        </numIndex>
+                        <numIndex index="6" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.cookieMode.yes5</numIndex>
+                            <numIndex index="1">5</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </cookieMode>
+        <doubleEntryCheck>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.doubleEntryCheck</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>2</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </doubleEntryCheck>
+        <doubleCheckMode>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.doubleCheckMode</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.doubleCheckMode.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.doubleCheckMode.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.doubleCheckMode.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </doubleCheckMode>
+        <secondPollMode>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.secondPollMode</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.secondPollMode.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.secondPollMode.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.secondPollMode.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </secondPollMode>
+        <loggedInMode>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.loggedInMode</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.loggedInMode.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.loggedInMode.yes</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.loggedInMode.no</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </loggedInMode>
+        <disableIp>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.disableIp</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.disableIp.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </disableIp>
+        <hideByDefault>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.hideByDefault</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.subtleties.hideByDefault.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </hideByDefault>
+       </el>
+     </ROOT>
+    </sNEXT>
+    <sUSERDATA>
+     <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <askAtStart>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtStart</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtStart.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtStart.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtStart.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </askAtStart>
+        <askAtQuestion>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtQuestion</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtQuestion.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtQuestion.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtQuestion.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtQuestion.yes2</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </askAtQuestion>
+        <askAtFinal>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtFinal</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtFinal.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtFinal.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.askAtFinal.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </askAtFinal>
+        <showAtAnswer>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtAnswer</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtAnswer.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtAnswer.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtAnswer.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showAtAnswer>
+        <showAtFinal>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtFinal</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtFinal.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtFinal.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.showAtFinal.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showAtFinal>
+        <tt_address_pid>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.tt_address_pid</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>pages</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </tt_address_pid>
+        <tt_address_groups>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.userdata.tt_address_groups</label>
+                <config>
+                    <type>input</type>
+                    <size>8</size>
+                    <max>80</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </tt_address_groups>
+       </el>
+     </ROOT>
+    </sUSERDATA>
+    <sTERMINATION>
+     <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <pageTimeSeconds>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.pageTimeSeconds</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>10</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </pageTimeSeconds>
+        <quizTimeMinutes>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.quizTimeMinutes</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>10</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </quizTimeMinutes>
+        <cancelWhenWrong>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.cancelWhenWrong</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.cancelWhenWrong.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.cancelWhenWrong.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </cancelWhenWrong>
+        <finalWhenCancel>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.finalWhenCancel</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.finalWhenCancel.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </finalWhenCancel>
+        <finishedMinPercent>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.finishedMinPercent</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>10</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </finishedMinPercent>
+        <finishAfterQuestions>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.termination.finishAfterQuestions</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>10</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </finishAfterQuestions>
+       </el>
+     </ROOT>
+    </sTERMINATION>
+    <sEVALUATION>
+     <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <till1p>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_p</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </till1p>
+        <till1c>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_c</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tt_content</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </till1c>
+        <till2p>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_p</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </till2p>
+        <till2c>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_c</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tt_content</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </till2c>
+        <till3p>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_p</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </till3p>
+        <till3c>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_c</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tt_content</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </till3c>
+        <till4p>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_p</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </till4p>
+        <till4c>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_c</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tt_content</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </till4c>
+        <till5p>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_p</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </till5p>
+        <till5c>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_c</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tt_content</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </till5c>
+        <till6p>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_p</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </till6p>
+        <till6c>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.till_c</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tt_content</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </till6c>
+        <showCategoryElement>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.showCategoryElement</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.showCategoryElement.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.showCategoryElement.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.showCategoryElement.yes1</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.showCategoryElement.yes2</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.showCategoryElement.yes3</numIndex>
+                            <numIndex index="1">3</numIndex>
+                        </numIndex>
+                        <numIndex index="5" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.evaluation.showCategoryElement.yes4</numIndex>
+                            <numIndex index="1">4</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showCategoryElement>
+       </el>
+     </ROOT>
+    </sEVALUATION>
+    <sHIGHSCORE>
+     <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <showAtFinal>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.showAtFinal</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.showAtFinal.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showAtFinal>
+        <entries>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.entries</label>
+                <config>
+                    <type>input</type>
+                    <size>5</size>
+                    <max>10</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </entries>
+        <sortBy>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.sortBy</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.sortBy.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.nothing</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.sortBy.points</numIndex>
+                            <numIndex index="1">points</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.sortBy.percent</numIndex>
+                            <numIndex index="1">percent</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.sortBy.o_percent</numIndex>
+                            <numIndex index="1">o_percent</numIndex>
+                        </numIndex>
+                        <numIndex index="5" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.sortBy.time</numIndex>
+                            <numIndex index="1">time</numIndex>
+                        </numIndex>
+                        <numIndex index="6" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.sortBy.date</numIndex>
+                            <numIndex index="1">date</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </sortBy>
+        <groupBy>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.groupBy</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.groupBy.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.nothing</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.groupBy.name</numIndex>
+                            <numIndex index="1">name</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.groupBy.fe_uid</numIndex>
+                            <numIndex index="1">fe_uid</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </groupBy>
+        <showUser>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.showUser</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.showUser.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </showUser>
+        <ignorePid>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.ignorePid</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.ignorePid.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </ignorePid>
+        <linkTo>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.linkTo</label>
+                <config>
+                    <type>input</type>
+                    <size>25</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </linkTo>
+        <dateFormat>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.highscore.dateFormat</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>50</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </dateFormat>
+       </el>
+     </ROOT>
+    </sHIGHSCORE>
+    <sEMAIL>
+     <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <send_admin>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_admin</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_admin.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_admin.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_admin.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_admin.yes2</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </send_admin>
+        <admin_subject>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.admin_subject</label>
+                <config>
+                    <type>input</type>
+                    <size>25</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </admin_subject>
+        <send_user>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_user</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_user.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_user.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_user.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.send_user.yes2</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </send_user>
+        <user_subject>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.user_subject</label>
+                <config>
+                    <type>input</type>
+                    <size>25</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </user_subject>
+        <from_name>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.from_name</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </from_name>
+        <from_mail>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.from_mail</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </from_mail>
+        <admin_name>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.admin_name</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </admin_name>
+        <admin_mail>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.admin_mail</label>
+                <config>
+                    <type>input</type>
+                    <size>15</size>
+                    <max>200</max>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </admin_mail>
+		<!-- Change begin -->
+		<answers>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.email.answers</label>
+                <config>
+                    <type>text</type>
+					<cols>24</cols>
+                    <rows>4</rows>
+                    <eval>trim</eval>
+                </config>
+            </TCEforms>
+        </answers>
+		<!-- Change end -->
+       </el>
+     </ROOT>
+    </sEMAIL>
+    <sFEATURES>
+     <ROOT>
+       <TCEforms>
+        <sheetTitle>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.title</sheetTitle>
+       </TCEforms>
+       <type>array</type>
+       <el>
+        <useJokers>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.useJokers</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.useJokers.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.useJokers.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.useJokers.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </useJokers>
+        <jokersUnlimited>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersUnlimited</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersUnlimited.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersUnlimited.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersUnlimited.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </jokersUnlimited>
+        <jokersHalvePoints>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersHalvePoints</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersHalvePoints.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersHalvePoints.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.jokersHalvePoints.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </jokersHalvePoints>
+        <advancedStatistics>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.advancedStatistics</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.advancedStatistics.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.advancedStatistics.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.advancedStatistics.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </advancedStatistics>
+        <enableCaptcha>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.enableCaptcha</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.enableCaptcha.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.enableCaptcha.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.enableCaptcha.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.enableCaptcha.start</numIndex>
+                            <numIndex index="1">2</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </enableCaptcha>
+        <loggedInCheck>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.loggedInCheck</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.loggedInCheck.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.loggedInCheck.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.loggedInCheck.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </loggedInCheck>
+        <debug>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.debug</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.debug.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.debug.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.debug.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </debug>
+        <startCategory>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.startCategory</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tx_myquizpoll_category</allowed>
+                    <size>1</size>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <show_thumbs>0</show_thumbs>
+                </config>
+            </TCEforms>
+        </startCategory>
+        <onlyCategories>
+            <TCEforms>
+				<exclude>1</exclude>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.onlyCategories</label>
+                <config>
+                    <type>group</type>
+                    <internal_type>db</internal_type>
+                    <allowed>tx_myquizpoll_category</allowed>
+                    <size>5</size>
+                    <maxitems>100</maxitems>
+                    <minitems>0</minitems>
+                    <multiple>1</multiple>
+                </config>
+            </TCEforms>
+        </onlyCategories>
+        <randomCategories>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.randomCategories</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.randomCategories.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </randomCategories>
+        <ignoreSubmit>
+            <TCEforms>
+                <label>LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.ignoreSubmit</label>
+                <config>
+                    <type>select</type>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.features.ignoreSubmit.ts</numIndex>
+                            <numIndex index="1">TS</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.no</numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">LLL:EXT:myquizpoll/locallang_ff.xml:flexform.sheets.general.yes</numIndex>
+                            <numIndex index="1">1</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </TCEforms>
+        </ignoreSubmit>
+       </el>
+     </ROOT>
+    </sFEATURES>
+  </sheets>
+</T3DataStructure>

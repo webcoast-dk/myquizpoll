@@ -1,0 +1,16 @@
+page.headerData.1448 = COA
+
+page.headerData.1448.10 = TEXT
+page.headerData.1448.10.value = <link rel="stylesheet" href="{path:EXT:myquizpoll/res/css/starrating.css}" type="text/css" media="screen,projection" />
+page.headerData.1448.10.insertData = 1
+
+page.headerData.1448.30 = TEXT
+page.headerData.1448.30.value = <script type="text/javascript" src="{path:EXT:myquizpoll/res/js/jquery.rating.js}"></script>	
+page.headerData.1448.30.insertData = 1
+
+# page.headerData.1448.40 = TEXT
+# page.headerData.1448.40.value = <script type="text/javascript" src="{path:EXT:myquizpoll/res/js/jquery.MetaData.js}"></script>	
+# page.headerData.1448.40.insertData = 1
+
+# Bug fix: show only parts of stars, e. g. half stars and do not show double or more stars
+page.includeJSFooter.myquizpollStarRatingJQueryMetaData = EXT:myquizpoll/res/js/jquery.MetaData.js

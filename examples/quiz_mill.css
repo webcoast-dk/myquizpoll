@@ -1,0 +1,49 @@
+/* Quiz */
+.quiz_antwort {
+	font-size: 92%;
+	color: #fff;
+}
+.quiz_frage {
+	background: url('frage.jpg') no-repeat;
+	padding: 6px 30px;
+	height:55px;
+}
+.quiz_img {
+	margin-bottom: 12px;
+}
+#quiz_antwort1 { background: url('antwort_bl.jpg') 0px 4px no-repeat;padding: 7px 12px;height:26px; }
+#quiz_antwort2 { background: url('antwort_bl.jpg') 0px 4px no-repeat;padding: 7px 12px;height:26px; }
+#quiz_antwort3 { background: url('antwort_bl.jpg') 0px 4px no-repeat;padding: 7px 12px;height:26px; }
+#quiz_antwort4 { background: url('antwort_bl.jpg') 0px 4px no-repeat;padding: 7px 12px;height:26px; }
+
+#quiz_seconds {
+	background: url('zeit_bg.jpg') no-repeat; 
+	padding: 20px; 
+	height:29px;
+	width:29px;
+	color:#fff;
+	font-size:180%; 
+}
+
+.score-even { clear:both; width: 500px; background: url('score_andere.jpg') no-repeat;padding: 6px 25px;height:32px; color:#fff; }
+.score-odd { clear:both; width: 500px; background: url('score_andere.jpg') no-repeat;padding: 6px 25px;height:32px; color:#fff; }
+.score-act { clear:both; width: 500px; background: url('score_ich.jpg') no-repeat;padding: 6px 25px;height:32px; color:#fff; }
+.score-even a,
+.score-odd a,
+.score-act a { color: #fff; }
+
+.quiz_euro {
+	color: #fff;
+	text-align: center;
+	background-color: #011548;
+	border: 2px solid #455C6E;
+}
+
+.joker_image { margin: 3px; border:none;; }
+
+#tx_myquizpoll_pi1-joker_50 a,
+#tx_myquizpoll_pi1-joker_phone a,
+#tx_myquizpoll_pi1-joker_audience a,
+#tx_myquizpoll_pi1-joker_50 a:hover,
+#tx_myquizpoll_pi1-joker_phone a:hover,
+#tx_myquizpoll_pi1-joker_audience a:hover { text-decoration: none; border:none; }

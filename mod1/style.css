@@ -1,0 +1,76 @@
+.quizpoll_yes {
+	color:#00aa00;
+}
+.quizpoll_no {
+	color:#aa0000;
+}
+.quizpoll_stat_total {
+	padding: 3px;
+	width:465px;
+	height:370px;
+	overflow: scroll;
+}
+.quizpoll_stat_around {
+	padding: 5px 0;
+}
+.quizpoll_stat_question {
+	font-style: italic;
+	padding-bottom:3px;
+}
+.quizpoll_stat_answer {
+	color: #1e7b3d;
+	font-size: 110%;
+}
+.quizpoll_stat_count {
+	border-right:1px dotted #888;
+}
+.quizpoll_stat2_question_h {
+	float:left;
+	width:75px;
+	text-align:center;
+	border:1px dotted #777;
+}
+.quizpoll_stat2_answer_h {
+	float:left;
+	width:75px;
+	text-align:center;
+	border:1px dotted #777;
+}
+.quizpoll_stat2_correct_h {
+	float:left;
+	width:275px;
+	text-align:center;
+	border:1px dotted #777;
+}
+.quizpoll_stat2_question {
+	clear:both;
+	float:left;
+	width:75px;
+	text-align:center;
+}
+.quizpoll_stat2_answer {
+	float:left;
+	width:75px;
+	text-align:center;
+}
+.quizpoll_stat2_correct {
+	float:left;
+	width:275px;
+	text-align:center;
+}
+.quizpoll_even {
+	background-color:#f7ffff;
+}
+.quizpoll_odd {
+	background-color:#fff7ff;
+}
+.quizpoll_hidden {
+	color:#888;
+}
+form ol {
+  margin: 0;
+  padding: 0 0 0 30px;
+}
+form ol li {
+  list-style-type: decimal;
+}

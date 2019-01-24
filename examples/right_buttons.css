@@ -1,0 +1,11 @@
+.tx_myquizpoll_pi1-answer {
+	clear: both;
+}
+.tx_myquizpoll_pi1-yesno {
+	float: right;
+}
+.tx_myquizpoll_pi1-no,
+.tx_myquizpoll_pi1-yes {
+	float: left;
+	padding-left: 7px;
+}

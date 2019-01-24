@@ -1,0 +1,301 @@
+# default setup for the extension myquizpoll:
+plugin.tx_myquizpoll_pi1 {
+
+    # mode: score, list, allanswers, archive or NORMAL
+    CMD =
+    
+	# Quiz or poll? 0: normal mode; 1: basic poll mode
+	isPoll = 0
+
+	# Sort questions by: sorting | uid | title | random
+	sortBy = sorting
+
+	# In poll mode: take which question on a poll result page? 0: first one; 1: second one and so on
+	pollStart = 0
+	
+	# Random-sort (mix) selectable answers? 0: no; 1: yes
+	mixAnswers = 0
+	
+	# Allow skipping a question / "put this question back": 0: no; 1: yes
+	allowSkipping = 0
+
+	# No. of question / page: 0..1000 (0: all questtions at the first page)
+	pageQuestions = 0
+	
+	# Don't allow negative scores per question: 0: allow scores < 0; >=1: don't allow scores < 0. See manual for all possibilities.
+	noNegativePoints = 0
+
+	# Don't show scores: 0: show scores per question; 1: don't show any scores AND don't calculate scores
+	dontShowPoints = 0
+	
+	# What about questions which have not been answered by the quiz taker? 0: ignore them; 1: that are false answers
+	noAnswer = 0
+	
+	# Poll: what about answers with no votes? 0: show them too in the result; 1 ignore them in the result
+	votedOnly = 0
+	
+	# Enforce selection: 0: no; 1: yes, enforce selection of answers
+	enforceSelection = 0
+	
+	# Show answers and next questions on separate pages: 0: show answers and next questions on the same page; 1: show answers and next questions on two different pages
+	showAnswersSeparate = 0
+
+	# Don't show correct answers after submit: 0: show correct answers; 1: don't show questions again
+	dontShowCorrectAnswers = 0
+	
+	# Show all correct answers on the last page after finishing the quiz: 0: don't show all the questions again; 1: show all correct answers; 2: show only the correct answered questions; 3: show only the false answered questions
+	showAllCorrectAnswers = 0
+	
+	# Show details for questions with text-answers when showing all answers? 0: no; 1: yes, show a details link and after clicking on it show all text-answers. advancedStatistics must be enabled! xAjax required!
+	showDetailAnswers = 0
+	
+	# Show details of starrating
+	starRatingDetails = 0
+	
+	# Always show details of starrating, starRatingDetails must be enabled
+	alwaysShowStarRatingDetails = 0
+	
+	# Show on the final page an analysis/evaluation page which depents on reached percentage: 0: don´t show extra content after finishing a quiz; 1: show one of this templates too: TEMPLATE_QUIZ_ANALYSIS_x. x depends on reached percentage and this entry here. Example: "showAnalysis = 0,33.34,66.67,100". This are percentage values. You can make a redirect to another page if you use the ":" like this: "showAnalysis = 0:1,33.34:2,66.67:3,100:4". 1,2,3 and 4 are the target pages UIDs.
+	showAnalysis = 0
+
+	# Show on the final page an analysis/evaluation page which depents on reached scores: 0: don´t show extra content after finishing a quiz; 1: show one of this templates too: TEMPLATE_QUIZ_ANALYSIS_x. x depends on reached scores and this entry here. Example: "showEvaluation = 0,33,67,100". This are point values. You can display tt_content elements if you use the ":" like this: "showEvaluation = 0:1,33:2,67:3,100:4". 1,2,3 and 4 are the tt_content UIDs.
+	showEvaluation = 0
+
+	# Show a final page which depends on categories? 0: no extra content on the final page. 1-4: yes. See manual
+	showCategoryElement = 0
+	
+	# Hide user answers by default? 0: no; 1: yes, hide user result (e.g. in the highscore list)
+	hideByDefault = 0
+	
+	# Ask for / show user data at...
+	userData {
+		askAtStart = 0
+		askAtQuestion = 1
+		askAtFinal = 0
+		showAtAnswer = 0
+		showAtFinal = 0
+		tt_address_pid =
+		tt_address_groups =
+	}
+	
+	# Email properties: send email to the admin and/or the quiz taker?
+	email {
+		admin_mail = 
+		admin_name = 
+		admin_subject = 
+		user_subject = 
+		from_mail = 
+		from_name =
+		send_admin = 0
+		send_user = 0
+		# Send e-mail if specific answer(s) (JSON object formatted)
+		answers =
+	}
+	
+	# Cancel the quiz when the user gives a wrong answer? 0: don't cancel a quiz prematurely; 1: show the template TEMPLATE_QUIZ_END when then quiz taker gives a wrong answer.
+	cancelWhenWrong = 0
+
+	# Show the final page too when a quiz was canceled (time over or cancelWhenWrong=1)? 0: no; 1: yes.
+	finalWhenCancel = 0
+
+	# Percentage of questions that must be answered correctly. Integer value: 0: don't cancel a quiz prematurely; 1: show the template TEMPLATE_QUIZ_FINISHEDMINPERCENT after reaching finishedMinPercent percent and cancel the quiz. You can make a redirect to another page if you use the ":" like this: "finishedMinPercent = 75:1". 1 is the target UIDs.
+	finishedMinPercent = 0
+
+	# Finish after X questions? Integer value: 0: no, show all questions; >0: regular finish after "finishAfterQuestions" questions. See manual.
+	finishAfterQuestions = 0
+
+	# Limited time per page. Integer value: 0: no limitation; >0: send the form automatically after X seconds to the server
+ 	pageTimeSeconds = 0
+
+	# Limited time per whole quiz. Integer value: 0: no limitation; >0: cancel the quiz after X minutes
+ 	quizTimeMinutes = 0
+
+	# Can users use jokers?: 0: no jokers; 1: yes, if pageQuestions=1 and xajax installed!
+ 	useJokers = 0
+
+	# Unlimited jokers?: 0: no; 1: yes
+ 	jokers.unlimited = 0
+
+	# Halve scores when using a joker?: 0: no; 1: yes
+ 	jokers.halvePoints = 0
+
+	# Rating
+	rating {
+		extKey =
+		parameter =
+	}
+	
+	# show back-button? 0: no; 1: yes, if pageQuestions>1 (only advanced statistics will be updated in back-mode)
+	allowBack = 0
+	
+	# Enable advanced statistics?: 0: no; 1: yes, save more data
+ 	advancedStatistics = 0
+
+	# Enable user session (cookies)?: 0: no; 1: yes, I want to avoid database-accesses
+ 	userSession = 1
+
+	# Require user session (cookies)?: 0: no; 1: yes, improve security and require cookies
+ 	requireSession = 0
+
+	# Delete current user result data and entries older than one day at the end of the quiz? 0: no; 1: yes; 2: yes, but see documentation; 3: yes, but see documentation
+	deleteResults = 0
+	
+	# if deleteResults>1: delete double entries (same fe_uid or name) too? 0: no; 1: yes
+	deleteDouble = 0
+	
+	# Highscore list
+	highscore {
+		# Show highscore after form submit: 0: dont show highscore on the last site; 1: show highscore on the last site
+		showAtFinal = 0
+
+		# Highscore list entries: 0: show all entries; x>0: show x entries, e.g. 10 for a Top 10 list
+		entries = 10
+
+		# Sort highscore list by: points: reached scores; percent: percent of answered question; o_percent: percent of all questions; time: end time - start time; date: creation date
+		sortBy = points
+
+		# Group highscore list by: name: user name; fe_uid: front-end-user
+		groupBy =
+		
+		# Show only entries of a logged in user
+		showUser = 0
+		
+		# Ignore the PID and show a highscore from all folders
+		ignorePid = 0
+
+		# See manual
+		linkTo =
+		
+		# Date format
+		dateFormat = m-d-Y
+	}
+	
+	# Use cookies to remeber the quiz takers UID? If yes, the quiz taker can later continue with the quiz. When done, a quiz cannot be taken twice! Lifetime of a cookie in days (-1 = session cookie):
+	useCookiesInDays = 0
+
+	# Cookie mode: 0: use only the results-PID; 1: combine the PID with the language_id; 2: combine the PID with the fe_user-id; 3: combine the PID with the questions-PID; 4: combine the PID with the onlyCategories; 5: combine the PID with the fe_user-id and the latest poll-question-uid
+	cookieMode = 0
+	
+	# If useCookiesInDays<>0: allow users to delete/reset the cookie? 0: no; 1: yes
+	allowCookieReset = 0
+	
+	# Check double entries: If set, a quiz cannot be taken twice with the same ip-address X days long:
+	doubleEntryCheck = 0
+
+	# Double entry check mode: 0: show an error message at the second visit; 1: continue the quiz (where it was stoped last time) at the second visit
+	doubleCheckMode = 0
+	
+	# If check for double entry is on and its the basic poll mode. What show at the 2. visit? 0: start page with error message; 1: poll result list
+	secondPollMode = 0
+	
+	# Must users be logged in? 0: no; 1: yes
+	loggedInCheck = 0
+
+	# Check for double entries when logged in? 0: no; 1: yes, logged in user can take a quiz/poll only once
+	loggedInMode = 0
+
+    # Disable the reading of the IP-address of the quiz-taker? 0: no; 1: yes
+    disableIp = 0
+    
+    # Try to get the real IP-address or take only the REMOTE_ADDR? 0: real IP; 1: REMOTE_ADDR
+    remoteIP = 0
+    
+    # Block some IP-addresses (e.g. from google) on the submit page? Expamples: 66.249
+    blockIP =
+    
+	# fe_users-field for the quiz taker name, e.g. name or username
+	fe_usersName = name
+	
+	# Enable Captcha field? (Requirement: sr_freecap Captcha Extension): 0: no; 1: yes; 2: yes, but only at/after the extra-start-page
+	enableCaptcha = 0
+
+	# Ignore a user submit? 0: no; 1: yes. Useful, if you want to display a fix poll result
+	ignoreSubmit = 0
+	
+	# Maximal answers per question selectable. Default value: 5 (0 = 5 too). Integer value. If > 5, than you have to change the database too!
+	answerChoiceMax = 6
+
+	# Max. width and height of images
+	images {
+		maxW = 
+		maxH = 
+	}
+	
+	# Your own variables for all kind of lists. See manual. This are examples.
+	myVars {
+		separator = ,
+		answers.input_id = 0
+		answers.input_label = 0
+		answers.input_radio =
+		answers.input_checkbox =
+		answers.input_text =
+		answers.input_area =
+		answers.input_wrap =
+		answers.select =
+		answers.option =
+		questions.eo_align = -right,-left
+		list.even_odd = -odd,-even
+		page.name =
+	}
+	
+	# Value for ###QUIZ_NAME###
+	quizName =
+
+	# Debug mode: 0: normal mode; 1: output some data to devlog
+	debug = 0
+	
+	# Category ID for the first question(s) 
+	startCategory =
+	
+	# OR category IDs for all questions 
+	onlyCategories =
+	
+	# Try to show at every page questions with different categories
+	randomCategories = 0
+	
+	# ID of the sysfolder with the questions (empty = current ID)
+	sysPID = 
+
+	# ID of the sysfolder with the quiz taker results (empty = sysPID)
+	resultsPID = 
+	
+	# ID for form-URLs. This is the ID for the next pages
+	nextPID = 
+
+	# ID of the final page (if pageQuestions>1)
+	finalPID = 
+	
+	# ID of the highscore list/poll result
+	listPID =
+	
+	# ID of the first page (restart ID)
+	startPID =
+	
+	# Table for the poll-answers tx_myquizpoll_result (default) or tx_myquizpoll_voting
+	tableAnswers =
+
+	# Where is the Template-file?
+	templateFile = EXT:myquizpoll/pi1/tx_myquizpoll_pi1.tmpl
+	
+	# Rendering of items. re-use the RTE parseFunc configuration for normal content
+	general_stdWrap {
+		notForAnswers = 1
+		parseFunc < tt_content.text.20.parseFunc
+		parseFunc {
+			nonTypoTagStdWrap.encapsLines.nonWrappedTag >
+			nonTypoTagStdWrap.encapsLines.remapTag >
+	#		nonTypoTagStdWrap.encapsLines >
+			nonTypoTagStdWrap.encapsLines {
+				encapsTagList = div,p
+				removeWrapping = 1
+				wrapNonWrappedLines = |
+			}
+		}
+	}
+}
+  # Example of how to overrule LOCAL_LANG values for the plugin:
+# plugin.tx_myquizpoll_pi1._LOCAL_LANG.default {
+#  pi_list_searchBox_search = Search!
+# }
+  # Example of how to set default values from TS in the incoming array, $this->piVars of the plugin:
+# plugin.tx_myquizpoll_pi1._DEFAULT_PI_VARS.test = test

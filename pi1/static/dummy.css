@@ -1,0 +1,33 @@
+ .tx_myquizpoll_pi1-title {  }		// Title of a question
+ .tx_myquizpoll_pi1-title-hide { display:none; }		// Hide title
+ .tx_myquizpoll_pi1-question {  }	// The question
+ .tx_myquizpoll_pi1-answer {  }		// An answer
+ .tx_myquizpoll_pi1-yesno {  }		// Wrap around the yes-no-buttons
+ .tx_myquizpoll_pi1-yes {  }		// Wrap around the yes-button
+ .tx_myquizpoll_pi1-no {  }			// Wrap around the no-button
+ .tx_myquizpoll_pi1-explanation {  }	// Explanation to a question
+ .tx_myquizpoll_pi1-false {  }		// False answer
+ .tx_myquizpoll_pi1-user { }		// user-fields
+ .tx_myquizpoll_pi1-buttons { }		// All submit buttons
+ .tx_myquizpoll_pi1-label {  }		// Normal text
+ .tx_myquizpoll_pi1-field {  }		// form-field
+ .tx_myquizpoll_pi1-field:focus {  }
+ .tx_myquizpoll_pi1-submit {  }		// form submit-button
+ .tx_myquizpoll_pi1-reset {  }		// form reset-button
+ .tx_myquizpoll_pi1-back {  }		// form back-button
+ .tx_myquizpoll_pi1-table {  }		// highscore or poll-result table
+ .tx_myquizpoll_pi1-tr {  }			// a table row
+ .tx_myquizpoll_pi1-tr-act {  }		// highscore entry of the current user
+ .tx_myquizpoll_pi1-tr-even {  }	// even row
+ .tx_myquizpoll_pi1-tr-odd {  }		// odd row
+ .tx_myquizpoll_pi1-caption {  } 	// table caption
+ .tx_myquizpoll_pi1-th {  }  		// table header
+ .tx_myquizpoll_pi1-td {  } 		// table data
+ .tx_myquizpoll_pi1-left {  } 		// align left
+ .tx_myquizpoll_pi1-right {  } 		// align right
+ #tx_myquizpoll_pi1-joker {  }		// Answer of the joker
+ .tx_myquizpoll_pi1-details {  } 	// show details text
+ .tx_myquizpoll_pi1-details_hidden {  } // hidden details
+ .tx_myquizpoll_pi1-details_item-odd {  }
+ .tx_myquizpoll_pi1-details_item-even {  } 	// hidden detail item
+ .tx_myquizpoll_pi1-clearer { clear:both; }

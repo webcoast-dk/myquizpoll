@@ -1,0 +1,387 @@
+<html>
+<head>
+	<title>Poll example template</title>
+</head>
+<body>
+<h2>Poll with more questions and more pages</h2>
+
+<p>Test it with this TS:</p>
+<pre>
+plugin.tx_myquizpoll_pi1.pageQuestions = 3
+plugin.tx_myquizpoll_pi1.dontShowCorrectAnswers = 1
+plugin.tx_myquizpoll_pi1.showAllCorrectAnswers = 1
+plugin.tx_myquizpoll_pi1.dontShowUserResult = 1
+plugin.tx_myquizpoll_pi1.templateFile = EXT:myquizpoll/examples/template_poll_advanced.html
+plugin.tx_myquizpoll_pi1._LOCAL_LANG.de.your_evaluation = Umfrage-Ergebnis:
+plugin.tx_myquizpoll_pi1.showHighscore = 0
+plugin.tx_myquizpoll_pi1.dontShowHighscoreLink = 1
+plugin.tx_myquizpoll_pi1.advancedStatistics = 1
+plugin.tx_myquizpoll_pi1.userData.askAtQuestion = 0
+plugin.tx_myquizpoll_pi1.startCategory = 1
+plugin.tx_myquizpoll_pi1.myVars.answers {
+  input_id = 1
+  input_label = 1
+}
+</pre>
+<p>Use categories for each question.</p>
+
+
+<!-- ###TEMPLATE_QUESTION_PAGE### begin of "template for question(s) and the first page with user data" since v.0.2.0 -->
+###REF_ERRORS###
+###REF_QUIZ_LIMIT###
+###REF_PAGE_LIMIT###
+<form action="###FORM_URL###" method="post" name="myquiz">
+###REF_QUESTIONS###
+###REF_JOKERS###
+###REF_SUBMIT_FIELDS###
+###HIDDENFIELDS###
+<script type="text/javascript">
+//<![CDATA[
+ function quizcheck0(quizform,nr,max){
+  for (i = 1; i <= max; i++){
+	feld = 'tx_myquizpoll_pi1[answer'+nr+'_'+i+']';
+    if(quizform.elements[feld].checked){
+      return true;
+      break;
+    }
+  }
+  return false;
+ }
+ function quizcheck1(quizform,nr,max){
+  feld = 'tx_myquizpoll_pi1[answer'+nr+']';
+  for (i = 0; i < quizform.elements[feld].length; i++){
+    if (quizform.elements[feld][i].checked){
+      return true;
+      break;
+    }
+  }
+  return false;
+ }
+ function quizcheck3(quizform,nr){
+  feld = 'tx_myquizpoll_pi1[answer'+nr+']';
+  if (quizform.elements[feld].value.length>0){
+    return true;
+  }
+  return false;
+ }
+ function quizcheck4(quizform,nr,max){
+  result = true;
+  for (i = 1; i <= max; i++){
+   feld = 'tx_myquizpoll_pi1[answer'+nr+'_'+i+']';
+   ergebnis = false;
+   for (j = 0; j <= 1; j++){
+    if (quizform.elements[feld][j].checked){
+      ergebnis = true;
+    }
+   }
+   if (ergebnis == false) result = false;
+  }
+  return result;
+ }
+ function quizerror(no) {
+	window.alert('###QUESTION### '+no+': ###MISSING_ANSWER###');
+	return false;
+ }
+ function quizback(quizform) {
+	feld = 'tx_myquizpoll_pi1[back]';
+	var back = parseInt(quizform.elements[feld].value);
+	quizform.elements[feld].value = back + 1;
+	feld = 'tx_myquizpoll_pi1[back-hit]';
+	quizform.elements[feld].value = 1;
+	quizform.submit();
+	return true;
+ }
+ function quizsumbit(quizform) {
+  ###SUBMIT_JSC###
+  quizform.submit();
+  return true;
+ }
+//]]>
+</script>
+</form>
+###REF_HIGHSCORE_URL###
+###REF_POLLRESULT_URL###
+<!-- ###TEMPLATE_QUESTION_PAGE### end -->
+
+
+
+<!-- ###TEMPLATE_QUESTION### begin of "a question" -->
+###REF_QUESTION_IMAGE_BEGIN###
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### begin of "an answer" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QUESTION_ANSWER### end -->
+###REF_QUESTION_IMAGE_END###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QUESTION### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### begin of "a question with an image" -->
+<table><tr><td>
+###VAR_QUESTION_IMAGE###
+</td><td width="7">&nbsp;</td><td>
+<!-- ###TEMPLATE_QUESTION_IMAGE_BEGIN### end -->
+
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### begin of "end of a question with an image" -->
+</td></tr></table>
+<!-- ###TEMPLATE_QUESTION_IMAGE_END### end -->
+
+<!-- ###TEMPLATE_DELIMITER### begin of "an delimiter" (optional)  -->
+<hr style="clear:both;" />
+<!-- ###TEMPLATE_DELIMITER### end -->
+
+
+You can use this marker too: ###REF_QR_ANSWER_CORR###
+<!-- ###TEMPLATE_QRESULT### begin of "a question on the result site" -->
+<div class="###PREFIX###-title###TITLE_HIDE###">###VAR_QUESTION_TITLE###</div>
+<div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+###REF_QR_ANSWER_CORR_ANSW###
+###REF_QR_ANSWER_CORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_NOTANSW###
+###REF_QR_ANSWER_NOTCORR_ANSW###
+###REF_QR_EXPLANATION###
+###REF_QR_POINTS###
+###REF_DELIMITER###
+<!-- ###TEMPLATE_QRESULT### end -->
+
+
+<!-- ###TEMPLATE_QR_CORR### begin of "an correct answer (answered and not answered)" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_ANSWER###</div>
+<!-- ###TEMPLATE_QR_CORR### end -->
+
+<!-- ###TEMPLATE_QR_CORR_ANSW### begin of "an correct answer which has been answered" -->
+<div class="###PREFIX###-answer" style="clear:both;padding:2px 0;">
+	<div style="float:left;width:250px;text-align:right;padding-right:10px;"><b>###VAR_QUESTION_ANSWER###</b/></div>
+	<div style="float:left;width:150px;background:#fff;border:1px solid #000;"><div id="quizanswer-###VAR_QUESTION###-###VAR_QA_NR###" style="width:0%;background:#ccc;">&nbsp;</div> </div>
+	<div style="float:left;width:100px;padding-left:10px;">###VAR_PERCENT###% (###VAR_COUNTS###)</div>
+</div>
+<script type="text/javascript"> document.getElementById("quizanswer-###VAR_QUESTION###-###VAR_QA_NR###").style.width=parseInt(parseFloat(###VAR_PERCENT###))+"%"; </script>
+<!-- ###TEMPLATE_QR_CORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### begin of "an correct answer which has not been answered" -->
+<div class="###PREFIX###-answer" style="clear:both;padding:2px 0;">
+	<div style="float:left;width:250px;text-align:right;padding-right:10px;">###VAR_QUESTION_ANSWER###:</div>
+	<div style="float:left;width:150px;background:#fff;border:1px solid #000;"><div id="quizanswer-###VAR_QUESTION###-###VAR_QA_NR###" style="width:0%;background:#ccc;">&nbsp;</div> </div>
+	<div style="float:left;width:100px;padding-left:10px;">###VAR_PERCENT###% (###VAR_COUNTS###)</div>
+</div>
+<script type="text/javascript"> document.getElementById("quizanswer-###VAR_QUESTION###-###VAR_QA_NR###").style.width=parseInt(parseFloat(###VAR_PERCENT###))+"%"; </script>
+<!-- ###TEMPLATE_QR_CORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### begin of "an not correct answer which has been answered" -->
+<div class="###PREFIX###-answer" style="clear:both;padding:2px 0;">
+	<div style="float:left;width:250px;text-align:right;padding-right:10px;"><b>###VAR_QUESTION_ANSWER###</b>:</div>
+	<div style="float:left;width:150px;background:#fff;border:1px solid #000;"><div id="quizanswer-###VAR_QUESTION###-###VAR_QA_NR###" style="width:0%;background:#ccc;">&nbsp;</div> </div>
+	<div style="float:left;width:100px;padding-left:10px;">###VAR_PERCENT###% (###VAR_COUNTS###)</div>
+</div>
+<script type="text/javascript"> document.getElementById("quizanswer-###VAR_QUESTION###-###VAR_QA_NR###").style.width=parseInt(parseFloat(###VAR_PERCENT###))+"%"; </script>
+<!-- ###TEMPLATE_QR_NOTCORR_ANSW### end -->
+
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### begin of "an not correct answer which has not been answered" -->
+<div class="###PREFIX###-answer" style="clear:both;padding:2px 0;">
+	<div style="float:left;width:250px;text-align:right;padding-right:10px;">###VAR_QUESTION_ANSWER###:</div>
+	<div style="float:left;width:150px;background:#fff;border:1px solid #000;"><div id="quizanswer-###VAR_QUESTION###-###VAR_QA_NR###" style="width:0%;background:#ccc;">&nbsp;</div> </div>
+	<div style="float:left;width:100px;padding-left:10px;">###VAR_PERCENT###% (###VAR_COUNTS###)</div>
+</div>
+<script type="text/javascript"> document.getElementById("quizanswer-###VAR_QUESTION###-###VAR_QA_NR###").style.width=parseInt(parseFloat(###VAR_PERCENT###))+"%"; </script>
+<!-- ###TEMPLATE_QR_NOTCORR_NOTANSW### end -->
+
+<!-- ###TEMPLATE_QR_POINTS### begin of "points result for a question" -->
+
+<!-- ###TEMPLATE_QR_POINTS### end -->
+
+<!-- ###TEMPLATE_EXPLANATION### begin of "an explanation" -->
+<div class="###PREFIX###-explanation">###EXPLANATION###: ###VAR_EXPLANATION###</div>
+<!-- ###TEMPLATE_EXPLANATION### end -->
+
+<!-- ###TEMPLATE_QR_STAR_AVERAGE### begin average of star rating" -->
+<div class="###PREFIX###-answer">###VAR_QUESTION_STARS### ###VAR_QUESTION_STARS_AVERAGE### (###VAR_COUNTS###)</div>
+<!-- ###TEMPLATE_QR_STAR_AVERAGE### end -->
+
+
+<!-- ###TEMPLATE_RESULT_POINTS### begin -->
+
+<!-- ###TEMPLATE_RESULT_POINTS### end -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### begin -->
+
+<!-- ###TEMPLATE_RESULT_POINTS_TOTAL### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### begin of "user data to submit" (optional)  -->
+
+<!-- ###TEMPLATE_QUIZ_USER_TO_SUBMIT### end -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### begin of "submitted user name and email" -->
+
+<!-- ###TEMPLATE_QUIZ_USER_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_SUBMIT### begin -->
+<br />
+<button type="button" class="btn btn-primary ###PREFIX###-submit" onclick="quizsumbit(this.form);">###SUBMIT###</button> &nbsp;
+<button type="button" class="btn ###PREFIX###-back" name="###PREFIX###[back-button]" onclick="quizback(this.form);" ###BACK_STYLE###>###GO_BACK###</button>
+<!-- ###TEMPLATE_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_NO_SUBMIT### begin -->
+<p class="###PREFIX###-label">###NO_SUBMIT###</p>
+<!-- ###TEMPLATE_NO_SUBMIT### end -->
+
+
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### begin -->
+<p class="###PREFIX###-label">###DOUBLE_ENTRY###</p>
+<!-- ###TEMPLATE_QUIZ_DOUBLE_ENTRY### end -->
+
+
+<!-- ###TEMPLATE_NOT_LOGGEDIN### begin -->
+<p class="###PREFIX###-label">###NOT_LOGGEDIN###</p>
+<!-- ###TEMPLATE_NOT_LOGGEDIN### end -->
+
+
+You can use here these Markers too: ###RESTART_QUIZ###,
+###RESULT_POINTS###: ###VAR_RESULT_POINTS### / ###VAR_MAX_POINTS### (###TOTAL_POINTS###: ###VAR_TOTAL_POINTS### / ###VAR_TMAX_POINTS###)
+<!-- ###TEMPLATE_NO_MORE### begin of "final template after solving all questions of a quiz: no more questions left" -->
+<p class="###PREFIX###-label">###NO_MORE### ###YOUR_EVALUATION###</p>
+<!-- ###QUIZ_ANSWERS### begin -->
+ ###REF_QUESTION_IMAGE_BEGIN###
+ <div class="###PREFIX###-title###TITLE_HIDE###" style="text-align:center;">###VAR_QUESTION_TITLE###</div>
+ <div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_ALL###
+ ###REF_QUESTION_IMAGE_END###
+ <div style="clear:both;padding:3px 0;">###REF_DELIMITER###</div>
+<!-- ###QUIZ_ANSWERS### end -->
+<!-- ###TEMPLATE_NO_MORE### end -->
+
+
+Show all questions and correct answers. Shown if you use "CMD=allanswers".
+You can use ###REF_QR_ANSWER_ALL### instead of ###REF_QR_ANSWER_CORR### and you can use ###VAR_QUESTION### and ###VAR_QUESTIONS###.
+<!-- ###TEMPLATE_ALLANSWERS### begin of "all questions and answers" since v.0.3.0 -->
+ ###REF_QUESTION_IMAGE_BEGIN###
+ <div class="###PREFIX###-title###TITLE_HIDE###" style="text-align:center;">###VAR_QUESTION_TITLE###</div>
+ <div class="###PREFIX###-question">###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_ALL###
+ ###REF_QUESTION_IMAGE_END###
+ <div style="clear:both;padding:3px 0;">###REF_DELIMITER###</div>
+<!-- ###TEMPLATE_ALLANSWERS### end -->
+
+Link for detail answers of questions with text-input for ALLANSWERS - from xAjax
+<!-- ###TEMPLATE_DETAILS_LINK### begin of "detail answers link" since v.1.9.6 -->
+<div class="###PREFIX###-details" id="show_details-###ID###">
+<a href="####PREFIX###-details_###ID###" onclick="showDetails###ID###(###ID###);">###SHOW_DETAILS###</a>
+</div>
+<script type="text/javascript">
+function hideDetails###ID###(theID) {
+  document.getElementById('details_hidden-'+theID).style.display='none';
+  document.getElementById('show_details-'+theID).style.display='block';
+  return false;
+}
+function showDetails###ID###(theID) {
+  ###PREFIX###getAjaxDetails(theID);
+  return false;
+}
+</script>
+<!-- ###TEMPLATE_DETAILS_LINK### end -->
+
+Detail answers of questions with text-input for ALLANSWERS - from xAjax
+<!-- ###TEMPLATE_DETAILS### begin of "detail answers" since v.1.1.7 -->
+<div class="###PREFIX###-details_hidden" id="details_hidden-###ID###">
+<div style="text-align:right;"><a href="#details_hidden-###ID###" onclick="hideDetails###ID###(###ID###);">[X]</a></div>
+<div id="details-###ID###">
+###REF_DETAILS_ITEM###
+</div>
+</div>
+<!-- ###TEMPLATE_DETAILS### end -->
+
+<!-- ###TEMPLATE_DETAILS_ITEM### begin of "detail answer" since v.1.1.7 -->
+<div class="###PREFIX###-details_item-###ITEM_EVEN_ODD###">###ITEM_ANSWER###: ###ITEM_PERCENT###% (###ITEM_COUNTS###)</div>
+<!-- ###TEMPLATE_DETAILS_ITEM### end -->
+
+Star Rating Details Template, only works when jQuery included
+<!-- ###TEMPLATE_STAR_RATING_DETAILS_LINK### begin of "detail answers link" -->
+<div class="###PREFIX###-details" id="show_details-###ID###-link"><a onclick="callStarRatingDetails('###ID###');">###SHOW_DETAILS###</a></div>
+<div id="show_details-###ID###"></div>
+<!-- ###TEMPLATE_STAR_RATING_DETAILS_LINK### end -->
+
+<!-- ###TEMPLATE_STAR_RATING_DETAILS_ITEM### begin of "detail answer" -->
+<div class="###PREFIX###-details_item-###ITEM_EVEN_ODD###">###ITEM_ANSWER### ###ITEM_PERCENT###% (###ITEM_COUNTS###)</div>
+<!-- ###TEMPLATE_STAR_RATING_DETAILS_ITEM### end -->
+
+
+<!-- ###TEMPLATE_POLL_SUBMITED### begin -->
+<p class="###PREFIX###-label">###THANK_YOU###</p>
+<!-- ###TEMPLATE_POLL_SUBMITED### end -->
+
+
+<!-- ###TEMPLATE_CHEATING### begin -->
+<p class="###PREFIX###-label">###CHEATING###</p>
+<!-- ###TEMPLATE_CHEATING### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE### begin of "highscore list" -->
+
+<!-- ###TEMPLATE_HIGHSCORE### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### begin (optional)  -->
+
+<!-- ###TEMPLATE_HIGHSCORE_CAPTION### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### begin -->
+
+<!-- ###TEMPLATE_HIGHSCORE_QUIZ_TAKER### end -->
+
+
+<!-- ###TEMPLATE_HIGHSCORE_URL### begin -->
+
+<!-- ###TEMPLATE_HIGHSCORE_URL### end -->
+
+
+
+<!-- ###TEMPLATE_CAPTCHA_NOT_OK### begin -->
+<p class="###PREFIX###-label"><b>###CAPTCHA_NOT_OK###</b></p>
+<!-- ###TEMPLATE_CAPTCHA_NOT_OK### end -->
+
+
+Show all questions and correct answers in the email.
+(You can use ###REF_QR_ANSWER_ALL### instead of ###REF_QR_ANSWER_CORR### and you can use ###VAR_QUESTION### and ###VAR_QUESTIONS###)
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### begin of "all questions and answers" since v.0.4.1 -->
+ ###REF_QUESTION_IMAGE_BEGIN###
+ <div>###VAR_QUESTION_TITLE###: ###VAR_QUESTION_NAME###</div>
+ ###REF_QR_ANSWER_ALL###
+ ###REF_QR_EXPLANATION###
+ ###REF_QUESTION_IMAGE_END###
+ ###REF_DELIMITER###
+<!-- ###TEMPLATE_EMAIL_ALLANSWERS### end -->
+
+
+<p>Email to admin (if email.send_admin > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis = 0 !!!<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_ADMIN_EMAIL### begin of "template email for the admin" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###EMAIL_TAKEN### ###QUIZ_NAME###
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_ADMIN_EMAIL### end -->
+
+
+<p>Email to quiz taker (if email.send_user > 0):<br />
+1. Reference to TEMPLATE_QUIZ_USER_SUBMITED or TEMPLATE_POLL_SUBMITED<br />
+2. Reference to TEMPLATE_QUIZ_ANALYSIS_x. x depends on "showAnalysis". REF_QUIZ_ANALYSIS will be empty if showAnalysis = 0 !!!<br />
+3. Reference to TEMPLATE_EMAIL_ALLANSWERS if "showAllCorrectAnswers = 1".
+</p>
+<!-- ###TEMPLATE_USER_EMAIL### begin of "template email for the admin" since v.0.4.1 -->
+<html><head><title>###SUBJECT###</title></head><body>
+###REF_INTRODUCTION###
+###REF_QUIZ_ANALYSIS###
+###REF_EMAIL_ALLANSWERS###
+</body></html>
+<!-- ###TEMPLATE_USER_EMAIL### end -->
+
+</body>
+</html>
