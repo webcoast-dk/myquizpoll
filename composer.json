@@ -1,0 +1,33 @@
+{
+    "name": "webcoast/myquizpoll",
+    "type": "typo3-cms-extension",
+    "description": "A very old, but advanced quiz-extension which can be used as a quiz, questionnaire, survey, poll, rating or psychological test.",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Kurt Gusbeth",
+            "email": "info@quizpalme.de",
+            "role": "Developer"
+        },
+        {
+            "name": "Thorben Nissen",
+            "email": "thorben.nissen@kapp-hamburg.de",
+            "role": "Developer"
+        }
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.x-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "typo3/cms-core": "^8.7.0 || ^9.5.0"
+
+    },
+    "autoload": {
+        "psr-4": {
+            "WEBcoast\\Myquizpoll\\": "Classes/"
+        }
+    }
+}
