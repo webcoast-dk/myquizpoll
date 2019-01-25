@@ -22,6 +22,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Resource\FilePathSanitizer;
+
 require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('myquizpoll').'pi1/class.tx_myquizpoll_helper.php'); // PATH_BE_myquizpoll
 
 /**
@@ -47,7 +50,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     public $tableCategory  = 'tx_myquizpoll_category';
     public $xajax;
     public $helperObj;
-    
+
     /**
      * Main method of your PlugIn
      *
@@ -58,7 +61,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     function main($content,$conf) {
         $this->conf=$conf;
         $this->pi_setPiVarDefaults();
-        $this->pi_initPIflexForm(); // Init FlexForm configuration for plugin 
+        $this->pi_initPIflexForm(); // Init FlexForm configuration for plugin
         $this->pi_loadLL();
         $this->pi_USER_INT_obj=1;    // Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
         $thePID = 0;                // PID of the sysfolder with questions
@@ -85,17 +88,17 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $lastCat = '';				// default last category
         $catArray = array();        // array with category names
         $oldLoaded = false;			// old data loaded
-        
+
         // global $TSFE;
-        $this->lang = intval($GLOBALS['TSFE']->config['config']['sys_language_uid']);         
+        $this->lang = intval($GLOBALS['TSFE']->config['config']['sys_language_uid']);
         $this->copyFlex();            // copy Felxform-Variables to this->conf
         $this->tableAnswers = ($this->conf['tableAnswers']=='tx_myquizpoll_voting') ? 'tx_myquizpoll_voting' : 'tx_myquizpoll_result';
-        
+
         if ( $this->conf['enableCaptcha'] && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('sr_freecap') ) {        // load Captcha: Anti-Spam-Tool ??? only if enabled (16.10.2009)
             require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('sr_freecap').'pi2/class.tx_srfreecap_pi2.php');
             $this->freeCap = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_srfreecap_pi2');
         }
-        
+
         // TODO: Rekursiv-Flag berücksichtigen!
         if( !($this->cObj->data['pages'] == '') ) {        // PID (eine oder mehrere)
             $thePID = $this->cObj->data['pages'];
@@ -114,15 +117,15 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $finalPID = ($this->conf['finalPID']) ? intval($this->conf['finalPID']) : $GLOBALS['TSFE']->id;    // oder $nextPID;
         $listPID  = ($this->conf['listPID'])  ? intval($this->conf['listPID'])  : $GLOBALS['TSFE']->id;    // oder $finalPID;
         $startPID = intval($this->conf['startPID']);
-        
+
         if ($this->conf['answerChoiceMax'])                // antworten pro fragen
             $this->answerChoiceMax = intval($this->conf['answerChoiceMax']);
         if (!$this->conf['myVars.']['separator'])        // separator bei den myVars
              $this->conf['myVars.']['separator'] = ',';
-        
+
         mt_srand(hexdec(substr(md5(microtime()), -8)) & 0x7fffffff);  // Seed random number generator
         //$this->local_cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance("tslib_cObj");    // Local cObj
-        
+
         // Get post parameters: Submited Quiz-data
         if ($this->conf['CMD']=='archive')
         	$this->conf['ignoreSubmit']=true;	// submits in diesen Fällen igonieren
@@ -151,10 +154,10 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         if ($back_hit) $quizData['cmd']='';
         $seite=0;
         if ($this->tableAnswers=='tx_myquizpoll_voting') $this->conf['allowBack']=0;
-        
+
         // Load template
         $tempPath = $this->initTemplate();
-        
+
         // Marker values
         $statisticsArray=array();
         $markerArray=array();
@@ -164,7 +167,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $markerArrayQ=array();
         $markerArrayP["###REF_HIGHSCORE###"] = '';
         $markerArrayP["###REF_HIGHSCORE_URL###"] = '';
-        $markerArrayP["###REF_POLLRESULT_URL###"] = '';        
+        $markerArrayP["###REF_POLLRESULT_URL###"] = '';
         $markerArrayP["###REF_QUIZ_ANALYSIS###"] = '';
         $markerArrayP["###REF_NO_MORE###"] = '';
         $markerArrayP["###REF_ERRORS###"] = '';
@@ -222,7 +225,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         // Link to the Highscore list
           $urlParameters = array("tx_myquizpoll_pi1[cmd]" => "score", "tx_myquizpoll_pi1[qtuid]" => intval($quizData['qtuid']), "no_cache" => "1");
         $markerArray["###HIGHSCORE_URL###"] = $this->pi_linkToPage($this->pi_getLL('highscore_url','highscore_url'), $listPID, $target = '', $urlParameters);
-        
+
         // Jokers and Details
         if (($this->conf['useJokers'] && $this->conf['pageQuestions']==1) || $this->conf['showDetailAnswers']) {
             /*
@@ -242,11 +245,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $this->xajax->registerFunction(array('getAjaxDetails', &$this, 'getAjaxDetails'));
             $this->xajax->processRequests();// If this is an xajax request, call our registered function, send output and exit
             $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_2'] = $this->xajax->getJavascript(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('xajax'));// Else create javascript and add it to the header output
-            
+
             $markerArrayJ=array();
             $markerArrayJ["###PREFIX###"] = $this->prefixId;
             $markerArrayJ["###USE_JOKERS###"] = $this->pi_getLL('use_jokers','use_jokers');
-            $markerArrayJ["###ANSWER_JOKER###"] = $this->pi_getLL('answer_joker','answer_joker');            
+            $markerArrayJ["###ANSWER_JOKER###"] = $this->pi_getLL('answer_joker','answer_joker');
         }
 
         // Init
@@ -256,27 +259,27 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $whereAnswered = '';    // questions that have been allready answered (UIDs)
         $whereSkipped = '';        // questions that have been skipped (UIDs)
         $content = '';            // content to be shown
-        
+
         $this->helperObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_myquizpoll_helper',
-            $thePID, 
+            $thePID,
             $this->lang,
             $this->answerChoiceMax,
-            $this->tableQuestions, 
-            $this->tableAnswers, 
-            $this->tableRelation, 
+            $this->tableQuestions,
+            $this->tableAnswers,
+            $this->tableRelation,
             $this->conf
         );
-        
+
         // enable dev logging if set
         if (TYPO3_DLOG || $this->conf['debug']) {
             $this->helperObj->writeDevLog = TRUE;
             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('UID: '.$this->cObj->data['uid'].'; language: '.$this->lang.'; use cookies: '.$this->conf['useCookiesInDays'].'; use ip-check: '.$this->conf['doubleEntryCheck'].'; path to template: '.$tempPath, $this->extKey, 0);
         }
-        	
+
         // set some session-variables
         if ((!$this->conf['isPoll']) && ($quizData['cmd']=='') && (!$quizData['qtuid']))
             $this->helperObj->setQuestionsVars();
-        
+
         // what to display?
         switch ($quizData['cmd']) {
         	case 'archive':
@@ -291,9 +294,9 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         		}
         	// Andere Fälle später entscheiden
         }
-        
-        
-        
+
+
+
         // get the startPID of a solved quiz
         if (!$startPID) $startPID = $this->helperObj->getStartUid($quizData['qtuid']);
         $quiz_name = $this->conf['quizName'];
@@ -301,14 +304,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $quiz_name = $this->helperObj->getPageTitle($startPID);
         }
         $markerArrayP["###QUIZ_NAME###"] = $markerArray["###QUIZ_NAME###"] = $quiz_name;
-    
+
         //if ($this->conf['startCategory']) {        // Kategorie-Namen zwischenspeichern
             $res6 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,name,celement,pagetime',
                     $this->tableCategory,
                     'pid IN ('.$thePID.')');
             $catCount = $GLOBALS['TYPO3_DB']->sql_num_rows($res6);
             if ($catCount>0) {
-                while($row6 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res6)){ 
+                while($row6 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res6)){
                     $catUID = $row6['uid'];
                     $this->catArray[$catUID] = array();
                     $this->catArray[$catUID]['name'] = $row6['name'];
@@ -318,21 +321,21 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 if ($this->helperObj->writeDevLog)
                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($catCount.' categories found.', $this->extKey, 0);
             }
-            $GLOBALS['TYPO3_DB']->sql_free_result($res6); 
+            $GLOBALS['TYPO3_DB']->sql_free_result($res6);
         //}
-        
+
         // check, if logged in
         if ( $this->conf['loggedInCheck'] && ($quizData['cmd']!='score' && $quizData['cmd']!='list') && !$GLOBALS['TSFE']->loginUser ) {
             $no_rights = 1;                    // noname user is (b)locked now
             $markerArray["###NOT_LOGGEDIN###"] = $this->pi_getLL('not_loggedin','not_loggedin');
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_NOT_LOGGEDIN###");
-            $content .= $this->cObj->substituteMarkerArray($template, $markerArray);      // Sonderfall !!!
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_NOT_LOGGEDIN###");
+            $content .= $this->templateService->substituteMarkerArray($template, $markerArray);      // Sonderfall !!!
             if ($this->helperObj->writeDevLog)
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Loggin check failes!', $this->extKey, 0);
         }
-        
+
         $quiz_taker_ip_address = preg_replace('/[^0-9\.]/', '', $this->helperObj->getRealIpAddr());
-        
+
         // Ignore all sumbits and old data?
         if (!$this->conf['ignoreSubmit']) {
 	        // check for second entry ( based on the ip-address )
@@ -363,8 +366,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	                    } else {
 	                        $no_rights = 1;                        // user is (b)locked now
 	                        $markerArray["###DOUBLE_ENTRY###"] = $this->pi_getLL('double_entry','double_entry');
-	                        $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_DOUBLE_ENTRY###");
-	                        $content .= $this->cObj->substituteMarkerArray($template, $markerArray);         // Sonderfall !!!
+	                        $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_DOUBLE_ENTRY###");
+	                        $content .= $this->templateService->substituteMarkerArray($template, $markerArray);         // Sonderfall !!!
 	                        if ($this->helperObj->writeDevLog)
 	                            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('User is blocked (ip-check), because doubleCheckMode='.$this->conf['doubleCheckMode'].', secondPollMode='.$this->conf['secondPollMode'], $this->extKey, 0);
 	                    }
@@ -375,7 +378,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	            if ($this->helperObj->writeDevLog)
 	                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('IP check for qtuid='.$quizData['qtuid'], $this->extKey, 0);
 	        }
-	        
+
 	        // check for second entry ( based on the fe_users-id )
 	        if ( $this->conf['loggedInMode'] && ($quizData['cmd']!='score' && $quizData['cmd']!='list') && !$quizData['qtuid'] && $GLOBALS['TSFE']->loginUser && $this->tableAnswers=='tx_myquizpoll_result' && $no_rights == 0 ) {
 	            $fe_uid = intval($GLOBALS['TSFE']->fe_user->user['uid']);
@@ -396,8 +399,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	                } else {
 	                    $no_rights = 1;                        // user is (b)locked now
 	                    $markerArray["###DOUBLE_ENTRY###"] = $this->pi_getLL('double_entry','double_entry');
-	                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_DOUBLE_ENTRY###");
-	                    $content .= $this->cObj->substituteMarkerArray($template, $markerArray);         // Sonderfall !!!
+	                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_DOUBLE_ENTRY###");
+	                    $content .= $this->templateService->substituteMarkerArray($template, $markerArray);         // Sonderfall !!!
 	                }
 	                $GLOBALS['TYPO3_DB']->sql_free_result($res5);
 	                //$oldLoaded = true;
@@ -405,7 +408,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	            if ($this->helperObj->writeDevLog)
 	                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('fe_users check for qtuid='.$quizData['qtuid'], $this->extKey, 0);
 	        }
-	        
+
 	        // check if the captcha is OK
 	        if ((($quizData['cmd']  == 'submit' && $this->helperObj->getAskAtQ($quizData['qtuid'])) ||
 	             ($quizData["fromStart"] && $this->conf['userData.']['askAtStart']) ||
@@ -423,9 +426,9 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	            $quizData['cmd']  = ($quizData["fromStart"]) ? '' : 'next';        // "nochmal" simulieren
 	            //$quizData['qtuid'] = '';        // wieso wohl???
 	            $markerArray["###CAPTCHA_NOT_OK###"] = $this->pi_getLL('captcha_not_ok','captcha_not_ok');
-	            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_CAPTCHA_NOT_OK###");
-	            $markerArrayP["###REF_ERRORS###"] .= $this->cObj->substituteMarkerArray($template, $markerArray);    // instead of $content
-	            //if ($quizData["fromStart"]) 
+	            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_CAPTCHA_NOT_OK###");
+	            $markerArrayP["###REF_ERRORS###"] .= $this->templateService->substituteMarkerArray($template, $markerArray);    // instead of $content
+	            //if ($quizData["fromStart"])
 	            $quizData["fromStart"] = 0;            // nichts wurde getan simulieren
 	            $quizData["fromFinal"] = 0;
 	            if ($this->helperObj->writeDevLog)
@@ -434,14 +437,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	            $captchaError = true;
 	        } else if ($quizData["captchaError"]) {
 	            $markerArray["###CAPTCHA_NOT_OK###"] = $this->pi_getLL('captcha_not_ok','captcha_not_ok');
-	            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_CAPTCHA_NOT_OK###");
-	            $markerArrayP["###REF_ERRORS###"] .= $this->cObj->substituteMarkerArray($template, $markerArray);    // instead of $content
+	            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_CAPTCHA_NOT_OK###");
+	            $markerArrayP["###REF_ERRORS###"] .= $this->templateService->substituteMarkerArray($template, $markerArray);    // instead of $content
 	            if ($this->helperObj->writeDevLog)
 	                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('captcha check 2 not ok.', $this->extKey, 0);
 	            $error=true;
 	            $captchaError = true;
 	        }
-	        
+
 	        // check if used IP is blocked
 	        if ($quizData['cmd'] == 'submit' && $this->conf['blockIP']) {
 	            $ips = explode(',', $this->conf['blockIP']);
@@ -449,8 +452,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	                $len = strlen(trim($aip));
 	                if (substr($quiz_taker_ip_address,0,$len) == trim($aip)) {
 	                    //$markerArray["###IP_BLOCKED###"] = $this->pi_getLL('ip_blocked','ip_blocked');
-	                    //$template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_IP_BLOCKED###");
-	                    $markerArrayP["###REF_ERRORS###"] .= 'Your IP is blocked!'; //$this->cObj->substituteMarkerArray($template, $markerArray);
+	                    //$template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_IP_BLOCKED###");
+	                    $markerArrayP["###REF_ERRORS###"] .= 'Your IP is blocked!'; //$this->templateService->substituteMarkerArray($template, $markerArray);
 	                    if ($this->helperObj->writeDevLog)
 	                        \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('IP '.$quiz_taker_ip_address.' blocked!', $this->extKey, 0);
 	                    $error=true;
@@ -458,16 +461,16 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	                }
 	            }
 	        }
-	        
+
 	        // read quiz takers old data
 	        $answeredQuestions = '';     // prev. answered Question(s)
 	        $skipped = '';
 	        $cids = '';
 	        $fids = '';
-	        if ((($this->conf['useCookiesInDays'] && !$quizData['qtuid']) || 
+	        if ((($this->conf['useCookiesInDays'] && !$quizData['qtuid']) ||
 	             ($quizData['cmd']  == 'next') ||
 	             ($quizData['cmd']  == 'submit' && !$this->conf['isPoll'] && ($this->conf['dontShowPoints']!=1 || $this->conf['quizTimeMinutes']))) && $no_rights == 0 ) {
-	             
+
 	            $cookieRead = false;
 	            if (!$quizData['qtuid'] && $this->conf['useCookiesInDays']) {   // !($quizData['cmd']  == 'next' || $quizData['cmd']  == 'submit')) warum das nur? auskommentiert am 27.12.2009
 	                $cookieName = $this->getCookieMode($resPID, $thePID);
@@ -483,7 +486,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	                    // oder? $HTTP_COOKIE_VARS["myquizpoll".$resPID];    oder?  $GLOBALS["TSFE"]->fe_user->getKey("ses","myquizpoll".$resPID);
 	                }
 	            }
-	            
+
 	            if ($quizData['qtuid'] && $this->tableAnswers=='tx_myquizpoll_result') {
 	                // load solved questions and quiz takers name, email, homepage, old points and last time
 	                $uid = intval($quizData['qtuid']);
@@ -563,9 +566,9 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	                \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("Old data loaded with uid $uid: $answeredQuestions / $whereAnswered / $whereSkipped", $this->extKey, 0);
 	        }
         }
-        
+
         $markerArrayP["###QTUID###"] = intval($quizData['qtuid']);
-        
+
         // check, if quiz is cancled
         if ( $this->conf['quizTimeMinutes'] && ((intval($this->conf['quizTimeMinutes'])*60 - $elapseTime)<=0) ) {     // oder $quizData['cancel'] == 1 ) {
             $markerArray["###REACHED1###"] = $this->pi_getLL('reached1','reached1');
@@ -574,9 +577,9 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $markerArray["###SO_FAR_REACHED2###"] = $this->pi_getLL('so_far_reached2','so_far_reached2');
             $markerArray["###QUIZ_END###"] = $this->pi_getLL('quiz_end','quiz_end');
             $markerArray["###RESTART_QUIZ###"] = $this->pi_linkToPage($this->pi_getLL('restart_quiz','restart_quiz'), $startPID, $target = '', array());
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_END###");
-            $content .= $this->cObj->substituteMarkerArray($template, $markerArray);        // sonderfall !!!
-            
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_END###");
+            $content .= $this->templateService->substituteMarkerArray($template, $markerArray);        // sonderfall !!!
+
             if ( $this->conf['finalWhenCancel'] ) {
                 $noQuestions = true;
             } else {
@@ -585,24 +588,24 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 } else {
                     $quizData['cmd'] = 'exit';        // display no more questions
                 }
-                $no_rights = 1;                    // cancel all                
+                $no_rights = 1;                    // cancel all
             }
             if ($this->helperObj->writeDevLog)
                 \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("cancel check: $no_rights/".$quizData['cmd'], $this->extKey, 0);
         }
-        
+
         // show only a start page?
         if ($this->conf['userData.']['askAtStart'] && !$quizData['qtuid'] && !$quizData['cmd'] && !$quizData["fromStart"]) {        // show only "ask for user data"?
             $startPage = true;
             $quizData['cmd'] = 'start';
         }
-        
+
         // next page is a page with questions...
         if ($quizData['cmd'] == 'next') {
             $quizData['cmd'] = '';
         }
-        
-        
+
+
         if( $quizData['cmd'] == 'submit' && !$this->conf['ignoreSubmit'] && $no_rights == 0 ) {   /* ***************************************************** */
             /*
              * Display result page: answers and points
@@ -614,12 +617,12 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $quizData["name"] = $this->pi_getLL('no_name','no_name');
                 if ( !(\TYPO3\CMS\Core\Utility\GeneralUtility::validEmail(trim($quizData["email"]))) )
                     $quizData["email"] = $this->pi_getLL('no_email','no_email');
-                
+
                 // Avoid bad characters in database request
                 $quiz_taker_name = $GLOBALS['TYPO3_DB']->quoteStr($quizData['name'], $this->tableAnswers);
                 $quiz_taker_email  = $GLOBALS['TYPO3_DB']->quoteStr($quizData['email'], $this->tableAnswers);
                 $quiz_taker_homepage = $GLOBALS['TYPO3_DB']->quoteStr($quizData['homepage'], $this->tableAnswers);
-                
+
                 $markerArray["###REAL_NAME###"] = $quiz_taker_name;
                 $markerArray["###REAL_EMAIL###"] = $quiz_taker_email;
                 $markerArray["###REAL_HOMEPAGE###"] = $quiz_taker_homepage;
@@ -640,22 +643,22 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 else
                     $markerArray["###VAR_QUESTION###"] = $this->helperObj->getQuestionNo('-');
             }
-            
+
             // Begin HTML output
-            $template_qr = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QRESULT###"); // full template
+            $template_qr = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QRESULT###"); // full template
             if (!$this->conf["isPoll"]) {    // neu seit 20.2.2011
-                $template_answer = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR###");
-                $template_okok = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_ANSW###");
-                $template_oknot = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_NOTANSW###");
-                $template_notok = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_ANSW###");
-                $template_notnot = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_NOTANSW###");
-                $template_qr_points = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_POINTS###");
-                $template_expl = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_EXPLANATION###");
+                $template_answer = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR###");
+                $template_okok = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_ANSW###");
+                $template_oknot = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_NOTANSW###");
+                $template_notok = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_ANSW###");
+                $template_notnot = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_NOTANSW###");
+                $template_qr_points = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_POINTS###");
+                $template_expl = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_EXPLANATION###");
             }
-            $template_delimiter = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_DELIMITER###");
-            $template_image_begin = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
-            $template_image_end = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
-            
+            $template_delimiter = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_DELIMITER###");
+            $template_image_begin = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
+            $template_image_end = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
+
             // Get the answers from the user
             $answerArray = array();
             $questionNumber = 1;
@@ -674,7 +677,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             if ($lastUIDs) {
                 $whereUIDs = ' AND uid IN ('.substr($lastUIDs,1).')';
                 //}    // kgb: geaendert am 6.9.2010
-            
+
                 // Get questions from the database
                 $questionsArray = array();
                 $tempNumber = 0;
@@ -683,14 +686,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         'pid IN (' . $thePID . ')' . $whereUIDs . $whereCat . $this->helperObj->getWhereLang() . ' ' . $this->cObj->enableFields($this->tableQuestions));
                 $rows = $GLOBALS['TYPO3_DB']->sql_num_rows($res5);
                 if ($rows>0) {
-                    while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){ 
+                    while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){
                         $tempNumber = $row['uid'];            // save the uid for each question
                         $questionsArray[$tempNumber] = $row;     // save each question
                     }
                 }
                 $GLOBALS['TYPO3_DB']->sql_free_result($res5);
             }
-            
+
             $points=0;                // points from the user (quiz taker)
             $maxPoints=0;            // maximum points reachable per page
             $maxTotal=0;            // maximum total points reachable
@@ -708,13 +711,13 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $halvePoints = $this->conf['jokers.']['halvePoints'];
             else
                 $halvePoints = 0;
-            
+
             // Old questions and answers
             for( $questionNumber=1; $questionNumber < $maxQuestions+1; $questionNumber++ ) {
-                $questionUID = intval($answerArray[$questionNumber]); 
+                $questionUID = intval($answerArray[$questionNumber]);
                  $row = $questionsArray[$questionUID];
                 $markerArray["###VAR_QUESTION_NUMBER###"] = $questionNumber;
-                    
+
                 if ($this->conf['isPoll']) {    // link to the result page
                     $urlParameters = array("tx_myquizpoll_pi1[cmd]" => "list", "tx_myquizpoll_pi1[qid]" => $questionUID, "no_cache" => "1");
                     $markerArray["###POLLRESULT_URL###"] = $this->pi_linkToPage($this->pi_getLL('poll_url','poll_url'), $listPID, $target = '', $urlParameters);
@@ -723,7 +726,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $skippedCount++;
                     continue;
                 }
-                
+
                 //$answerPointsBool = false;
                 $answered.=','.$questionUID;        // nach unten geschoben...
                 $questionPoints=0;
@@ -732,19 +735,19 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $nextCat = '';
                 $lastCat = $row['category'];
                 if ($this->catArray[$lastCat]) $markerArray["###VAR_CATEGORY###"] = $this->catArray[$lastCat]['name'];
-            
+
                 // Output the result/explanations
                 if ( !($this->conf['dontShowCorrectAnswers'] && $this->conf['dontShowPoints']==1) || $this->conf['startCategory'] || $this->conf['advancedStatistics'] || $this->conf['showAllCorrectAnswers'] || $this->conf['isPoll'] || $this->conf['email.']['answers'] != '' ) {
-                
+
                     if ($row['image']) {  // && (substr_count($template_qr, 'REF_QUESTION_IMAGE_BEGIN')>0)) {
                         $markerArray["###VAR_QUESTION_IMAGE###"] = $this->helperObj->getImage($row['image'], $row["alt_text"]);
-                        $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = $this->cObj->substituteMarkerArray($template_image_begin, $markerArray);
+                        $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = $this->templateService->substituteMarkerArray($template_image_begin, $markerArray);
                         $markerArray["###REF_QUESTION_IMAGE_END###"] = $template_image_end;
                     } else {
                         $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = '';
                         $markerArray["###REF_QUESTION_IMAGE_END###"] = '';
                     }
-                    
+
                     $markerArray["###TITLE_HIDE###"] = ($row['title_hide']) ? '-hide' : '';
                     $markerArray["###VAR_QUESTION_TITLE###"] = $row['title'];
                     $markerArray["###VAR_QUESTION_NAME###"] = $this->formatStr($row['name']); // $this->pi_RTEcssText($row['name']);
@@ -765,7 +768,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $markerArray["###NO_POINTS###"] = '';
                     else
                         $markerArray["###NO_POINTS###"] = '0';
-                    
+
                     if ( !$this->conf['isPoll'] ) {
                         if ( !$this->conf['dontShowPoints'] && $row['qtype']<5 ) {
                             $markerArray["###P1###"] = $this->pi_getLL('p1','p1');
@@ -787,36 +790,36 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         }
                         break;        // mehr braucht man nicht bei Umfragen!
                     }
-                    
+
                     // myVars for questions
                     $markerArray = array_merge($markerArray, $this->helperObj->setQuestionVars($questionNumber));
-                    
+
                     $allAnswersOK = true;    // alle Antworten richtig beantwortet?
                     //$correctBool = false;    // gibt es ueberhaupt korrekte antworten?
                     $realCorrectBool = false; // wurden ueberhaupt korrekte Antworten markiert?
                     $withAnswer = $this->conf['noAnswer'];    // gab es eine Antwort vom Benutzer?
                     $lastSelected = 0;
-                    
+
                     for( $answerNumber=1; $answerNumber < $this->answerChoiceMax+1; $answerNumber++ ) {
-                        
+
                         if ($row['answer'.$answerNumber] || $row['answer'.$answerNumber]==='0' || in_array($row['qtype'], $this->textType)) {    // was a answer set in the backend?
-                            
+
                             $selected=0;    // was the answer selected by the quiz taker?
                             $tempAnswer = ''; // text for answer $answerNumber
                             // myVars for answers
                             $markerArray = array_merge($markerArray, $this->helperObj->setAnswerVars($answerNumber, $row['qtype']));
-                            
+
                             //if ( !$this->conf['isPoll'] ) {    // show correct answers. Bug fixed: dontShowCorrectAnswers doesnt matter here
                                 if ( !$this->conf['dontShowCorrectAnswers'] )
                                     $markerArray["###VAR_QUESTION_ANSWER###"] = $row['answer'.$answerNumber];
-                                
+
                                 $thisCat = $row['category'.$answerNumber];
                                 if ($this->catArray[$thisCat]) $markerArray['###VAR_QA_CATEGORY###'] = $this->catArray[$thisCat]['name'];
-                                
+
                                 if ($row['correct'.$answerNumber]) {    // es gibt richtige Antworten
                                     $realCorrectBool = true;
                                 }
-                                
+
                                 $answerPoints = 0;        // answer points from the DB
                                 if ( !$this->conf['dontShowPoints'] ) {
                                     //if ($answerPointsBool) {         // hier interessiert es nicht, ob eine Antwort als korrekt markiert wurde!
@@ -836,25 +839,25 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                     if ($row['qtype']<5)
                                         $markerArray["###VAR_ANSWER_POINTS###"] = $answerPoints;
                                 }
-                                
+
                                 if ($quizData['answer'.$questionNumber.'_'.$answerNumber]) {  // !='') {    // type 0 und 4
-                                    $selected=$answerNumber; 
+                                    $selected=$answerNumber;
                                 } else if ((($row['qtype']>0 && $row['qtype']<3) || $row['qtype']==7) && $quizData['answer'.$questionNumber]==$answerNumber) {
                                     $selected=$answerNumber;
                                 } else if (($row['qtype']==3 && $quizData['answer'.$questionNumber]!='') || $row['qtype']==5) {    // type 3 und 5
                                     $selected=$answerNumber;            // sollte 1 sein
                                 }
                             //}
-                            
+
                             $wrongText = 0;        // wrong text input?
-                            
+
 /*                            if ($this->conf['isPoll']) {    // wurde aus der Schleife genommen!
                                 $points=$quizData['answer'.$questionNumber];                        // points = SELECTED ANSWER !!!
                                 $markerArray["###VAR_USER_ANSWER###"] .= $row['answer'.$points];
                             } else */
                             if ($row['qtype']==5 && !$this->conf['dontShowCorrectAnswers']) {
                                 $markerArray["###VAR_QUESTION_ANSWER###"] = nl2br(htmlspecialchars($quizData['answer'.$questionNumber]));
-                                $tempAnswer = $this->cObj->substituteMarkerArray($template_okok, $markerArray);
+                                $tempAnswer = $this->templateService->substituteMarkerArray($template_okok, $markerArray);
                                 $markerArray["###REF_QR_ANSWER_CORR_ANSW###"] .= $tempAnswer;    // welches template soll man hier wohl nehmen?
                                 if ($quizData['answer'.$questionNumber] || $quizData['answer'.$questionNumber]===0) $withAnswer = true;
                                 if ($this->helperObj->writeDevLog)
@@ -863,7 +866,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                                 ($row['qtype']!=3 && $row['correct'.$answerNumber]))) {    // korrekte Antwort
                                 $questionPoints=$questionPoints+$answerPoints;    // $row['points']; geaendert am 16.9.2009
                                 if ( !$this->conf['dontShowCorrectAnswers'] ) {
-                                    $tempAnswer = $this->cObj->substituteMarkerArray($template_okok, $markerArray);
+                                    $tempAnswer = $this->templateService->substituteMarkerArray($template_okok, $markerArray);
                                     $markerArray["###REF_QR_ANSWER_CORR_ANSW###"] .= $tempAnswer;
                                 }
                                 //$correctBool = true;
@@ -876,11 +879,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                     $questionPoints=$questionPoints-$answerPoints;    // $row['points']; geaendert am 16.9.2009
                                 if ( !$this->conf['dontShowCorrectAnswers'] ) {         // { added 8.8.09
                                     if ($row['qtype']==3) {        // since 0.1.8: falsche und richtige antwort ausgeben
-                                        $tempAnswer = $this->cObj->substituteMarkerArray($template_oknot, $markerArray);
+                                        $tempAnswer = $this->templateService->substituteMarkerArray($template_oknot, $markerArray);
                                         $markerArray["###REF_QR_ANSWER_CORR_NOTANSW###"] .= $tempAnswer;
-                                        $markerArray["###VAR_QUESTION_ANSWER###"] = htmlspecialchars($quizData['answer'.$questionNumber]);                                        
+                                        $markerArray["###VAR_QUESTION_ANSWER###"] = htmlspecialchars($quizData['answer'.$questionNumber]);
                                     }
-                                    $tempAnswer2 = $this->cObj->substituteMarkerArray($template_notok, $markerArray);
+                                    $tempAnswer2 = $this->templateService->substituteMarkerArray($template_notok, $markerArray);
                                     $markerArray["###REF_QR_ANSWER_NOTCORR_ANSW###"] .= $tempAnswer2;
                                     $tempAnswer .= $tempAnswer2;    // hier gibt es 2 antworten !!!
                                 }
@@ -891,7 +894,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             } else if ($row['correct'.$answerNumber]) {    // nicht beantwortet, waere aber richtig gewesen
                                 $allAnswersOK = false;
                                 if (!$this->conf['dontShowCorrectAnswers']) {        // hierhin verschoben am 24.1.10
-                                    $tempAnswer = $this->cObj->substituteMarkerArray($template_oknot, $markerArray);
+                                    $tempAnswer = $this->templateService->substituteMarkerArray($template_oknot, $markerArray);
                                     $markerArray["###REF_QR_ANSWER_CORR_NOTANSW###"] .= $tempAnswer;
                                 }
                                 if ($row['qtype']==3 && ($row['answer1'] || $row['answer1']==='0')) {
@@ -902,16 +905,16 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                 if ($this->helperObj->writeDevLog)
                                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($questionUID.'-'.$answerNumber.'=CORR_NOTANSW->', $this->extKey, 0);
                             } else if ( !$this->conf['dontShowCorrectAnswers'] ) {
-                                $tempAnswer = $this->cObj->substituteMarkerArray($template_notnot, $markerArray);
+                                $tempAnswer = $this->templateService->substituteMarkerArray($template_notnot, $markerArray);
                                 $markerArray["###REF_QR_ANSWER_NOTCORR_NOTANSW###"] .= $tempAnswer;
                                 if ($this->helperObj->writeDevLog)
                                     \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($questionUID.'-'.$answerNumber.'=NOTCORR_NOTANSW->', $this->extKey, 0);
                             }
-                            
-                            if (!$this->conf['dontShowCorrectAnswers']) {    // !$this->conf['isPoll'] && 
+
+                            if (!$this->conf['dontShowCorrectAnswers']) {    // !$this->conf['isPoll'] &&
                                 $markerArray["###REF_QR_ANSWER_ALL###"] .= $tempAnswer;        // all answers in correct order
                                 if ($row['correct'.$answerNumber] || $row['qtype']==3 || $row['qtype']==5) {    // all correct answers
-                                    $markerArray["###REF_QR_ANSWER_CORR###"] .= $this->cObj->substituteMarkerArray($template_answer, $markerArray);
+                                    $markerArray["###REF_QR_ANSWER_CORR###"] .= $this->templateService->substituteMarkerArray($template_answer, $markerArray);
                                 }
                             }
                             if (($this->conf['advancedStatistics'] && $withAnswer) || $this->conf['email.']['answers'] != '') {        // for more statistics  && !$this->conf['isPoll']
@@ -922,22 +925,22 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                     $statisticsArray[$questionUID]['text'] = '';
                                 }
                             }
-                            
+
                             if ($selected>0 && $row['category'.$selected]) {    // && $this->conf['startCategory']
                                 $nextCat = $row['category'.$selected];    // next category from an answer
                             }
-                            
+
                             if ($selected>0) $lastSelected=$selected;
                         }
                         if (in_array($row['qtype'], $this->textType)) break 1;    // nur erste Antwort ist hier moeglich
                     }
-                    
+
                     if ($catCount>0) {    // $this->conf['startCategory']
                         if (!$nextCat) $nextCat = $row['category_next'];    // next category of this question
                         if ($this->conf['advancedStatistics'] && $withAnswer)
                             $statisticsArray[$questionUID]['nextCat'] = $nextCat;
                     }
-                    
+
                     if (!$this->conf['dontShowPoints']) {        // Bug fixed: dontShowCorrectAnswers doesnt matter here  && !$this->conf['isPoll']
                         if ($questionPoints<0 && $this->conf['noNegativePoints'])
                             $questionPoints=0;        // keine neg. Punkte
@@ -954,11 +957,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                 $questionPoints=$answerPoints;
                         }
                         if ($questionPoints>0 && $halvePoints && ($quizData["joker1"] || $quizData["joker2"] || $quizData["joker3"]))
-                            $questionPoints = intval($questionPoints/2);    // halbe Punkte nach Joker-Benutzung    
-                        
+                            $questionPoints = intval($questionPoints/2);    // halbe Punkte nach Joker-Benutzung
+
                         $points+=$questionPoints;
                         $maxPoints+=$maxQuestionPoints;
-                        
+
                         if ($this->conf['advancedStatistics'] && $withAnswer)
                             $statisticsArray[$questionUID]['points'] = $questionPoints;
                     } else {
@@ -969,8 +972,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $points=intval('/,|\./', '', $this->catArray[$cat]['name']);    // katgorie in punkte umwandeln
                         } */
                     }
-                    
-                    // 20.4.10: $correctBool ersetzt durch: 
+
+                    // 20.4.10: $correctBool ersetzt durch:
                     if ($realCorrectBool && $withAnswer) {    // falls es richtige antworten gibt, merken welche man richtig/falsch beantwortet hat
                         if ($allAnswersOK) {
                             $correctAnsw .= ','.$questionUID;
@@ -982,17 +985,17 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     } else {
                         if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($questionUID.' not counted.', $this->extKey, 0);
                     }
-                    
+
                     if (!$this->conf['dontShowCorrectAnswers']) {    //  && !$this->conf['isPoll']
                         if (!$this->conf['dontShowPoints'] && $row['qtype']<5) {
                             $markerArray["###VAR_QUESTION_POINTS###"] = $questionPoints;
                             $markerArray["###VAR_MAX_QUESTION_POINTS###"] = $maxQuestionPoints;
-                            $markerArray["###REF_QR_POINTS###"] = $this->cObj->substituteMarkerArray($template_qr_points, $markerArray);
+                            $markerArray["###REF_QR_POINTS###"] = $this->templateService->substituteMarkerArray($template_qr_points, $markerArray);
                         } else {
                             $markerArray["###VAR_QUESTION_POINTS###"] = '';
                             $markerArray["###VAR_MAX_QUESTION_POINTS###"] = '';
                         }
-                        
+
                         if ( $row['explanation']!='' || $row['explanation1']!='' || $row['explanation2']!='' ) {    // Explanation
                             $markerArray["###VAR_EXPLANATION###"] = '';
                             if ($row['explanation1']!='') {    // Nur wenn das addon myquizpoll_expl2 installiert ist
@@ -1002,33 +1005,33 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             } else
                                 $markerArray["###VAR_EXPLANATION###"] = $this->formatStr($row['explanation']);
                             if ($markerArray["###VAR_EXPLANATION###"])
-                                $markerArray["###REF_QR_EXPLANATION###"] = $this->cObj->substituteMarkerArray($template_expl, $markerArray);
+                                $markerArray["###REF_QR_EXPLANATION###"] = $this->templateService->substituteMarkerArray($template_expl, $markerArray);
                             else
                                 $markerArray["###REF_QR_EXPLANATION###"] = '';
                         }
-                    
-                        $markerArray["###REF_DELIMITER###"] = $this->cObj->substituteMarkerArray($template_delimiter, $markerArray);
+
+                        $markerArray["###REF_DELIMITER###"] = $this->templateService->substituteMarkerArray($template_delimiter, $markerArray);
                     }
                 }
                 if (!$this->conf['dontShowCorrectAnswers']) {    // bug fixed: points dont even matter  && !$this->conf['isPoll']
-                    $markerArrayP["###REF_QRESULT###"] .= $this->cObj->substituteMarkerArray($template_qr, $markerArray);
+                    $markerArrayP["###REF_QRESULT###"] .= $this->templateService->substituteMarkerArray($template_qr, $markerArray);
                 }
             }
-            
+
             // hier wurde mal REF_INTRODUCTION befüllt
-            
+
             if ($answered) $answered=substr($answered,1);    // now answered questions (UIDs)
             if ($skipped) $skipped=substr($skipped,1);    // now skipped questions (UIDs)
             if ($correctAnsw) $correctAnsw=substr($correctAnsw,1);
             if ($falseAnsw) $falseAnsw=substr($falseAnsw,1);
-            
+
             $doUpdate=0;                    // insert or update?
             $pointsTotal=$points;            // total points, reached
             $maxTotal = $maxPoints;            // total points, maximum
             $markerArray["###VAR_NEXT_CATEGORY###"] = $this->catArray[$nextCat]['name'];
-            
+
             //if ($this->conf['pageQuestions'] > 0 && !$this->conf['isPoll']) {    // more questions aviable? // auskommentiert am 27.12.2009, denn der Cheat-Test muss immer kommen!
-            
+
                 if (!$this->conf['showAnswersSeparate'])
                     $quizData['cmd'] = '';                        // show more/next questions!
                 // Seek for old answered questions
@@ -1049,20 +1052,20 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $joker1 =  $fetchedRow['joker1'];
                         $joker2 =  $fetchedRow['joker2'];
                         $joker3 =  $fetchedRow['joker3'];
-                        if ($correctOld && $correctAnsw) 
-                            $correctAnsw = $correctOld.','.$correctAnsw; 
+                        if ($correctOld && $correctAnsw)
+                            $correctAnsw = $correctOld.','.$correctAnsw;
                         else if ($correctOld)
-                            $correctAnsw = $correctOld;        
-                        if ($falseOld && $falseAnsw) 
+                            $correctAnsw = $correctOld;
+                        if ($falseOld && $falseAnsw)
                             $falseAnsw = $falseOld.','.$falseAnsw;
                         else if ($falseOld)
                             $falseAnsw = $falseOld;
                         if (!$answered) {                // all questions skipped  # Fall 1: bisher nur geskipped
                             $answered = $answeredOld;    // all answered questions
-                            if ($skippedOld && $skipped) 
-                                $skipped = $skippedOld.','.$skipped; 
+                            if ($skippedOld && $skipped)
+                                $skipped = $skippedOld.','.$skipped;
                             else if ($skippedOld)
-                                $skipped = $skippedOld;                
+                                $skipped = $skippedOld;
                             $pointsTotal = $pointsOld;    // total points
                             $maxTotal = $maxPointsOld;
                             //if ($answeredOld) $doUpdate=1;
@@ -1079,8 +1082,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                 $doUpdate = 2;
                                 $error = true;
                                 $markerArray["###CHEATING###"] = $this->pi_getLL('cheating','cheating');
-                                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_CHEATING###");
-                                $markerArrayP["###REF_RES_ERRORS###"] .= $this->cObj->substituteMarkerArray($template, $markerArray);
+                                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_CHEATING###");
+                                $markerArrayP["###REF_RES_ERRORS###"] .= $this->templateService->substituteMarkerArray($template, $markerArray);
                                 if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("Cheating error!", $this->extKey, 0);
                                 /*$tempTime = $this->helperObj->getPageTime($quizData['qtuid']);
                                 if ($tempTime) {
@@ -1090,8 +1093,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("do=2, points=$pointsTotal, max=$maxTotal", $this->extKey, 0);
                         } else if ($answeredOld) {            // Fall 3: man hat schon was beantwortet
                             $answered = $answeredOld.','.$answered;    // all answered questions
-                            if ($skippedOld && $skipped) 
-                                $skipped = $skippedOld.','.$skipped; 
+                            if ($skippedOld && $skipped)
+                                $skipped = $skippedOld.','.$skipped;
                             else if ($skippedOld)
                                 $skipped = $skippedOld;
                             $pointsTotal = $points + $pointsOld;    // total points
@@ -1100,29 +1103,29 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $doUpdate = 1;
                             if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("do=1, points=$pointsTotal, max=$maxTotal", $this->extKey, 0);
                         } else if ($skippedOld) {        // Fall 4: skipped, dann beantwortet
-                            if ($skippedOld && $skipped) 
-                                $skipped = $skippedOld.','.$skipped; 
-                            else 
+                            if ($skippedOld && $skipped)
+                                $skipped = $skippedOld.','.$skipped;
+                            else
                                 $skipped = $skippedOld;
                             $pointsTotal = $points;    // total points
                             $doUpdate = 1;
                         }
                     }
                 }
-                
+
                 $whereAnswered = '';
                 if ($answered) $whereAnswered = ' AND uid NOT IN ('.preg_replace('/[^0-9,]/','',$answered).')';    // exclude answered questions next time
                 $whereSkipped = '';
                 if ($skipped) $whereSkipped = ' AND uid NOT IN ('.preg_replace('/[^0-9,]/','',$skipped).')';    // exclude skipped questions next time
-                
+
                 if ($skippedCount > 0) {
                     $markerArray["###VAR_NO###"] = $skippedCount;
                     $markerArray["###SKIPPED###"] = $this->pi_getLL('skipped','skipped');
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_SKIPPED###");
-                    $markerArrayP["###REF_SKIPPED###"] = $this->cObj->substituteMarkerArray($template, $markerArray);    // instead $content
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_SKIPPED###");
+                    $markerArrayP["###REF_SKIPPED###"] = $this->templateService->substituteMarkerArray($template, $markerArray);    // instead $content
                 }
-            
-            //} else 
+
+            //} else
             if (!$this->conf['pageQuestions']) {
                 if ( $this->conf['highscore.']['showAtFinal'] )
                     $quizData['cmd'] = 'score';            // otherwise decide this later
@@ -1131,7 +1134,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             } else if ( $this->conf['isPoll'] && !$nextCat ) {
                 $quizData['cmd'] = 'list';
             }
-            
+
             $markerArray["###VAR_QUESTIONS_ANSWERED###"] = (($answered) ? (substr_count($answered,',')+1) : 0);
             if ($falseAnsw || $correctAnsw) {
                 $markerArray["###VAR_QUESTIONS_CORRECT###"] = (($correctAnsw) ? (substr_count($correctAnsw,',')+1) : 0);
@@ -1158,7 +1161,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $markerArray["###VAR_OVERALL_PERCENT###"] = intval(round($overallPercent));
                     //$markerArray["###VAR_OMAX_POINTS###"] = $overallMaximum;
                 }
-                
+
                 if ($doUpdate == 0) {
                     $overallMaximum = $this->helperObj->getQuestionsMaxPoints();        // maximum points of all questions
                     if ($overallMaximum > 0)
@@ -1166,26 +1169,26 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $markerArray["###VAR_OVERALL_PERCENT###"] = intval(round($overallPercent));
                     $markerArray["###VAR_OMAX_POINTS###"] = $overallMaximum;
 
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_RESULT_POINTS###");
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_RESULT_POINTS###");
                 } else {
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_RESULT_POINTS_TOTAL###");
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_RESULT_POINTS_TOTAL###");
                 }
-                $markerArrayP["###REF_QPOINTS###"] = $this->cObj->substituteMarkerArray($template, $markerArray);  // instead $content
+                $markerArrayP["###REF_QPOINTS###"] = $this->templateService->substituteMarkerArray($template, $markerArray);  // instead $content
             }
-            
+
             if ( $this->conf['startCategory'] && $nextCat ) {    //  && $this->conf['pageQuestions']==1
                 $this->conf['startCategory'] = $nextCat;    // kategorie der naechsten frage
             }
-            
+
             // myVars for page
-            $markerArrayP = array_merge($markerArrayP, $this->helperObj->setPageVars());        
-            
+            $markerArrayP = array_merge($markerArrayP, $this->helperObj->setPageVars());
+
             if ($points == '')
                 $points = 0;
             if ($pointsTotal == '')
                 $pointsTotal = 0;
             $hidden = intval($quizData["hidden"]);
-            
+
             if ($doUpdate==0 && ($points>0 || !$this->conf['isPoll'])) {
                 // Insert new results into database
                 $timestamp = time();
@@ -1251,7 +1254,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     }
                     $this->helperObj->setFirstTime($quizData['qtuid'], $firsttime);
                 } else {
-                    $content.="<p>MySQL Insert-Error for table ".$this->tableAnswers." :-(</p>";
+                    $content.="<p>MySQL Insert-Error for table ".$this->tableAnswers . ': ' . $GLOBALS['TYPO3_DB']->sql_error() ." :-(</p>";
                 }
             } else if ($doUpdate==1) {
                 // update current user entry
@@ -1290,19 +1293,19 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $content.="<p>MySQL Update-Error :-(</p>";
                 }
             }
-            
+
             $markerArray["###QTUID###"] = intval($quizData["qtuid"]);
-             
+
             if ( $this->conf['isPoll'] ) {
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_POLL_SUBMITED###");    // Output thank you
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_POLL_SUBMITED###");    // Output thank you
                 $markerArray['###QUESTION_NAME###'] = $this->pi_getLL('poll_question','poll_question');
                 $markerArray['###USER_ANSWER###'] = $this->pi_getLL('poll_answer','poll_answer');
-                $markerArrayP["###REF_INTRODUCTION###"] = $this->cObj->substituteMarkerArray($template, $markerArray);  // instead $content
+                $markerArrayP["###REF_INTRODUCTION###"] = $this->templateService->substituteMarkerArray($template, $markerArray);  // instead $content
             } else if ( $this->conf['userData.']['showAtAnswer'] ) {
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_SUBMITED###"); // Output the user name
-                $markerArrayP["###REF_INTRODUCTION###"] = $this->cObj->substituteMarkerArray($template, $markerArray);    // instead $content
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_SUBMITED###"); // Output the user name
+                $markerArrayP["###REF_INTRODUCTION###"] = $this->templateService->substituteMarkerArray($template, $markerArray);    // instead $content
             }
-            
+
             if ($this->conf['advancedStatistics'] && $doUpdate<2) {
                 // write advanced Statistics to database
                 $uid=intval($quizData['qtuid']);
@@ -1314,7 +1317,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     foreach ($statisticsArray as $type => $element) {
                         // delete old entry in back-mode
                         if ($back>0) {
-                            $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->tableRelation, 
+                            $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->tableRelation,
                                 "pid=$resPID AND user_id=$uid AND question_id=$type $where_time AND sys_language_uid=".$this->lang);
                         }
                         $insert = array('pid' => $resPID,
@@ -1336,15 +1339,15 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     }
                 }
             }
-            
+
             if (!$this->conf['pageQuestions'] && !$this->conf['isPoll']) {
                 $finalPage = true;
             }
             $answerPage = true;
             if ($back) $back--;
         }
-        
-        
+
+
         if( $this->conf['finishedMinPercent'] && $this->conf['pageQuestions']>0 && $markerArray["###VAR_TOTAL_POINTS###"]!=='' &&
           (!$this->conf['showAnswersSeparate'] || !$quizData['cmd']) && $no_rights==0 ) {  /* ***************************************************** */
             /*
@@ -1369,12 +1372,12 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $markerArray["###SO_FAR_REACHED2###"] = $this->pi_getLL('so_far_reached2','so_far_reached2');
                 //$markerArray["###VAR_OVERALL_PERCENT###"] = intval($myPercent);
                 //$markerArray["###VAR_OMAX_POINTS###"] = $overallMaximum;
-                
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_FINISHEDMINPERCENT###");
+
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_FINISHEDMINPERCENT###");
                 if ($template == '')    // if it is not in the template
-                    $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_QUIZ_FINISHEDMINPERCENT###");
-                $content .= $this->cObj->substituteMarkerArray($template, $markerArray);            // sonderfall !!!!!!!!!
-                
+                    $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_QUIZ_FINISHEDMINPERCENT###");
+                $content .= $this->templateService->substituteMarkerArray($template, $markerArray);            // sonderfall !!!!!!!!!
+
                 $answerPage = false;
                 if ( $this->conf['highscore.']['showAtFinal'] ) {
                     $quizData['cmd'] = 'score';        // show highscore
@@ -1383,7 +1386,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 }
             }
         }
-        
+
         if( $this->conf['cancelWhenWrong'] && $this->conf['pageQuestions']>0 && ($markerArray["###VAR_TOTAL_POINTS###"]!=='') &&
           (!$this->conf['showAnswersSeparate'] || !$quizData['cmd']) && $no_rights==0 ) {  /* ***************************************************** */
             /*
@@ -1396,13 +1399,13 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $markerArray["###SO_FAR_REACHED2###"] = $this->pi_getLL('so_far_reached2','so_far_reached2');
                 $markerArray["###QUIZ_END###"] = $this->pi_getLL('quiz_end','quiz_end');
                 $markerArray["###RESTART_QUIZ###"] = $this->pi_linkToPage($this->pi_getLL('restart_quiz','restart_quiz'), $startPID, $target = '', array());
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_END###");
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_END###");
                 if ($template == '')    // if it is not in the template
-                    $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_QUIZ_END###");
-                $content .= $this->cObj->substituteMarkerArray($template, $markerArray);            // sonderfall !!!
-                
+                    $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_QUIZ_END###");
+                $content .= $this->templateService->substituteMarkerArray($template, $markerArray);            // sonderfall !!!
+
                 $answerPage = false;        // show no answers
-                
+
                 if ( $this->conf['finalWhenCancel'] ) {
                     $noQuestions = true;
                 } else {
@@ -1411,11 +1414,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     } else {
                         $quizData['cmd'] = 'exit';        // display no more questions
                     }
-                    $no_rights = 1;                    // cancel all                
+                    $no_rights = 1;                    // cancel all
                 }
             }
         }
-        
+
         // Pre-fill quiz taker name and email if FE user logged in
         if ($GLOBALS['TSFE']->loginUser) {
             if (!$quizData["name"]) {
@@ -1443,7 +1446,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         }
         $markerArray["###HIDE_ME###"] = $this->pi_getLL('hide_me','hide_me');
         $markerArray["###VISIBILITY###"] = $this->pi_getLL('visibility','visibility');
-        
+
         // TODO: warum nur?
         // UID loeschen bei Umfragen
         if ($this->conf['isPoll']) {
@@ -1451,13 +1454,13 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         }
         if ($this->helperObj->writeDevLog)
         	\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Next cmd: '.$quizData['cmd'].', answer-page: '.$answerPage.', final-page: '.$finalPage, $this->extKey, 0);
-        
-        
+
+
         if( $quizData['cmd'] == '' && $no_rights==0 ) {           /* ***************************************************** */
             /*
              * Display initial page: questions and quiz taker name fields
              */
-            
+
             $oldRelData=array();
             if ($this->conf['allowBack'] && $this->conf['pageQuestions'] && $quizData['qtuid'] && $back>0) {
                 $where='';
@@ -1516,7 +1519,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $rows = $GLOBALS['TYPO3_DB']->sql_num_rows($res5);
                     if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($rows.' rows selected with: pid IN ('.$thePID.')'.$where . $this->helperObj->getWhereLang(), $this->extKey, 0);
                     if ($rows>0) {
-                        while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){ 
+                        while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){
                             $questionNumber++;
                             $questionsArray[$questionNumber] = $row;
                         }
@@ -1525,7 +1528,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 }
                 $numOfQuestions=$questionNumber;
                 $maxQuestions=$numOfQuestions;
-                
+
                 // bisherige Antworten noch holen
                 if ($where_rel) {
                     if ($this->conf['requireSession']) $where_time=' AND crdate='.$this->helperObj->getFirstTime($uid);
@@ -1545,7 +1548,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $GLOBALS['TYPO3_DB']->sql_free_result($res5);
                 }
                 //print_r($oldRelData);
-                
+
             } elseif (!$noQuestions) {
                 // Order questions by & and limit to
                 $limitTo = '';
@@ -1561,7 +1564,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 } else if ( $this->conf['onlyCategories'] ) {
                     $whereCat = " AND category IN (".preg_replace('/[^0-9,]/','',$this->conf['onlyCategories']).")";
                 }
-                
+
                 // Get questions from the database
                 $questionsArray = array();
                 $questionNumber = 0;
@@ -1583,23 +1586,23 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 }
                 if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog($rows.' rows selected with: pid IN ('.$thePID.')'.$whereCat.$whereAnswered . $this->helperObj->getWhereLang(), $this->extKey, 0);
                 if ($rows>0) {
-                    while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){ 
+                    while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){
                         $questionNumber++;
                         $questionsArray[$questionNumber] = $row;
                     }
                 }
-                
+
                 $numOfQuestions = $questionNumber;                // real questions
                 $maxQuestions = $this->conf['pageQuestions'];    // should be questions
-                
+
                 if ($this->conf['isPoll']) {
                     $maxQuestions = 1;                    // only max. 1 poll-question
                 } else if ( !$maxQuestions ) {
-                    $maxQuestions = $numOfQuestions; 
-                } else if( $numOfQuestions < $maxQuestions ) { 
-                    $maxQuestions = $numOfQuestions; // no. of maximum question = no. of questions in the DB 
+                    $maxQuestions = $numOfQuestions;
+                } else if( $numOfQuestions < $maxQuestions ) {
+                    $maxQuestions = $numOfQuestions; // no. of maximum question = no. of questions in the DB
                 }
-            
+
                 if ( ($numOfQuestions > 0) and ($this->conf['sortBy']=='random') ) {        // any questions out there???    Random questions???
                     $randomQuestionsArray = array();
                     $questionNumber = 0;
@@ -1626,30 +1629,30 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $questionsArray[$questionNumber] = $randomQuestionsArray[$questionNumber];
                     }
                 }
-                
+
                 if ($this->conf['finishAfterQuestions']) {        // finish after X questions?
                     $numOfQuestions = intval($this->conf['finishAfterQuestions']) - $this->helperObj->getQuestionNo($whereAnswered);
-                    if( $numOfQuestions < $maxQuestions ) { 
-                        $maxQuestions = $numOfQuestions; // no. of maximum question = no. of questions in the DB 
+                    if( $numOfQuestions < $maxQuestions ) {
+                        $maxQuestions = $numOfQuestions; // no. of maximum question = no. of questions in the DB
                     }
                 }
             } else {
                 $numOfQuestions = 0;
             }
-            
+
             if ( $numOfQuestions > 0 ) {        // any questions out there???
-                
+
                 // Start des Output
                 $lastUID = 0;        // remember the last question ID
                 $pageTimeCat = 0;    // time per page from a category
                 $questTillNow = 0;    // no. of questions answered till now
                 $imgTSConfig = array();
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION###");
-                $template_image_begin = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
-                $template_image_end = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
-                $template_answer = $this->cObj->getSubpart($template, "###TEMPLATE_QUESTION_ANSWER###");
-                $template_delimiter = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_DELIMITER###");
-                
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION###");
+                $template_image_begin = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
+                $template_image_end = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
+                $template_answer = $this->templateService->getSubpart($template, "###TEMPLATE_QUESTION_ANSWER###");
+                $template_delimiter = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_DELIMITER###");
+
                 if (!$this->conf['isPoll']) {
                     $markerArray["###VAR_QUESTIONS###"] = $this->helperObj->getQuestionsNo();
                     if ($back && $seite)
@@ -1657,18 +1660,18 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     else
                         $markerArray["###VAR_QUESTION###"] = $questTillNow = $this->helperObj->getQuestionNo($whereAnswered);
                 }
-                
+
                 // Questions and answers
                 for ($questionNumber=1; $questionNumber < $maxQuestions+1; $questionNumber++) {
                     $row = $questionsArray[$questionNumber];
                     $quid = $row['uid'];
                     $markerArray["###VAR_QUESTION_NUMBER###"] = $questionNumber;
-                    
+
                     $answerPointsBool = false;        // gibt es punkte bei einzelnen antworten?
                     $markerArray["###VAR_QUESTION###"]++;
                     if ($row['image']) {
                         $markerArray["###VAR_QUESTION_IMAGE###"] = $this->helperObj->getImage($row['image'], $row["alt_text"]);
-                        $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = $this->cObj->substituteMarkerArray($template_image_begin, $markerArray);
+                        $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = $this->templateService->substituteMarkerArray($template_image_begin, $markerArray);
                         $markerArray["###REF_QUESTION_IMAGE_END###"] = $template_image_end;
                     } else {
                         $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = '';
@@ -1714,11 +1717,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $markerArrayQ["###VAR_QUESTION_ANSWER###"] = '<select name="tx_myquizpoll_pi1[answer'.$questionNumber.
                             ']" ###MY_SELECT###'.$input_id.'>'."\n"; //  class="'.$this->prefixId.'-answer"
                     }
-                    
+
                     // my Variables of questions
                     $markerArray["###MY_SELECT###"] = '';
                     $markerArray = array_merge($markerArray, $this->helperObj->setQuestionVars($questionNumber));
-                    
+
                     // Jokers
                     if ($this->conf['useJokers'] && $this->conf['pageQuestions']==1) {
                         $temp_uid = intval($quizData['qtuid']);
@@ -1745,11 +1748,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $markerArrayJ["###JAVASCRIPT###"] .= "document.getElementById('".$this->prefixId."-joker_phone').style.display = 'none';\n";
                         } else
                             $markerArrayJ["###JOKER_PHONE_LINK###"] = $this->prefixId.'getAjaxData('.$quid.','.$temp_uid.',3,\'joker_phone\');';
-                        
-                        $template_jokers = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_JOKERS###");
-                        $markerArrayP["###REF_JOKERS###"] = $this->cObj->substituteMarkerArray($template_jokers, $markerArrayJ);
+
+                        $template_jokers = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_JOKERS###");
+                        $markerArrayP["###REF_JOKERS###"] = $this->templateService->substituteMarkerArray($template_jokers, $markerArrayJ);
                     }
-                    
+
                     // Daten zur aktuellen und nächsten Kategorie
                     $thisCat = $row['category'];
                     if ($this->catArray[$thisCat]) {
@@ -1758,7 +1761,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     }
                     $thisCat = $row['category_next'];
                     if ($this->catArray[$thisCat]) $markerArray["###VAR_NEXT_CATEGORY###"] = $this->catArray[$thisCat]['name'];
-                    
+
                     // Display answers
                     $answers = 0;
                     $radmonArray = array();
@@ -1771,7 +1774,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             while ($currentValue==0 && $leer<33) {
                                 $random = mt_rand(1,$this->answerChoiceMax);
                                 if (($row['answer'.$random] || $row['answer'.$random]==='0') && !(in_array($random, $radmonArray))) {
-                                    $radmonArray[] = $random; 
+                                    $radmonArray[] = $random;
                                     $currentValue = $random;
                                 } else {
                                     $leer++;
@@ -1785,7 +1788,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $input_id = '';
                             $input_label1 = '';
                             $input_label2 = '';
-                            
+
                             // my Variables for answers
                             $markerArrayQ["###MY_OPTION###"] = '';
                             $markerArrayQ["###MY_INPUT_RADIO###"] = '';
@@ -1795,14 +1798,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $markerArrayQ["###MY_INPUT_WRAP###"] = '';
                             $markerArrayQ = array_merge($markerArrayQ, $this->helperObj->setAnswerVars($answerNumber, $row['qtype']));
                             $markerArrayQ["###VAR_QA_NR###"] = $currentValue;
-                            
+
                             if ($row['qtype']<3 || $row['qtype']==4 || $row['qtype']==7) {
                                 //$answer_choice = $this->formatStr($row['answer'.$currentValue]);    // Problem: <tt> geht hier verloren!
                                 $answer_choice = ($this->conf['general_stdWrap.']['notForAnswers']) ? $row['answer'.$currentValue] : $this->formatStr($row['answer'.$currentValue]);
                                 if ($row['qtype']!=2 && !(strpos($markerArrayQ["###MY_INPUT_WRAP###"],'|') === false))
                                     $answer_choice = str_replace('|',$answer_choice,$markerArrayQ["###MY_INPUT_WRAP###"]);
                             }
-                            
+
                             // Questtion type
                             if ($row['qtype'] == 1) {    // radio-button
                                 if ($markerArrayQ["###MY_INPUT_ID###"]) $input_id = 'id="answer'.$questionNumber.'_'.$answerNumber.'"';
@@ -1858,7 +1861,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                 $answer_content .= ' /> ';
                                 if ($markerArrayQ["###MY_INPUT_LABEL###"] == 1) $answer_content .= $input_label1;
                                 $answer_content .= $this->pi_getLL('yes','yes').$input_label2.'</span>';
-                                
+
                                 if ($markerArrayQ["###MY_INPUT_ID###"]) $input_id = 'id="answer'.$questionNumber.'_'.$answerNumber.'_0"';
                                 if ($markerArrayQ["###MY_INPUT_LABEL###"]) {
                                     if ($markerArrayQ["###MY_INPUT_LABEL###"]==3) $class_label = ' class="radio"';
@@ -1917,7 +1920,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                 elseif ($captchaError && $quizData['answer'.$questionNumber.'_'.$currentValue]==$currentValue) $answer_content .= ' checked="checked"';
                                 $answer_content .= ' /> ';
                             }
-                            
+
                             if (!$this->conf['dontShowPoints'] && !$this->conf['isPoll'] && $row['qtype']<5) {
                                 $tmpPoints = 0;
                                 if ($this->conf['noNegativePoints']<3 && $answerPointsBool)
@@ -1934,7 +1937,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                     }
                                 }
                             }
-                            
+
                             $thisCat = $row['category'.$currentValue];
                             if ($this->catArray[$thisCat]) $markerArrayQ['###VAR_QA_CATEGORY###'] = $this->catArray[$thisCat]['name'];
                             if ($row['qtype'] < 3) {
@@ -1945,19 +1948,19 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             }
                             if ($row['qtype'] == 2) {
                                 $answer_content .= "</option>\n";
-                                $markerArrayQ["###VAR_QUESTION_ANSWER###"] .= $this->cObj->substituteMarkerArray($answer_content, $markerArrayQ);
+                                $markerArrayQ["###VAR_QUESTION_ANSWER###"] .= $this->templateService->substituteMarkerArray($answer_content, $markerArrayQ);
                             } else {
-                                $markerArrayQ['###VAR_QUESTION_ANSWER###'] = $this->cObj->substituteMarkerArray($answer_content, $markerArrayQ);
-                                $markerArray["###REF_QUESTION_ANSWER###"] .= $this->cObj->substituteMarkerArray($template_answer, $markerArrayQ);
+                                $markerArrayQ['###VAR_QUESTION_ANSWER###'] = $this->templateService->substituteMarkerArray($answer_content, $markerArrayQ);
+                                $markerArray["###REF_QUESTION_ANSWER###"] .= $this->templateService->substituteMarkerArray($template_answer, $markerArrayQ);
                             }
                         }
                     }
-                    
+
                     if ( !$this->conf['dontShowPoints'] && !$this->conf['isPoll'] && $row['qtype']<5 )
                         $markerArray["###VAR_NEXT_POINTS###"]+=$markerArray["###VAR_QUESTION_POINTS###"];
-                    
+
                     $markerArray["###VAR_QUESTION_ANSWERS###"] = $answers;
-                        
+
                     if ($this->conf['allowSkipping']) {        // skip answers
                         $markerArrayQ["###VAR_QA_NR###"] = -1;
                         // Questtion type
@@ -2003,27 +2006,27 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $markerArrayQ['###VAR_QUESTION_ANSWER###'] .= $answer_content;
                         } else {
                             $markerArrayQ['###VAR_QUESTION_ANSWER###'] = $answer_content;
-                            $markerArray["###REF_QUESTION_ANSWER###"] .= $this->cObj->substituteMarkerArray($template_answer, $markerArrayQ);
+                            $markerArray["###REF_QUESTION_ANSWER###"] .= $this->templateService->substituteMarkerArray($template_answer, $markerArrayQ);
                         }
                     }
-                    
+
                     if ($row['qtype'] == 2) {
                         $markerArrayQ["###VAR_QUESTION_ANSWER###"] .= "</select>\n";
-                        $markerArray["###REF_QUESTION_ANSWER###"] .= $this->cObj->substituteMarkerArray($template_answer, $markerArrayQ);
+                        $markerArray["###REF_QUESTION_ANSWER###"] .= $this->templateService->substituteMarkerArray($template_answer, $markerArrayQ);
                     }
                     if ( ($this->helperObj->getAskAtQ($quizData['qtuid']) || $questionNumber<$maxQuestions) && !$this->conf['isPoll'] ) {
-                        $markerArray["###REF_DELIMITER###"] = $this->cObj->substituteMarkerArray($template_delimiter, $markerArray);
+                        $markerArray["###REF_DELIMITER###"] = $this->templateService->substituteMarkerArray($template_delimiter, $markerArray);
                     } else {
                         $markerArray["###REF_DELIMITER###"] = '';
                     }
-                    
+
                     if ($this->conf['enforceSelection']) {    // 25.1.10: antwort erzwingen?
                         $this->helperObj->addEnforceJsc($questionNumber,$answers,$row['qtype']);
                     }
-                    
+
                     //$this->subpart = $template;
-                    $template2 = $this->cObj->substituteSubpart($template, '###TEMPLATE_QUESTION_ANSWER###', $markerArray["###REF_QUESTION_ANSWER###"], 0);
-                    $markerArrayP["###REF_QUESTIONS###"] .= $this->cObj->substituteMarkerArray($template2, $markerArray);    // statt $content .= since 0.1.8
+                    $template2 = $this->templateService->substituteSubpart($template, '###TEMPLATE_QUESTION_ANSWER###', $markerArray["###REF_QUESTION_ANSWER###"], 0);
+                    $markerArrayP["###REF_QUESTIONS###"] .= $this->templateService->substituteMarkerArray($template2, $markerArray);    // statt $content .= since 0.1.8
                     $markerArrayP["###REF_QUESTIONS###"] .= '<input type="hidden" name="tx_myquizpoll_pi1[uid'.$questionNumber.']" value="'.$quid.'" class="input_hidden" />';
                     if ($this->conf['isPoll']) {    // link to the result page
                         $urlParameters = array("tx_myquizpoll_pi1[cmd]" => "list", "tx_myquizpoll_pi1[qid]" => $quid, "no_cache" => "1");
@@ -2031,7 +2034,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     }
                     $lastUID=$quid;
                 }
-                
+
                 $markerArrayP["###REF_SUBMIT_FIELDS###"] = '';
                 $markerArrayP["###HIDDENFIELDS###"] = '';
                 $markerArrayP["###VAR_QID###"] = $lastUID;    // last question uid, added on 23.1.2011
@@ -2044,34 +2047,34 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     }
                 }
                 if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('last question: '.$lastUID, $this->extKey, 0);
-                
+
                 // back-button
                 if ($this->conf['allowBack'] && $this->conf['pageQuestions'] && $quizData['qtuid']) {
                     $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="'.$this->prefixId.'[back]" value="'.$back.'" />';
                     $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="'.$this->prefixId.'[back-hit]" value="0" />';
                     $markerArray['###BACK_STYLE###'] = ($seite == 1) ? ' style="display:none;"' : '';
                 } else $markerArray['###BACK_STYLE###'] = ' style="display:none;"';
-                
+
                 // Submit/User-Data Template
                 if ( $this->helperObj->getAskAtQ($quizData['qtuid']) && !$this->conf['isPoll'] ) {
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_TO_SUBMIT###");
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_TO_SUBMIT###");
                     if (is_object($this->freeCap) && $this->conf['enableCaptcha']) {
                         $markerArray = array_merge($markerArray, $this->freeCap->makeCaptcha());
                     } else {
                         $subpartArray['###CAPTCHA_INSERT###'] = '';
                     }
-                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->cObj->substituteMarkerArrayCached($template,$markerArray,$subpartArray,$wrappedSubpartArray);
+                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->templateService->substituteMarkerArrayCached($template,$markerArray,$subpartArray,$wrappedSubpartArray);
                 } else if (!($answeredQuestions==$lastUID && $this->conf["isPoll"])) {
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_SUBMIT###");
-                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_SUBMIT###");
+                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
                     $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="name" value="'.$markerArray["###DEFAULT_NAME###"].'" /> ';    // fürs Template?
                     $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="'.$this->prefixId.'[name]" value="'.htmlspecialchars($quizData["name"]).'" />';
                     $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="'.$this->prefixId.'[email]" value="'.htmlspecialchars($quizData["email"]).'" />';
                     $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="'.$this->prefixId.'[homepage]" value="'.htmlspecialchars($quizData["homepage"]).'" />';
                                     } else {
                     $markerArray["###NO_SUBMIT###"] = $this->pi_getLL('no_submit','no_submit');
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_NO_SUBMIT###");
-                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->cObj->substituteMarkerArray($template, $markerArray); // new in 0.1.8
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_NO_SUBMIT###");
+                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->templateService->substituteMarkerArray($template, $markerArray); // new in 0.1.8
                 }
 
                 if (!$this->conf['isPoll'])        // when is Poll, do not update result-table
@@ -2085,27 +2088,27 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $markerArrayP["###HIDDENFIELDS###"] .= '
   <input type="hidden" name="'.$this->prefixId.'[cmd]" value="submit" />';
 //  <input type="hidden" name="no_cache" value="1" />  KGB: auskommentiert am 30.5.2015
-  
+
                 if ($this->conf['useJokers'] && $this->conf['pageQuestions']==1) {
                     $markerArrayP["###HIDDENFIELDS###"] .= '
   <input type="hidden" name="'.$this->prefixId.'[joker1]" value="0" />
   <input type="hidden" name="'.$this->prefixId.'[joker2]" value="0" />
   <input type="hidden" name="'.$this->prefixId.'[joker3]" value="0" />';
                 }
-                 
+
                 $markerArrayP["###MAX_PAGES###"] = $this->helperObj->getMaxPages();
                 $markerArrayP["###PAGE###"] = $this->helperObj->getPage($questTillNow);
                 $markerArrayP["###FE_USER_UID###"] = intval($GLOBALS['TSFE']->fe_user->user['uid']);
                 $markerArrayP["###SUBMIT_JSC###"] = $this->helperObj->getSubmitJsc();
-                
-                $questionPage = true;    
-            
+
+                $questionPage = true;
+
             } else {
-            
+
                 // final page: no more questions left, if pageQuestions > 0
                 if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('0 questions found. Entering final page...', $this->extKey, 0);
                 // if ($oldLoaded) $secondVisit = true;	// Keine Email schicken, wenn alle Fragen schon beantwortet wurden: NE, so einfach ist das nicht :-(
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_NO_MORE###");
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_NO_MORE###");
                 $markerArray["###NO_MORE###"] = $this->pi_getLL('no_more','no_more');
                 $markerArray['###YOUR_EVALUATION###'] = $this->pi_getLL('your_evaluation','your_evaluation');
                 $markerArray['###REACHED1###'] = $this->pi_getLL('reached1','reached1');
@@ -2113,7 +2116,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $markerArray['###POINTS###'] = $this->pi_getLL('points','points');
             /*    if ($this->conf['startPID'])        // wir sind nicht auf der Startseite, also parent holen...
                     $restart_id = $this->conf['startPID']; // $GLOBALS['TSFE']->page['pid'];
-                else 
+                else
                     $restart_id = $GLOBALS['TSFE']->id;    */
                 $markerArray["###RESTART_QUIZ###"] = $this->pi_linkToPage($this->pi_getLL('restart_quiz','restart_quiz'), $startPID, $target = '', array());
                 if ($this->conf['allowCookieReset'])
@@ -2121,7 +2124,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                              $startPID, $target = '', array($this->prefixId . '[resetcookie]' => 1));
                 else $markerArray["###RESET_COOKIE###"] = '';
                 $questions = '';
-                
+
                 if ($this->conf['showAllCorrectAnswers'] && !$this->conf['isPoll']) {        // show all answers...
                     /*if ($this->conf['finishAfterQuestions'])
                         $fragen = intval($this->conf['finishAfterQuestions']);
@@ -2129,29 +2132,29 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $fragen = $this->helperObj->getQuestionsNo();*/
                     $questions = $this->showAllAnswers( $quizData, $thePID,$resPID, false, 0 ); // 24.01.10: 0 statt $fragen
                 }
-                
+
                 $subpart = $template;
-                $template = $this->cObj->substituteSubpart($subpart, '###QUIZ_ANSWERS###', $questions);
-                $markerArrayP["###REF_NO_MORE###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+                $template = $this->templateService->substituteSubpart($subpart, '###QUIZ_ANSWERS###', $questions);
+                $markerArrayP["###REF_NO_MORE###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
                 $markerArrayP["###RESTART_QUIZ###"] = $markerArray["###RESTART_QUIZ###"];
                 $markerArrayP["###RESET_COOKIE###"] = $markerArray["###RESET_COOKIE###"];
-                
+
                 if ( $this->conf['highscore.']['showAtFinal'] ) {
                     $quizData['cmd'] = 'score';
                 }
                 $finalPage = true;
-            	
+
             }
-            
+
             // myVars for page
-            $markerArrayP = array_merge($markerArrayP, $this->helperObj->setPageVars());    
-            
+            $markerArrayP = array_merge($markerArrayP, $this->helperObj->setPageVars());
+
         } else if ($this->conf['showAnswersSeparate'] && $quizData['cmd']=='submit' && !$this->conf['isPoll'] && $no_rights==0) { /* ***************************************************** */
             /*
              * Display only a next button
              */
-             
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_NEXT###");
+
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_NEXT###");
             $markerArray["###HIDDENFIELDS###"] = '';
             // back-button
             if ($this->conf['allowBack'] && $this->conf['pageQuestions'] && $quizData['qtuid']) {
@@ -2160,35 +2163,35 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     <input type="hidden" name="'.$this->prefixId.'[back-hit]" value="0" />';
             } else $markerArray['###BACK_STYLE###'] = ' style="display:none;"';
              if ($template == '')    // if it is not in the template
-                $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_NEXT###");
-            $markerArrayP["###REF_NEXT###"] = $this->cObj->substituteMarkerArray($template, $markerArray);    // instead $content
+                $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_NEXT###");
+            $markerArrayP["###REF_NEXT###"] = $this->templateService->substituteMarkerArray($template, $markerArray);    // instead $content
         }
-        
-        
-        
-        
+
+
+
+
         /** Redirect to the final page? **/
         if ($finalPage && $quizData['cmd'] != 'exit' && $this->conf['finalPID'] && ($finalPID != intval($GLOBALS["TSFE"]->id))) {
             $this->redirectUrl($finalPID, array($this->prefixId . '[qtuid]' => intval($quizData["qtuid"]), $this->prefixId . '[cmd]' => 'next'));
              exit;    // unnoetig...
         }
-        
+
         /** Poll result? **/
         if ($answerPage && $this->conf['isPoll']) {
             $quizData['cmd'] = 'list';
         }
-        
-        
+
+
         // Make a page-layout
-        if ( $quizData['cmd'] == 'allanswers' && !$this->conf['isPoll'] ) {    /* ***************************************************** */        
+        if ( $quizData['cmd'] == 'allanswers' && !$this->conf['isPoll'] ) {    /* ***************************************************** */
             /*
              * Display all questions and correct answers
              */
             if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("show answers of: $thePID,$resPID", $this->extKey, 0);
             $content .= $this->showAllAnswers( $quizData, $thePID,$resPID, false, 0 ); // 24.01.10: 0 statt $this->helperObj->getQuestionsNo()
         }
-          
-        
+
+
         if ( $quizData['cmd'] == 'score' && !$this->conf['isPoll'] ) {         /* ***************************************************** */
             /*
              * Display highscore page: top 10 table
@@ -2213,7 +2216,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['setAdrHook'])&& $this->conf['userData.']['tt_address_pid']) {
                         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['setAdrHook'] as $_classRef) {
                             $_procObj = & \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($_classRef);
-                            $update['address_uid'] = 
+                            $update['address_uid'] =
                                 intval($_procObj->setAdr($quizData, $this->conf['userData.']['tt_address_pid'], $this->conf['userData.']['tt_address_groups']));
                         }
                     }
@@ -2229,7 +2232,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $markerArrayP["###REF_HIGHSCORE###"] = $this->showHighscoreList($quizData, $resPIDs, $listPID);
             else
                 $content .= $this->showHighscoreList($quizData, $resPIDs, $listPID);
-        
+
         } else if ( $quizData['cmd'] == 'list' && $this->conf['isPoll'] ) {    /* ***************************************************** */
             /*
              * Display poll result
@@ -2240,103 +2243,103 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             else
                 $content .= $this->showPollResult($answered, $quizData, $thePID,$resPID);
         }
-        
-        
+
+
         if ( !$this->conf['isPoll'] && $quizData['cmd']!='score' ) {    // show highscore link?
-              $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE_URL###");
-            $markerArrayP["###REF_HIGHSCORE_URL###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
-          }
-        
-        if ( $this->conf['isPoll'] && $quizData['cmd']!='list' ) {    // show poll result link?
-              $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_POLLRESULT_URL###");
-                $markerArrayP["###REF_POLLRESULT_URL###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+              $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE_URL###");
+            $markerArrayP["###REF_HIGHSCORE_URL###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
           }
 
-        
+        if ( $this->conf['isPoll'] && $quizData['cmd']!='list' ) {    // show poll result link?
+              $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_POLLRESULT_URL###");
+                $markerArrayP["###REF_POLLRESULT_URL###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
+          }
+
+
         /** Layout for the start page **/
-        if ($startPage) {            
+        if ($startPage) {
             $markerArrayP["###REF_PAGE_LIMIT###"] = '';
             $markerArrayP["###REF_QUIZ_LIMIT###"] = '';
             $markerArrayP["###HIDDENFIELDS###"] = '<input type="hidden" name="'.$this->prefixId.'[fromStart]" value="1" />';
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_TO_SUBMIT###");
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_TO_SUBMIT###");
             $markerArray['###BACK_STYLE###'] = ' style="display:none;"';
             if (is_object($this->freeCap) && $this->conf['enableCaptcha']) {
                 $markerArray = array_merge($markerArray, $this->freeCap->makeCaptcha());
             } else {
                 $subpartArray['###CAPTCHA_INSERT###'] = '';
             }
-            $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->cObj->substituteMarkerArrayCached($template,$markerArray,$subpartArray,$wrappedSubpartArray);
-                
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_PAGE###");
+            $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->templateService->substituteMarkerArrayCached($template,$markerArray,$subpartArray,$wrappedSubpartArray);
+
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_PAGE###");
             if ($template == '')    // if it is not in the template
-                $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_QUESTION_PAGE###");
-            $content .= $this->cObj->substituteMarkerArray($template, $markerArrayP);
+                $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_QUESTION_PAGE###");
+            $content .= $this->templateService->substituteMarkerArray($template, $markerArrayP);
         }
-        
-        
+
+
         /** Layout for a result page **/
         if ($answerPage && $quizData['cmd'] != 'exit') {
             if ( $this->conf['quizTimeMinutes'] ) {
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_TIME_LIMIT###");
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_TIME_LIMIT###");
                 if (!$quizData['qtuid']) {
                     $markerArray["###VAR_SECS###"] = intval($this->conf['quizTimeMinutes'])*60;
                     $markerArray["###VAR_MIN###"] = $this->conf['quizTimeMinutes'];
                 } else {
                     $markerArray["###VAR_SECS###"] = intval($this->conf['quizTimeMinutes'])*60 - $elapseTime;
-                    $markerArray["###VAR_MIN###"] = round($markerArray["###VAR_SECS###"]/60);                
+                    $markerArray["###VAR_MIN###"] = round($markerArray["###VAR_SECS###"]/60);
                 }
-                $markerArrayP["###REF_QUIZ_LIMIT###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+                $markerArrayP["###REF_QUIZ_LIMIT###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
             } else {
                 $markerArrayP["###REF_QUIZ_LIMIT###"] = '';
             }
-            
+
             if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Displaying result-page...', $this->extKey, 0);
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_RESULT_PAGE###");
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_RESULT_PAGE###");
             if ($template == '')    // if it is not in the (old custom) template
-                $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_RESULT_PAGE###");
-            $content .= $this->cObj->substituteMarkerArray($template, $markerArrayP);
-            
+                $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_RESULT_PAGE###");
+            $content .= $this->templateService->substituteMarkerArray($template, $markerArrayP);
+
             if ($this->conf['isPoll'] && $this->conf['email.']['send_admin'])
                 $sendMail = true;
         }
 
-        
+
         /** Layout for a questions page **/
         if ($questionPage && $quizData['cmd'] != 'exit') {
             if ( $this->conf['pageTimeSeconds'] ) {
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_PAGE_TIME_LIMIT###");
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_PAGE_TIME_LIMIT###");
                 $markerArray["###VAR_SECS###"] = ($pageTimeCat) ? $pageTimeCat : $this->conf['pageTimeSeconds'];
-                $markerArrayP["###REF_PAGE_LIMIT###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+                $markerArrayP["###REF_PAGE_LIMIT###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
             } else {
                 $markerArrayP["###REF_PAGE_LIMIT###"] = '';
             }
-            
+
             if ( $this->conf['quizTimeMinutes'] ) {
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_TIME_LIMIT###");
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_TIME_LIMIT###");
                 if (!$quizData['qtuid']) {
                     $markerArray["###VAR_SECS###"] = intval($this->conf['quizTimeMinutes'])*60;
                     $markerArray["###VAR_MIN###"] = $this->conf['quizTimeMinutes'];
                 } else {
                     $markerArray["###VAR_SECS###"] = intval($this->conf['quizTimeMinutes'])*60 - $elapseTime;
-                    $markerArray["###VAR_MIN###"] = round($markerArray["###VAR_SECS###"]/60);                
+                    $markerArray["###VAR_MIN###"] = round($markerArray["###VAR_SECS###"]/60);
                 }
-                $markerArrayP["###REF_QUIZ_LIMIT###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+                $markerArrayP["###REF_QUIZ_LIMIT###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
             } else {
                 $markerArrayP["###REF_QUIZ_LIMIT###"] = '';
             }
-            
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_PAGE###");
+
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_PAGE###");
             if ($template == '')    // if it is not in the template
-                $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_QUESTION_PAGE###");
-            $content .= $this->cObj->substituteMarkerArray($template, $markerArrayP);
+                $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_QUESTION_PAGE###");
+            $content .= $this->templateService->substituteMarkerArray($template, $markerArrayP);
         }
-        
-        
+
+
         /** Layout for the last/final page **/
         $uidP = 0;        // page UID
         $uidC = 0;        // content UID
         if ($finalPage && $quizData['cmd'] != 'exit') {  // nicht noetig: && !$this->conf['isPoll']) {
-        
+
            	if (($this->conf['showAnalysis'] || $this->conf['showEvaluation']) && !$this->conf['dontShowPoints']) {    // Analysis depends on points
                 if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Displaying Analysis: '.$this->conf['showAnalysis'].' or Evaluation: '.$this->conf['showEvaluation'], $this->extKey, 0);
                 if (!$markerArray["###VAR_TMAX_POINTS###"]) {
@@ -2378,8 +2381,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $p++;
                 }
                 if (!($uidP || $uidC)) {
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_ANALYSIS_$templateNo###");
-                    $markerArrayP["###REF_QUIZ_ANALYSIS###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_ANALYSIS_$templateNo###");
+                    $markerArrayP["###REF_QUIZ_ANALYSIS###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
                 } else if ($uidC) {
                     $confC = array('tables' => 'tt_content','source' => $uidC, 'dontCheckPid' => 1);
                     $markerArrayP["###REF_QUIZ_ANALYSIS###"] = $this->cObj->RECORDS($confC);
@@ -2415,7 +2418,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $markerArrayC = array();
                         $markerArrayC['###PREFIX###'] = $markerArrayP['###PREFIX###'];
                         $markerArrayC['###ANSWERS###'] = $this->pi_getLL('answers','answers');
-                        $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_CATEGORY_ELEMENT###");
+                        $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_CATEGORY_ELEMENT###");
                         foreach ($usedCatArray as $key => $value) {
                             $uidC = $this->catArray[$key]['celement'];
                             $confC = array('tables' => 'tt_content','source' => $uidC, 'dontCheckPid' => 1);
@@ -2423,13 +2426,13 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $markerArrayC['###CONTENT###'] = $this->cObj->RECORDS($confC);    // most category element
                             $markerArrayC['###VAR_COUNT###'] = $value;
                             $markerArrayC['###VAR_PERCENT###'] = round(100*$value/$catCount);
-                            $markerArrayP["###REF_QUIZ_ANALYSIS###"] .= $this->cObj->substituteMarkerArray($template, $markerArrayC);
+                            $markerArrayP["###REF_QUIZ_ANALYSIS###"] .= $this->templateService->substituteMarkerArray($template, $markerArrayC);
                         }
                     }
                     $GLOBALS['TYPO3_DB']->sql_free_result($res5);
                 }
             }
-            
+
             if (!$uidP) {            // no redirect
                 $markerArrayP["###FORM_URL###"] = $this->pi_getPageLink($listPID);        // zur endgueltig letzten seite wechseln
                 $markerArrayP["###REF_SUBMIT_FIELDS###"] = '';
@@ -2438,18 +2441,18 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 if ( $this->conf['userData.']['showAtFinal'] ) {
                     $quiz_taker_name = $GLOBALS['TYPO3_DB']->quoteStr($quizData["name"], $this->tableAnswers);
                     $quiz_taker_email  = $GLOBALS['TYPO3_DB']->quoteStr($quizData["email"], $this->tableAnswers);
-                    $quiz_taker_homepage = $GLOBALS['TYPO3_DB']->quoteStr($quizData["homepage"], $this->tableAnswers);            
+                    $quiz_taker_homepage = $GLOBALS['TYPO3_DB']->quoteStr($quizData["homepage"], $this->tableAnswers);
                     $markerArray["###REAL_NAME###"] = $quiz_taker_name;
                     $markerArray["###REAL_EMAIL###"] = $quiz_taker_email;
                     $markerArray["###REAL_HOMEPAGE###"] = $quiz_taker_homepage;
                     $markerArray["###RESULT_FOR###"] = $this->pi_getLL('result_for','result_for');
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_SUBMITED###"); // Output the user name
-                    $markerArrayP["###REF_INTRODUCTION###"] = $this->cObj->substituteMarkerArray($template, $markerArray);
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_SUBMITED###"); // Output the user name
+                    $markerArrayP["###REF_INTRODUCTION###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
                 }
-                
+
                 // User-Data Template
                 if ( $this->conf['userData.']['askAtFinal'] && $quizData['qtuid'] ) {
-                    $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_TO_SUBMIT###");
+                    $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_TO_SUBMIT###");
                     $markerArray['###BACK_STYLE###'] = ' style="display:none;"';
                     if (is_object($this->freeCap) && $this->conf['enableCaptcha']) {
                         $markerArray = array_merge($markerArray, $this->freeCap->makeCaptcha());
@@ -2457,28 +2460,28 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $subpartArray['###CAPTCHA_INSERT###'] = '';
                     }
                     $firsttime = $this->helperObj->getFirstTime($quizData['qtuid']);
-                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->cObj->substituteMarkerArrayCached($template,$markerArray,$subpartArray,$wrappedSubpartArray);
+                    $markerArrayP["###REF_SUBMIT_FIELDS###"] = $this->templateService->substituteMarkerArrayCached($template,$markerArray,$subpartArray,$wrappedSubpartArray);
                     $markerArrayP["###HIDDENFIELDS###"] = "\n".'  <input type="hidden" name="'.$this->prefixId.'[qtuid]" value="'.intval($quizData["qtuid"]).'" />'."\n";
                      $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="'.$this->prefixId.'[setUserData]" value="'.$firsttime.'" />'."\n";
                     $markerArrayP["###HIDDENFIELDS###"] .= '  <input type="hidden" name="'.$this->prefixId.'[fromFinal]" value="1" />';
                 }
-                
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_FINAL_PAGE###");
+
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_FINAL_PAGE###");
                 if ($template == '')    // if it is not in the template
-                    $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_QUIZ_FINAL_PAGE###");
-                $content .= $this->cObj->substituteMarkerArray($template, $markerArrayP);
+                    $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_QUIZ_FINAL_PAGE###");
+                $content .= $this->templateService->substituteMarkerArray($template, $markerArrayP);
             }
-            
+
             if (($this->conf['email.']['send_admin']==1) || ($this->conf['email.']['send_user']==1))
                 $sendMail = true;
         }
-        
+
         /* Change begin */
         /***************************************************************
          *  Extension for sending emails depending on users answers
          *  (c) 2016 Marcel Utz
         ***************************************************************/
-        
+
         $emailAnswers = false;
         $flexformEmailAnswers = ($this->conf['email.']['answers']);
         if($flexformEmailAnswers != '') {
@@ -2492,10 +2495,10 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         	}
         }
         $answersEmail = false;
-        
+
         // Get answers of user from table $this->tableRelation
         if (isset($emailQuestionIds) and is_array($emailAnswers) and $quizData['qtuid']) {
-            
+
             // Get answers of users from statisticsArray
             if (is_array($statisticsArray)) {
                     foreach ($statisticsArray as $questionId => $values) {
@@ -2519,7 +2522,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     }
                 }
             }
-            
+
             // Transform users answers to email addresses
             if(is_array($answersSelected)) {
                 foreach($answersSelected as $questionId => $answers) {
@@ -2530,12 +2533,12 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 }
             }
         }
-        
+
         /***************************************************************
          *  Extension for sending emails depending on users answers
          *  End
         ***************************************************************/
-        
+
         /** Send one/two email(s)? **/
         if (($sendMail || (is_array($answersEmail))) && !$error && !$secondVisit) {
             if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Entering "send emails"...', $this->extKey, 0);
@@ -2547,36 +2550,36 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $markerArray["###REAL_HOMEPAGE###"] = htmlspecialchars($quizData['homepage']);
                     $markerArray["###RESULT_FOR###"] = $this->pi_getLL('result_for','result_for');
                 }
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_SUBMITED###"); // Output the user name
-                $markerArrayP["###REF_INTRODUCTION###"] = $this->cObj->substituteMarkerArray($template, $markerArray);            
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUIZ_USER_SUBMITED###"); // Output the user name
+                $markerArrayP["###REF_INTRODUCTION###"] = $this->templateService->substituteMarkerArray($template, $markerArray);
             }
-            
+
             if ($this->conf['showAllCorrectAnswers'] && !$this->conf['isPoll']) {        // show all answers...
                 $quizData['sendEmailNow'] = true;            // noetig um zu wissen, welches Template genommen werden soll
                 $markerArrayP["###REF_EMAIL_ALLANSWERS###"] = $this->showAllAnswers( $quizData, $thePID,$resPID, true, 0 );
             } else {
                 $markerArrayP["###REF_EMAIL_ALLANSWERS###"] = '';
             }
-            
+
             if ($this->conf['email.']['send_admin'] && \TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($this->conf['email.']['admin_mail']) && $this->conf['email.']['admin_subject']) {
                 if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Sending email to admin: '.$this->conf['email.']['admin_mail'], $this->extKey, 0);
                 $markerArrayP["###SUBJECT###"] = $this->conf['email.']['admin_subject'];
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_ADMIN_EMAIL###");
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_ADMIN_EMAIL###");
                 if ($template == '')    // if it is not in the template
-                    $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_ADMIN_EMAIL###");
-                $mailcontent = $this->cObj->substituteMarkerArray($template, $markerArrayP);
+                    $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_ADMIN_EMAIL###");
+                $mailcontent = $this->templateService->substituteMarkerArray($template, $markerArrayP);
                 $this->helperObj->sendEmail($mailcontent,'',$this->conf['email.']['admin_mail'],$this->conf['email.']['admin_name'],$this->conf['email.']['admin_subject']);
             }
             if ($this->conf['email.']['send_user'] && \TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($quizData["email"]) && $this->conf['email.']['user_subject']) {
                 if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Sending email to user: '.$quizData["email"], $this->extKey, 0);
                 $markerArrayP["###SUBJECT###"] = $this->conf['email.']['user_subject'];
-                $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_USER_EMAIL###");
+                $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_USER_EMAIL###");
                 if ($template == '')    // if it is not in the template
-                    $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_USER_EMAIL###");
-                $mailcontent = $this->cObj->substituteMarkerArray($template, $markerArrayP);
+                    $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_USER_EMAIL###");
+                $mailcontent = $this->templateService->substituteMarkerArray($template, $markerArrayP);
                 $this->helperObj->sendEmail($mailcontent,'',$quizData["email"],$quizData["name"],$this->conf['email.']['user_subject']);
             }
-            
+
             if(isset($answersEmail) and is_array($answersEmail)) {
                 foreach($answersEmail as $emailSettings) {
                     $email = false;
@@ -2595,17 +2598,17 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     if ($email && \TYPO3\CMS\Core\Utility\GeneralUtility::validEmail($email) && $subject) {
                         if ($this->helperObj->writeDevLog)    \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Sending email to: '.$email, $this->extKey, 0);
                         $markerArrayP["###SUBJECT###"] = $subject;
-                        $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_ANSWER_EMAIL".$templatePostfix."###");
+                        $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_ANSWER_EMAIL".$templatePostfix."###");
                         if ($template == '')    // if it is not in the template
-                            $template = $this->cObj->getSubpart($this->origTemplateCode, "###TEMPLATE_ANSWER_EMAIL".$templatePostfix."###");
-                        $mailcontent = $this->cObj->substituteMarkerArray($template, $markerArrayP);
+                            $template = $this->templateService->getSubpart($this->origTemplateCode, "###TEMPLATE_ANSWER_EMAIL".$templatePostfix."###");
+                        $mailcontent = $this->templateService->substituteMarkerArray($template, $markerArrayP);
                         $this->helperObj->sendEmail($mailcontent,'',$email,$name,$subject);
                         //var_dump($mailcontent,'',$email,$name,$subject);
                     }
                 }
             }
         }
-        
+
         /** Delete user result at the end of the quiz? **/
         if ($finalPage && $this->conf['deleteResults']) {    // 60*60*24 = 86400 = 1 tag
             $loesche='';
@@ -2659,19 +2662,19 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $res = $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->tableAnswers, 'uid IN ('.preg_replace('/[^0-9,]/','',$loesche).')');
             }
         }
-        
+
         /** Redirect at the end of the quiz? **/
         if ($finalPage && $uidP) {        // redirect to a URL with that UID
             $this->redirectUrl($uidP, array($this->prefixId.'[name]'=>$quizData["name"],$this->prefixId.'[email]'=>$quizData["email"],$this->prefixId.'[homepage]'=>$quizData["homepage"]));
         }
-        
+
 		if ($this->helperObj->writeDevLog) \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('return the content to the TYPO3 core', $this->extKey, 0);
         return $this->pi_wrapInBaseClass($content);
     }
 
 
-    
-    
+
+
     /**
      * show all answers
      *
@@ -2681,7 +2684,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      * @param    boolean    $isEmail: for email?
      * @param    int        $questionsTotal: not in use?
      * @return    string    The content that should be displayed on the website
-     */ 
+     */
     function showAllAnswers($quizData, $thePID,$resPID, $isEmail, $questionsTotal) {
         $questions = '';
         $temp_output = '';
@@ -2707,7 +2710,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             }
             $GLOBALS['TYPO3_DB']->sql_free_result($res5);
             //print_r($statHash);
-            
+
             if ($quizData['qtuid']) {
                 $res5 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
                     $this->tableRelation,
@@ -2726,43 +2729,43 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $GLOBALS['TYPO3_DB']->sql_free_result($res5);
             }
             //print_r($userHash);
-            
-            $template_okok = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_ANSW###");
-            $template_notok = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_ANSW###");
+
+            $template_okok = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_ANSW###");
+            $template_notok = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_ANSW###");
         }
-        $template_oknot = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_NOTANSW###");
-        $template_notnot = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_NOTANSW###");
-        
+        $template_oknot = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR_NOTANSW###");
+        $template_notnot = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_NOTCORR_NOTANSW###");
+
         // welches Template nehmen???
         if ($quizData["sendEmailNow"]) {
-            $template_entry = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_EMAIL_ALLANSWERS###");
+            $template_entry = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_EMAIL_ALLANSWERS###");
         } else if ($quizData['cmd'] == 'allanswers') {
-            $template_entry = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_ALLANSWERS###");
+            $template_entry = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_ALLANSWERS###");
         } else {
-            $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_NO_MORE###");
-            $template_entry = $this->cObj->getSubpart($template, "###QUIZ_ANSWERS###");        
+            $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_NO_MORE###");
+            $template_entry = $this->templateService->getSubpart($template, "###QUIZ_ANSWERS###");
         }
-        $template_answer = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR###");
-        $template_star_average = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QR_STAR_AVERAGE###");
-        $template_expl = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_EXPLANATION###");
-        $template_delimiter = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_DELIMITER###");
-        $template_image_begin = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
-        $template_image_end = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
+        $template_answer = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_CORR###");
+        $template_star_average = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QR_STAR_AVERAGE###");
+        $template_expl = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_EXPLANATION###");
+        $template_delimiter = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_DELIMITER###");
+        $template_image_begin = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
+        $template_image_end = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
         if ($this->conf['advancedStatistics'] && $this->conf['showDetailAnswers']) {
-            $template_hidden = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_DETAILS###");
-            $template_details_link = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_DETAILS_LINK###");
+            $template_hidden = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_DETAILS###");
+            $template_details_link = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_DETAILS_LINK###");
         }
         if($this->conf['starRatingDetails']) {
-            $template_star_rating_details_link = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_STAR_RATING_DETAILS_LINK###");    
+            $template_star_rating_details_link = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_STAR_RATING_DETAILS_LINK###");
         }
-        
+
         $imgTSConfig = array();
         $myAArray = array();
         $markerArrayS = array();
         $markerArrayS["###PREFIX###"] = $this->prefixId;
         $markerArrayS["###EXPLANATION###"] = $this->pi_getLL('listFieldHeader_explanation','listFieldHeader_explanation');
         $markerArrayS["###VAR_QUESTIONS###"] = $questionsTotal;
-        
+
         $whereUIDs = '';
         $whereCat='';
         if ($quizData['qtuid']) {            // nur beantwortete Fragen anzeigen...
@@ -2786,7 +2789,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         } elseif ( $this->conf['onlyCategories'] ) {
             $whereCat = " AND category IN (".preg_replace('/[^0-9,]/','',$this->conf['onlyCategories']).")";
         }
-        
+
         // Get all questions and answers from the database
         $questionsArray = array();
         $questionNumber = 0;
@@ -2804,10 +2807,10 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $runNumber = 0;
             while($rowA = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){
                 $questionUID = $rowA['uid'];
-                
+
                 if ($this->conf['advancedStatistics'] && $quizData['qtuid'] && !is_array($userHash[$questionUID]))
-                    continue;                // vorher nicht angezeigte Fragen auch jetzt nicht anzeigen! 
-                
+                    continue;                // vorher nicht angezeigte Fragen auch jetzt nicht anzeigen!
+
                 $questionNumber++;
                 $answerPointsBool = false;
                 $markerArrayS["###VAR_QUESTION###"] = $questionNumber;
@@ -2818,7 +2821,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 $markerArrayS["###REF_QR_ANSWER_ALL###"] = '';
                 $markerArrayS["###REF_QR_EXPLANATION###"] = '';
                 if ($questionNumber < $rows) {
-                    $markerArrayS["###REF_DELIMITER###"] = $this->cObj->substituteMarkerArray($template_delimiter, $markerArrayS);
+                    $markerArrayS["###REF_DELIMITER###"] = $this->templateService->substituteMarkerArray($template_delimiter, $markerArrayS);
                 } else {
                     $markerArrayS["###REF_DELIMITER###"] = '';
                 }
@@ -2833,11 +2836,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 }
                 if ( $rowA['explanation']!='' ) {    // Explanation
                     $markerArrayS["###VAR_EXPLANATION###"] = $this->formatStr($rowA['explanation']);
-                    $markerArrayS["###REF_QR_EXPLANATION###"] = $this->cObj->substituteMarkerArray($template_expl, $markerArrayS);
+                    $markerArrayS["###REF_QR_EXPLANATION###"] = $this->templateService->substituteMarkerArray($template_expl, $markerArrayS);
                 }
                 if ($rowA['image']) { // && !$isEmail) {
                     $markerArrayS["###VAR_QUESTION_IMAGE###"] = $this->helperObj->getImage($rowA['image'], $rowA["alt_text"], $isEmail);
-                    $markerArrayS["###REF_QUESTION_IMAGE_BEGIN###"] = $this->cObj->substituteMarkerArray($template_image_begin, $markerArrayS);
+                    $markerArrayS["###REF_QUESTION_IMAGE_BEGIN###"] = $this->templateService->substituteMarkerArray($template_image_begin, $markerArrayS);
                     $markerArrayS["###REF_QUESTION_IMAGE_END###"] = $template_image_end;
                 } else {
                     $markerArrayS["###VAR_QUESTION_IMAGE###"] = '';
@@ -2852,8 +2855,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         }
                     }
                 }*/
-            
-                //Star rating: 
+
+                //Star rating:
                 if($rowA['qtype']==7) {
                     //count numbers of answers/stars
                     unset($totalAnswers);
@@ -2861,13 +2864,13 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         if($rowA['answer'.$answerNumberCount])
                             $totalAnswers = $answerNumberCount;
                     }
-                
+
                     //Star rating: count average
                     $totalPoints = 0;
                     for( $answerNumber=1; $answerNumber < $this->answerChoiceMax+1; $answerNumber++ ) {
                         $totalPoints += $statHash[$questionUID]['c'.$answerNumber];
                     }
-                    
+
                     if ($totalPoints > 0) {
                         $answerNumber = 1;
                         $totalStars = 0;
@@ -2876,11 +2879,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $points[$answerNumber] = $statHash[$questionUID]['c'.$answerNumber] * $answerNumber;
                             $totalStars += $points[$answerNumber];
                             $answerNumber++;
-                        }            
+                        }
                         $average = number_format(($totalStars/$totalPoints), 2, ',', ' ');
                         $averageUnformatted = $totalStars/$totalPoints;
                     }
-                    
+
                     $temp_average = '';
                     $i = 1;
                     while($i <= $totalAnswers) {
@@ -2897,7 +2900,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $markerArrayA["###VAR_QUESTION_STARS###"] = $temp_average;
                     $markerArrayA["###VAR_QUESTION_STARS_AVERAGE###"] = $average;
                     $markerArrayA["###VAR_COUNTS###"] = $totalPoints;
-                    $temp_output = $this->cObj->substituteMarkerArray($template_star_average, $markerArrayA);
+                    $temp_output = $this->templateService->substituteMarkerArray($template_star_average, $markerArrayA);
                     unset($markerArrayA);
                     if($this->conf['starRatingDetails']) {
                         if($this->conf['alwaysShowStarRatingDetails']) {
@@ -2907,25 +2910,25 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             $runNumber++;
                         } else {
                             $markerArrayD = array();
-                            $markerArrayD['###PREFIX###'] = $this->prefixId; 
+                            $markerArrayD['###PREFIX###'] = $this->prefixId;
                             $markerArrayD['###ID###'] = $questionUID;
                             $markerArrayD['###SHOW_DETAILS###'] = $this->pi_getLL('show_details','show_details');
-                            $temp_output .= $this->cObj->substituteMarkerArray($template_star_rating_details_link, $markerArrayD);
+                            $temp_output .= $this->templateService->substituteMarkerArray($template_star_rating_details_link, $markerArrayD);
                             unset($markerArrayD);
                         }
                     }
                 }
-                
+
                 // myVars for questions
                 $markerArrayS = array_merge($markerArrayS, $this->helperObj->setQuestionVars($questionNumber));
-                    
+
                 for( $answerNumber=1; $answerNumber < $this->answerChoiceMax+1; $answerNumber++ ) {
                     if (($rowA['answer'.$answerNumber] || $rowA['answer'.$answerNumber] === '0' || in_array($rowA['qtype'], $this->textType)) && $rowA['qtype'] != 7) {    // was a answer set in the backend?
-                
+
                         // myVars for answers
                         $markerArrayS = array_merge($markerArrayS, $this->helperObj->setAnswerVars($answerNumber, $rowA['qtype']));
                         $markerArrayS["###VAR_QA_NR###"] = $answerNumber;
-                        
+
                     //    if ($this->conf['advancedStatistics'] and $quizData['qtuid']) {
                             $tempAnswer = '';
                             $markerArrayS['###VAR_QUESTION_ANSWER###'] = $rowA['answer'.$answerNumber];
@@ -2964,23 +2967,23 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                     $markerArrayS['###VAR_COUNTS###'] = '?';
                                 }
                             }
-                            
-                            if ($this->conf['advancedStatistics'] && $quizData['qtuid'] && $userHash[$questionUID]['c'.$answerNumber] && 
+
+                            if ($this->conf['advancedStatistics'] && $quizData['qtuid'] && $userHash[$questionUID]['c'.$answerNumber] &&
                                     ( ($rowA['qtype']==3 && (!$rowA['answer'.$answerNumber] || strtolower($rowA['answer'.$answerNumber])==strtolower($userHash[$questionUID]['textinput']))) ||
                                       ($rowA['qtype']!=3 && $rowA['correct'.$answerNumber]) || ($rowA['qtype']==5) )) {
                                 if ($rowA['qtype']==5 || !$rowA['answer'.$answerNumber]) {
                                     $textinput = htmlspecialchars($userHash[$questionUID]['textinput']);
-                                    if ($textinput) 
+                                    if ($textinput)
                                         $textinput = str_replace('\r\n', "<br />", $textinput);
                                     else
                                         $textinput = '&nbsp;';
                                     $markerArrayS["###VAR_QUESTION_ANSWER###"] = $textinput;
                                 }
-                                $tempAnswer = $this->cObj->substituteMarkerArray($template_okok, $markerArrayS);
-                            } else if ($this->conf['advancedStatistics'] and $quizData['qtuid'] && $userHash[$questionUID]['c'.$answerNumber]) {                                            
-                                $tempAnswer = $this->cObj->substituteMarkerArray($template_notok, $markerArrayS);
+                                $tempAnswer = $this->templateService->substituteMarkerArray($template_okok, $markerArrayS);
+                            } else if ($this->conf['advancedStatistics'] and $quizData['qtuid'] && $userHash[$questionUID]['c'.$answerNumber]) {
+                                $tempAnswer = $this->templateService->substituteMarkerArray($template_notok, $markerArrayS);
                             } else if ($rowA['correct'.$answerNumber] || ($rowA['qtype']==3 && $rowA['answer1'])) {
-                                $tempAnswer = $this->cObj->substituteMarkerArray($template_oknot, $markerArrayS);
+                                $tempAnswer = $this->templateService->substituteMarkerArray($template_oknot, $markerArrayS);
                                 if ($this->conf['advancedStatistics'] && $quizData['qtuid'] && $rowA['qtype']==3 && ($userHash[$questionUID]['textinput'] || $userHash[$questionUID]['textinput']==='0')) {        // falsche antwort und richtige antwort ausgeben; hier gibt es 2 antworten !!!
                                     $textinput = str_replace('\r\n', "<br />", htmlspecialchars($userHash[$questionUID]['textinput']));
                                     $markerArrayS["###VAR_QUESTION_ANSWER###"] = $textinput;        // falschen werte berechnen...
@@ -2992,52 +2995,52 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                                     $markerArrayS['###VAR_PERCENT###'] = '?';    // man weiss ja nicht die Daten zu der eigenen Antwort
                                     $markerArrayS['###VAR_PERCENT_INT###'] = '0';
                                     $markerArrayS['###VAR_COUNTS###'] = '?';
-                                    $tempAnswer .= $this->cObj->substituteMarkerArray($template_notok, $markerArrayS);
+                                    $tempAnswer .= $this->templateService->substituteMarkerArray($template_notok, $markerArrayS);
                                 }
                             } else if (($rowA['answer'.$answerNumber] || $rowA['answer'.$answerNumber]===0) && $rowA['qtype'] != 7) {
-                                $tempAnswer = $this->cObj->substituteMarkerArray($template_notnot, $markerArrayS);
+                                $tempAnswer = $this->templateService->substituteMarkerArray($template_notnot, $markerArrayS);
                             }
                             if (in_array($rowA['qtype'], $this->textType) && $this->conf['advancedStatistics'] && $this->conf['showDetailAnswers'] && !$isEmail) {
                                 $markerArrayD = array();
-                                $markerArrayD['###PREFIX###'] = $this->prefixId; 
+                                $markerArrayD['###PREFIX###'] = $this->prefixId;
                                 $markerArrayD['###ID###'] = $questionUID;
                                 $markerArrayD['###SHOW_DETAILS###'] = $this->pi_getLL('show_details','show_details');
                                 $markerArrayD["###URL###"] = $this->pi_getPageLink($GLOBALS['TSFE']->id);
-                                $tempAnswer.=$this->cObj->substituteMarkerArray($template_details_link, $markerArrayD);
-                                $tempAnswer.=$this->cObj->substituteMarkerArray($template_hidden, $markerArrayD);
+                                $tempAnswer.=$this->templateService->substituteMarkerArray($template_details_link, $markerArrayD);
+                                $tempAnswer.=$this->templateService->substituteMarkerArray($template_hidden, $markerArrayD);
                                 unset($markerArrayD);
                             }
                             $markerArrayS["###REF_QR_ANSWER_ALL###"] .= $tempAnswer;        // all answers in correct order
-                    
-                    //    } else 
+
+                    //    } else
                         if ($rowA['correct'.$answerNumber] || in_array($rowA['qtype'], $this->textType)) { // all correct answers
                             if ($rowA['correct'.$answerNumber])        // bug fixed at 25.4.10
                                 $markerArrayS["###VAR_QUESTION_ANSWER###"] = $rowA['answer'.$answerNumber];
-                            $markerArrayS["###REF_QR_ANSWER_CORR###"] .= $this->cObj->substituteMarkerArray($template_answer, $markerArrayS);
+                            $markerArrayS["###REF_QR_ANSWER_CORR###"] .= $this->templateService->substituteMarkerArray($template_answer, $markerArrayS);
                         }
                     }
                     if (in_array($rowA['qtype'], $this->textType)) break 1;
                 }
-            
+
                 if($rowA['qtype'] == 7) {
                     $markerArrayS["###REF_QR_ANSWER_ALL###"] .= $temp_output;
                     $markerArrayS["###REF_QR_ANSWER_CORR###"] .= $temp_output;
                     $temp_output = '';
                 }
-                
+
                 if ($this->conf['advancedStatistics'] and $quizData['qtuid']) {
                     $markerArrayS['###RESULT_QUESTION_POINTS###'] = $this->pi_getLL('result_question_points','result_question_points');
                     $markerArrayS['###VAR_POINTS###'] = $userHash[$questionUID]['points'];
                 }
-                
-                $questions .= $this->cObj->substituteMarkerArray($template_entry, $markerArrayS);
+
+                $questions .= $this->templateService->substituteMarkerArray($template_entry, $markerArrayS);
             }
         }
         $GLOBALS['TYPO3_DB']->sql_free_result($res5);
         return $questions;
     }
-    
-    
+
+
     /**
      * show highscore list
      *
@@ -3047,7 +3050,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      * @return    string    The content that should be displayed on the website
      */
     function showHighscoreList($quizData, $resPID, $listPID) {
-    
+
         $nr=0;
         $limit='';
         $date_format='m-d-Y';
@@ -3055,7 +3058,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $toID=0;
         $linkTo = $this->conf['highscore.']['linkTo'];
         if ($linkTo) {
-            // Link zu einer front-end-user-seite 
+            // Link zu einer front-end-user-seite
             $pos = strpos($linkTo, '&');
             $toID = intval(substr($linkTo,3,$pos-3));
             $params = explode('&', substr($linkTo,$pos+1));
@@ -3067,11 +3070,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 else $toArray[$temp[0]]=$temp[1];
             }
         }
-        
-        $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE###");
-        $template_entry = $this->cObj->getSubpart($template, "###TEMPLATE_HIGHSCORE_ENTRY###");
-        $template_caption = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE_CAPTION###");
-        $template_quiz_taker = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE_QUIZ_TAKER###");
+
+        $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE###");
+        $template_entry = $this->templateService->getSubpart($template, "###TEMPLATE_HIGHSCORE_ENTRY###");
+        $template_caption = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE_CAPTION###");
+        $template_quiz_taker = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_HIGHSCORE_QUIZ_TAKER###");
         $folderArray = array();
         $pageArray = array();
         $seekPages = preg_match("/###VAR_PAGE_NAME###/", $template_entry);
@@ -3094,30 +3097,30 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $folderArray[$row['die_id']] = $row['title'];
                 }
             }
-            $GLOBALS['TYPO3_DB']->sql_free_result($res3); 
+            $GLOBALS['TYPO3_DB']->sql_free_result($res3);
         }
-        
+
         $markerArray=array();
         $markerArrayH=array();
         $markerArrayS=array();
         $markerArray["###PREFIX###"] = $this->prefixId;
         $markerArray["###REF_HIGHSCORE_CAPTION###"] = '';
         $markerArray["###REF_HIGHSCORE_ENTRY###"] = '';
-        
+
         if ( $this->conf['highscore.']['entries']>0 ) {
             $markerArray["###HIGHSCORE_CAPTION###"] = $this->pi_getLL('highscore_caption','highscore_caption');
             $markerArray["###VAR_HIGHSCORE_LIMIT###"] = $this->conf['highscore.']['entries'];
-            $markerArray["###REF_HIGHSCORE_CAPTION###"] = $this->cObj->substituteMarkerArray($template_caption, $markerArray);
+            $markerArray["###REF_HIGHSCORE_CAPTION###"] = $this->templateService->substituteMarkerArray($template_caption, $markerArray);
             $limit = intval($this->conf['highscore.']['entries']);
         }
-        
+
         $markerArray["###NUMBER###"] = $this->pi_getLL('number','number');
         $markerArray["###POINTS###"] = $this->pi_getLL('points','points');
         $markerArray["###PERCENT###"] = $this->pi_getLL('percent','percent');
         $markerArray["###TIME###"] = $this->pi_getLL('time','time');
         $markerArray["###NAME###"] = $this->pi_getLL('name','name');
         $markerArray["###DATE###"] = $this->pi_getLL('date','date');
-        
+
         if ( $this->conf['highscore.']['sortBy']=='percent' ) {
             $orderBy='percent';
             $flag = ' DESC';
@@ -3140,7 +3143,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $orderBy='p_or_a';
             $flag = ' DESC';
         }
-        
+
         $groupBy = $this->conf['highscore.']['groupBy'];
         if ($groupBy) {
             $addParams = array($this->prefixId.'[detail]' => 1);
@@ -3188,7 +3191,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $aTime = date('G:i:s', $aTime);
                     $aPid = $row['pid'];
                 }
-                
+
                 if (!$groupBy && $row['uid'] == $quizData['qtuid']) {        // aktueller eintrag
                     $markerArrayS["###EVEN_ODD###"] = $markerArrayS["###MY_EVEN_ODD###"] = '-act';
                 } else {
@@ -3207,7 +3210,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $markerArrayS["###MY_EVEN_ODD###"] = $markerArrayS["###EVEN_ODD###"];    // hinzugefuegt am 2.9.2009
                     }
                 }
-                
+
                 if ($row['fe_uid'] && $toID && $toParam) {
                     $toArray[$toParam] = $row['fe_uid'];
                     $markerArrayH["###VAR_NAME###"] = $this->pi_linkToPage($row['name'], $toID, $target = '', $toArray);
@@ -3225,7 +3228,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     $markerArrayH["###VAR_TO_HOMEPAGE###"] = '';
                 }
                 if ($row['email'] != "" && $row['email'] != $this->pi_getLL('no_email','no_email')) {
-                    $email_crypt = $GLOBALS['TSFE']->encryptEmail('mailto:'.$row['email']); 
+                    $email_crypt = $GLOBALS['TSFE']->encryptEmail('mailto:'.$row['email']);
                     if ($email_crypt == 'mailto:'.$row['email']) {
                         $nameandemail = $email_crypt;
                     } else {
@@ -3242,8 +3245,8 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 } else {
                     $markerArrayH["###LINK_DETAIL###"] = '#';
                 }
-                $markerArrayS["###REF_HIGHSCORE_QUIZ_TAKER###"] = $this->cObj->substituteMarkerArray($template_quiz_taker, $markerArrayH);
-                
+                $markerArrayS["###REF_HIGHSCORE_QUIZ_TAKER###"] = $this->templateService->substituteMarkerArray($template_quiz_taker, $markerArrayH);
+
                 $markerArrayS["###VAR_CATEGORY###"] = $this->catArray[$row['lastcat']]['name'];
                 $markerArrayS["###VAR_NEXT_CATEGORY###"] = $this->catArray[$row['nextcat']]['name'];
                 $markerArrayS["###VAR_COUNT###"] = $nr+1;
@@ -3271,17 +3274,17 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     } else $markerArrayS['###VAR_PAGE_NAME###'] = '???';
                     $markerArrayS['###VAR_FOLDER_NAME###'] = $folderArray[$aPid];
                 }
-                $markerArray["###REF_HIGHSCORE_ENTRY###"] .= $this->cObj->substituteMarkerArray($template_entry, $markerArrayS);
-                
+                $markerArray["###REF_HIGHSCORE_ENTRY###"] .= $this->templateService->substituteMarkerArray($template_entry, $markerArrayS);
+
                 $nr++;
             }
         }
         $GLOBALS['TYPO3_DB']->sql_free_result($res4);
         $subpart = $template;
-        $template = $this->cObj->substituteSubpart($subpart, '###TEMPLATE_HIGHSCORE_ENTRY###', $markerArray["###REF_HIGHSCORE_ENTRY###"], 0);
-        return $this->cObj->substituteMarkerArray($template, $markerArray);
+        $template = $this->templateService->substituteSubpart($subpart, '###TEMPLATE_HIGHSCORE_ENTRY###', $markerArray["###REF_HIGHSCORE_ENTRY###"], 0);
+        return $this->templateService->substituteMarkerArray($template, $markerArray);
     }
-    
+
     /**
      * show poll result
      *
@@ -3297,7 +3300,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $hits=0;
         $percent=0;
         $withStartCat=false;
-		
+
         if ($this->tableAnswers=='tx_myquizpoll_result') {
             $dbanswer = 'p_or_a';
             $dbquestion = 'qids';
@@ -3305,7 +3308,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $dbanswer = 'answer_no';
             $dbquestion = 'question_id';
         }
-        
+
         if (!$answered) {    // link clicked?
             $answered = $quizData["qid"];
         } else if (strpos($answered, ',')) {
@@ -3321,10 +3324,10 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         } else if ( $this->conf['onlyCategories'] ) {
             $answeredP = " AND category IN (".preg_replace('/[^0-9,]/','',$this->conf['onlyCategories']).")";
         }
-        
-        $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_POLLRESULT###");
-        $template_entry = $this->cObj->getSubpart($template, "###TEMPLATE_POLLRESULT_ENTRY###");
-        
+
+        $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_POLLRESULT###");
+        $template_entry = $this->templateService->getSubpart($template, "###TEMPLATE_POLLRESULT_ENTRY###");
+
         $markerArray=array();
         $markerArrayS=array();
         $markerArray["###PREFIX###"] = $this->prefixId;
@@ -3344,7 +3347,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $where_fid = ($markerArray["###VAR_FID###"]) ?
             " AND foreign_val='".$GLOBALS['TYPO3_DB']->quoteStr($markerArray["###VAR_FID###"], 'tx_myquizpoll_voting')."'" : '';
         $pollStart = intval($this->conf['pollStart']);
-        
+
         // poll question (only latest question!)
         $queryResult = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
                 $this->tableQuestions,
@@ -3355,16 +3358,16 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($queryResult);
         if ($this->helperObj->writeDevLog)
             \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Poll result: selected question with pid IN ('.$thePID.')'.$answeredP . $this->helperObj->getWhereLang().': '.$row['uid'], $this->extKey, 0);
-        
+
         $markerArray["###VAR_QID###"] = $row['uid'];
         $markerArray["###TITLE_HIDE###"] = ($row['title_hide']) ? '-hide' : '';
         $markerArray["###VAR_QUESTION_TITLE###"] = $row['title'];
         $markerArray["###VAR_EXPLANATION###"] = $this->formatStr($row['explanation']);
         if ( $row['explanation']!='' ) {    // Explanation
-            $template_expl = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_EXPLANATION###");
+            $template_expl = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_EXPLANATION###");
             $markerArray["###EXPLANATION###"] = $this->pi_getLL('listFieldHeader_explanation', 'listFieldHeader_explanation');
             $markerArray["###VAR_EXPLANATION###"] = $this->formatStr($row['explanation']);
-            $markerArray["###REF_QR_EXPLANATION###"] = $this->cObj->substituteMarkerArray($template_expl, $markerArray);
+            $markerArray["###REF_QR_EXPLANATION###"] = $this->templateService->substituteMarkerArray($template_expl, $markerArray);
         } else {
             $markerArray["###VAR_EXPLANATION###"] = '';
             $markerArray["###REF_QR_EXPLANATION###"] = '';
@@ -3374,10 +3377,10 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $answeredQ = " AND $dbquestion=".intval($row['uid']);
         }
         if ($row['image']) {
-            $template_image_begin = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
-            $template_image_end = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
+            $template_image_begin = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_BEGIN###");
+            $template_image_end = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_QUESTION_IMAGE_END###");
             $markerArray["###VAR_QUESTION_IMAGE###"] = $this->helperObj->getImage($row['image'], $row["alt_text"]);
-            $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = $this->cObj->substituteMarkerArray($template_image_begin, $markerArray);
+            $markerArray["###REF_QUESTION_IMAGE_BEGIN###"] = $this->templateService->substituteMarkerArray($template_image_begin, $markerArray);
             $markerArray["###REF_QUESTION_IMAGE_END###"] = $template_image_end;
         } else {
             $markerArray["###VAR_QUESTION_IMAGE###"] = '';
@@ -3408,7 +3411,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 }
             }
         }
-        
+
         // show the answers and votes
         $field = ($this->conf['votedOnly']) ? 'votes' : 'answer';
         for ($nr=1; $nr<=$this->answerChoiceMax; $nr++) {
@@ -3422,7 +3425,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             } else {
                 $markerArrayS["###EVEN_ODD###"] = (($nr % 2) == 0) ? ' tr-even' : ' tr-odd';
             }
-                    
+
             $markerArrayS["###VAR_ANSWER###"] = $row['answer' . $nr];
             if ($row['votes'.$nr]) {
                 $hits=$row['votes'.$nr];
@@ -3436,7 +3439,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $markerArrayS["###VAR_PERCENT_INT###"] = round($percent);
             $markerArrayS["###VAR_COUNT###"] = $nr;
             $markerArrayS["###VAR_SELECTED###"] = intval($quizData['answer1']);
-            $markerArray["###REF_POLLRESULT_ENTRY###"] .= $this->cObj->substituteMarkerArray($template_entry, $markerArrayS);
+            $markerArray["###REF_POLLRESULT_ENTRY###"] .= $this->templateService->substituteMarkerArray($template_entry, $markerArrayS);
             $markerArray["###VAR_ANSWER$nr###"] = $markerArrayS["###VAR_ANSWER###"];
             $markerArray["###VAR_HITS$nr###"] = $markerArrayS["###VAR_HITS###"];
             $markerArray["###VAR_PERCENT$nr###"] = $markerArrayS["###VAR_PERCENT###"];
@@ -3451,14 +3454,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $markerArray["###VAR_SELECTED###"] = intval($quizData['answer1']);
         $markerArray["###VAR_VOTES###"] = $votes;
         $this->subpart = $template;
-        $template = $this->cObj->substituteSubpart($this->subpart, '###TEMPLATE_POLLRESULT_ENTRY###', $markerArray["###REF_POLLRESULT_ENTRY###"], 0);
-        $out = $this->cObj->substituteMarkerArray($template, $markerArray);
+        $template = $this->templateService->substituteSubpart($this->subpart, '###TEMPLATE_POLLRESULT_ENTRY###', $markerArray["###REF_POLLRESULT_ENTRY###"], 0);
+        $out = $this->templateService->substituteMarkerArray($template, $markerArray);
         $GLOBALS['TYPO3_DB']->sql_free_result($queryResult);
         $GLOBALS['TYPO3_DB']->sql_free_result($res2);
         return $out;
     }
-    
-    
+
+
     /**
      * show a poll archive
      *
@@ -3466,14 +3469,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
      * @param    mixed    $thePID: uid of the folder(s) with the questions
      * @param    int        $resPID: uid of the folder with user-results
      * @return   string    The content that should be displayed on the website
-     */ 
+     */
     function showPollArchive( $listPID,$thePID,$resPID ) {
-    	$template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_ARCHIVE###");
-        $template_entry = $this->cObj->getSubpart($template, "###TEMPLATE_ARCHIVE_ENTRY###");
+    	$template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_ARCHIVE###");
+        $template_entry = $this->templateService->getSubpart($template, "###TEMPLATE_ARCHIVE_ENTRY###");
         $markerArray = array();
         $markerArrayS = array();
         $markerArray["###REF_ARCHIVE_ENTRY###"] = '';
-        
+
     	$queryResult = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,title',
 			$this->tableQuestions,
 			'pid IN (' . $thePID . ')' . $this->helperObj->getWhereLang() . ' ' . $this->cObj->enableFields($this->tableQuestions),
@@ -3492,17 +3495,17 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	            $markerArrayS['###VAR_LINKTAG###'] = $this->cObj->typolink($row['title'], $typolink_conf);
 	            $markerArrayS['###VAR_LINK###'] = $this->pi_getPageLink($listPID, '', array($this->prefixId.'[qid]' => $row['uid'], $this->prefixId.'[cmd]' => 'list'));
             	$markerArrayS['###VAR_TITLE###'] = $row['title'];
-				$markerArray["###REF_ARCHIVE_ENTRY###"] .= $this->cObj->substituteMarkerArray($template_entry, $markerArrayS);
+				$markerArray["###REF_ARCHIVE_ENTRY###"] .= $this->templateService->substituteMarkerArray($template_entry, $markerArrayS);
 			}
 		}
 		$GLOBALS['TYPO3_DB']->sql_free_result($queryResult);
 		$subpart = $template;
-        $template = $this->cObj->substituteSubpart($subpart, '###TEMPLATE_ARCHIVE_ENTRY###', $markerArray["###REF_ARCHIVE_ENTRY###"], 0);
-        return $this->cObj->substituteMarkerArray($template, $markerArray);		
+        $template = $this->templateService->substituteSubpart($subpart, '###TEMPLATE_ARCHIVE_ENTRY###', $markerArray["###REF_ARCHIVE_ENTRY###"], 0);
+        return $this->templateService->substituteMarkerArray($template, $markerArray);
     }
-    
-    
-    
+
+
+
     /**
      * Format string with nl2br and htmlspecialchars()
      *
@@ -3515,7 +3518,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         }
         return $str;
     }
-    
+
     /**
      * Returns the sorting order of questions for SQL
      *
@@ -3535,7 +3538,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         }
         return $sortBy;
     }
-    
+
     /**
      * Returns the name of the cookie
      *
@@ -3569,13 +3572,13 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 'uid DESC',
                 '1');
             $row5 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($queryResult5);
-            $cookieName = "myquizpoll".$resPID.'_'.intval($GLOBALS['TSFE']->fe_user->user['uid']).'_'.intval($row5['uid']);            
+            $cookieName = "myquizpoll".$resPID.'_'.intval($GLOBALS['TSFE']->fe_user->user['uid']).'_'.intval($row5['uid']);
             $GLOBALS['TYPO3_DB']->sql_free_result($queryResult5);
         } else
             $cookieName = "myquizpoll".$resPID;
         return $cookieName;
     }
-    
+
     /**
     * read the template file, fill in global wraps and markers and write the result
     * to '$this->templateCode'
@@ -3585,7 +3588,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
     function initTemplate() {
        // read template-file
        $templateFile = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'templateFile');
-       $origTemplateFile = 'EXT:myquizpoll/pi1/tx_myquizpoll_pi1.tmpl';    
+       $origTemplateFile = 'EXT:myquizpoll/pi1/tx_myquizpoll_pi1.tmpl';
        if ($templateFile) {
            if (false === strpos($templateFile, '/')) {
            	if (strpos($templateFile, ':') > 0) {
@@ -3610,14 +3613,16 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
        } else if ($this->conf['templateFile']) {
            $templateFile = $this->conf['templateFile'];
        } else {
-              $templateFile = $origTemplateFile;          
+              $templateFile = $origTemplateFile;
        }
-       $this->templateCode = $this->cObj->fileResource($templateFile);
-       $this->origTemplateCode = $this->cObj->fileResource($origTemplateFile);
+       $templateFile = GeneralUtility::makeInstance(FilePathSanitizer::class)->sanitize($templateFile);
+       $this->templateCode = file_get_contents($templateFile);
+       $origTemplateFile = GeneralUtility::makeInstance(FilePathSanitizer::class)->sanitize($origTemplateFile);
+       $this->origTemplateCode = file_get_contents($origTemplateFile);
        return $templateFile;
-    } 
+    }
 
-    
+
     /**
     * Sets one flexform-value (if set)
     *
@@ -3632,7 +3637,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         if ($type==3) {            // select text
             if ($value!='TS') $new = $value;
         } else if ($type==2) {    // enter text
-            if ($value || $value==='0' || $value===0) $new = $value;            
+            if ($value || $value==='0' || $value===0) $new = $value;
         } else if ($type==1) {    // enter number
             if ($value || $value==='0' || $value===0) $new = intval($value);
         } else {                // select number
@@ -3648,7 +3653,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             //echo "setzte $name = $new\n";
         }
     }
-    
+
     /**
     * copy flexform-values to '$this->conf'
     */
@@ -3659,7 +3664,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         if ($this->conf['sortHighscoreBy'])  $this->conf['highscore.']['sortBy'] = $this->conf['sortHighscoreBy'];
         if ($this->conf['showHighscore'])      $this->conf['highscore.']['showAtFinal'] = 1;
         if ($this->conf['dateFormat'])          $this->conf['highscore.']['dateFormat'] = $this->conf['dateFormat'];
-        
+
         $value = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'what_to_display');
         if ($value and $value!='TS') {
             if ($value=='NORMAL')
@@ -3675,7 +3680,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $this->setFlexValue('','listPID', 'sDEF', 1);
         $this->setFlexValue('','pageQuestions', 'sDEF', 1);
         $this->setFlexValue('','answerChoiceMax', 'sDEF', 1);
-        
+
         $this->setFlexValue('','sortBy', 'sNEXT', 3);
         $this->setFlexValue('','pollStart', 'sNEXT', 1);
         $this->setFlexValue('','mixAnswers', 'sNEXT', 0);
@@ -3701,7 +3706,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $this->setFlexValue('','loggedInMode', 'sNEXT', 0);
         $this->setFlexValue('','disableIp', 'sNEXT', 0);
         $this->setFlexValue('','hideByDefault', 'sNEXT', 0);
-        
+
         $this->setFlexValue('userData','askAtStart', 'sUSERDATA', 0);
         $this->setFlexValue('userData','askAtQuestion', 'sUSERDATA', 0);
         $this->setFlexValue('userData','askAtFinal', 'sUSERDATA', 0);
@@ -3709,14 +3714,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $this->setFlexValue('userData','showAtFinal', 'sUSERDATA', 0);
         $this->setFlexValue('userData','tt_address_pid', 'sUSERDATA', 1);
         $this->setFlexValue('userData','tt_address_groups', 'sUSERDATA', 2);
-        
+
         $this->setFlexValue('','pageTimeSeconds', 'sTERMINATION', 1);
         $this->setFlexValue('','quizTimeMinutes', 'sTERMINATION', 1);
         $this->setFlexValue('','cancelWhenWrong', 'sTERMINATION', 0);
         $this->setFlexValue('','finalWhenCancel', 'sTERMINATION', 0);
         $this->setFlexValue('','finishedMinPercent', 'sTERMINATION', 1);
         $this->setFlexValue('','finishAfterQuestions', 'sTERMINATION', 1);
-        
+
         $value1 = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'till1p', 'sEVALUATION');
         $value2 = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'till1c', 'sEVALUATION');
         if ($value2) {
@@ -3736,7 +3741,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                         $value1 = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'till5p', 'sEVALUATION');
                         $value2 = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'till5c', 'sEVALUATION');
                         if ($value2) {
-                            $this->conf['showEvaluation'] .= ','.intval($value1).':'.intval($value2);                            
+                            $this->conf['showEvaluation'] .= ','.intval($value1).':'.intval($value2);
                             $value1 = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'till6p', 'sEVALUATION');
                             $value2 = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'till6c', 'sEVALUATION');
                             if ($value2) {
@@ -3748,14 +3753,14 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             }
         }
         $this->setFlexValue('','showCategoryElement', 'sEVALUATION', 0);
-        
+
         $this->setFlexValue('highscore','showAtFinal', 'sHIGHSCORE', 0);
         $this->setFlexValue('highscore','entries', 'sHIGHSCORE', 1);
         $this->setFlexValue('highscore','sortBy', 'sHIGHSCORE', 3);
         $this->setFlexValue('highscore','groupBy', 'sHIGHSCORE', 3);
         $this->setFlexValue('highscore','linkTo', 'sHIGHSCORE', 2);
         $this->setFlexValue('highscore','dateFormat', 'sHIGHSCORE', 2);
-        
+
         $this->setFlexValue('email','send_admin', 'sEMAIL', 0);
         $this->setFlexValue('email','send_user', 'sEMAIL', 0);
         $this->setFlexValue('email','admin_subject', 'sEMAIL', 2);
@@ -3765,7 +3770,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $this->setFlexValue('email','admin_name', 'sEMAIL', 2);
         $this->setFlexValue('email','admin_mail', 'sEMAIL', 2);
         $this->setFlexValue('email','answers', 'sEMAIL', 2);
-        
+
         $this->setFlexValue('','advancedStatistics', 'sFEATURES', 0);
         $this->setFlexValue('','enableCaptcha', 'sFEATURES', 0);
         $this->setFlexValue('','loggedInCheck', 'sFEATURES', 0);
@@ -3803,7 +3808,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($url));
         exit();
     }
-    
+
     /**
      * Returns an XML document
      * @param    int        $quid: question UID
@@ -3818,7 +3823,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $nCount = 0;
         if ($this->conf['answerChoiceMax'])                    // antworten pro frage
             $this->answerChoiceMax = intval($this->conf['answerChoiceMax']);
-            
+
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             '*', // SELECT ...
             'tx_myquizpoll_question', // FROM ...
@@ -3829,7 +3834,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         );
         $row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
         if ($jokerNo==1) {
-            for( $answerNumber=1; $answerNumber < $this->answerChoiceMax+1; $answerNumber++ ) {                    
+            for( $answerNumber=1; $answerNumber < $this->answerChoiceMax+1; $answerNumber++ ) {
                 if ($row['joker1_'.$answerNumber]) {
                     $sOut .= '; '.$row['answer'.$answerNumber];
                 } else if ($row['answer'.$answerNumber]) {
@@ -3838,7 +3843,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             }
             $sOut = substr($sOut,2);
         } else if ($jokerNo==2) {
-            for( $answerNumber=1; $answerNumber < $this->answerChoiceMax+1; $answerNumber++ ) {                        
+            for( $answerNumber=1; $answerNumber < $this->answerChoiceMax+1; $answerNumber++ ) {
                 if ($row['answer'.$answerNumber]) {
                     $sOut .= '; '.$row['answer'.$answerNumber].': '.$row['joker2_'.$answerNumber].'%';
                 }
@@ -3848,7 +3853,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
             $sOut = $row['joker3'];
         }
         if (!$sOut) $sOut = $this->pi_getLL('no_joker_answer','no_joker_answer');;
-        
+
         if ($ruid > 0) {                // which Joker used?
             $timestamp = time();
             $update = array('tstamp' => $timestamp,
@@ -3856,28 +3861,28 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                             'lasttime' => $timestamp);
             $success = $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_myquizpoll_result', 'uid='.intval($ruid).' AND sys_language_uid='.$this->lang, $update);
         }
-        
+
         /* instantiate the xajaxResponse object */
         $objResponse = new tx_xajax_response();
         $objResponse->addScript("document.getElementById('".$this->prefixId."-joker').style.display = \"block\"");
         $objResponse->addScript("document.getElementById('".$this->prefixId."-$jokerName').style.display = \"none\"");
-        
+
 //        if(!$ruid)    {            // 9.8.09: man soll immer feststellen koennen, ob ein Joker benutzt wurde
             $objResponse->addScript('document.forms["myquiz"].elements["'.$this->prefixId.'[joker'.$jokerNo.']"].value = 1');
 //            $objResponse->addScript("document.getElementById('".$box."').value = 1");
 //        }
-        
+
         if ($jsc) {
             $jsc = substr($jsc,2);
             $objResponse->addScript('hideByJoker ('.$jsc.')');
         }
-        
+
         /* We alter the contents of the 'joker' HTML element. The property 'innerHTML' is the html code inside this element. We replace it with the result in our $sOut variable */
-        $objResponse->addAssign($this->prefixId."-joker_answer", "innerHTML", $sOut);  
+        $objResponse->addAssign($this->prefixId."-joker_answer", "innerHTML", $sOut);
         /* With the getXML() method on the xajaxResponse objectwe send everything back to the client */
         return $objResponse->getXML();
     }
-    
+
     /**
      * Returns an XML document
      * @param    int        $quid: question UID
@@ -3888,11 +3893,11 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         $nr = 0;
         $sOut = '';
         //$template = str_replace('\&quot;', '', $template);
-        $template = $this->cObj->getSubpart($this->templateCode, "###TEMPLATE_DETAILS_ITEM###");
+        $template = $this->templateService->getSubpart($this->templateCode, "###TEMPLATE_DETAILS_ITEM###");
         //$template_item = preg_replace('/\r?\n/', " ", $template_item);
         //$template_item = str_replace("'", '"', $template_item);
         $template = str_replace('###PREFIX###', $this->prefixId, $template);
-            
+
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'COUNT(*) anzahl', // SELECT ...
             'tx_myquizpoll_relation', // FROM ...
@@ -3903,7 +3908,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
         );
         $rowA = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
         $gesamt = $rowA['anzahl'];
-        $GLOBALS['TYPO3_DB']->sql_free_result($result); 
+        $GLOBALS['TYPO3_DB']->sql_free_result($result);
         if ($gesamt>0) {
             $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
                 'DISTINCT textinput texte, COUNT( textinput ) anzahl', // SELECT ...
@@ -3919,7 +3924,7 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                     if (($nr % 2) == 0)
                         $even_odd = 'even';
                     else
-                        $even_odd = 'odd'; 
+                        $even_odd = 'odd';
                     $prozent = number_format((100*$rowA['anzahl'])/$gesamt, 2, ',', ' ');
                     //$texte = preg_replace("/(\r\n)+|(\n|\r)+/", "<br />", $rowA['texte']);    // nl2br funktioniert auch nicht
                     $texte = str_replace('\r\n', '<br />', htmlspecialchars($rowA['texte']));
@@ -3932,13 +3937,13 @@ class tx_myquizpoll_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
                 }
             }
         }
-        
+
         /* instantiate the xajaxResponse object */
         $objResponse = new tx_xajax_response();
         $objResponse->addScript("document.getElementById('details_hidden-$quid').style.display='block'; document.getElementById('show_details-$quid').style.display='none';");
-        
+
         /* We alter the contents of the HTML element. The property 'innerHTML' is the html code inside this element. We replace it with the result in our $sOut variable */
-        $objResponse->addAssign("details-$quid", "innerHTML", $sOut);  
+        $objResponse->addAssign("details-$quid", "innerHTML", $sOut);
         /* With the getXML() method on the xajaxResponse objectwe send everything back to the client */
         return $objResponse->getXML();
     }

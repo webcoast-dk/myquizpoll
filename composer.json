@@ -28,6 +28,7 @@
     "autoload": {
         "psr-4": {
             "WEBcoast\\Myquizpoll\\": "Classes/"
-        }
+        },
+        "classmap": ["pi1"]
     }
 }

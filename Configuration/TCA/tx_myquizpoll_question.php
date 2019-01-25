@@ -17,7 +17,7 @@ return array(
 						'disabled' => 'hidden',
 						'fe_group' => 'fe_group',
 				),
-				'iconfile'          => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('myquizpoll').'icon_tx_myquizpoll_question.gif',
+				'iconfile'          => 'EXT:myquizpoll/icon_tx_myquizpoll_question.gif',
 		),
 	'interface' => array(
 		'showRecordFieldList' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,fe_group,title,title_hide,name,qtype,category,answer1,correct1,points1,joker1_1,joker2_1,category1,answer2,correct2,points2,joker1_2,joker2_2,category2,answer3,correct3,points3,joker1_3,joker2_3,category3,answer4,correct4,points4,joker1_4,joker2_4,category4,answer5,correct5,points5,joker1_5,joker2_5,category5,answer6,correct6,points6,joker1_6,joker2_6,category6,explanation,joker3,points,category_next,image,alt_text'

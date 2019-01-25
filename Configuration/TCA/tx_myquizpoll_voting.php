@@ -1,8 +1,8 @@
 <?php
 return array(
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting',		
-		'label'     => 'answer_no',	
+		'title'     => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting',
+		'label'     => 'answer_no',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
 		'cruser_id' => 'cruser_id',
@@ -13,13 +13,13 @@ return array(
 		'enablecolumns' => array (
 			'disabled' => 'hidden',
 		),
-		'iconfile'          => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('myquizpoll').'icon_tx_myquizpoll_voting.gif',
+		'iconfile'          => 'EXT:myquizpoll/icon_tx_myquizpoll_voting.gif',
 	),
 	'interface' => array(
 			'showRecordFieldList' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,ip,answer_no,question_id,foreign_val'
 	),
 	'columns' => array (
-		'sys_language_uid' => array (		
+		'sys_language_uid' => array (
 			'exclude' => 1,
 			'label'  => 'LLL:EXT:lang/locallang_general.xml:LGL.language',
 			'config' => array (
@@ -33,7 +33,7 @@ return array(
 				)
 			)
 		),
-		'l10n_parent' => array (		
+		'l10n_parent' => array (
 			'displayCond' => 'FIELD:sys_language_uid:>:0',
 			'exclude'     => 1,
 			'label'       => 'LLL:EXT:lang/locallang_general.xml:LGL.l18n_parent',
@@ -47,12 +47,12 @@ return array(
 				'foreign_table_where' => 'AND tx_myquizpoll_voting.pid=###CURRENT_PID### AND tx_myquizpoll_voting.sys_language_uid IN (-1,0)',
 			)
 		),
-		'l10n_diffsource' => array (		
+		'l10n_diffsource' => array (
 			'config' => array (
 				'type' => 'passthrough'
 			)
 		),
-		'hidden' => array (		
+		'hidden' => array (
 			'exclude' => 1,
 			'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
 			'config'  => array (
@@ -60,39 +60,39 @@ return array(
 				'default' => '0'
 			)
 		),
-		'ip' => array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_result.ip',		
+		'ip' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_result.ip',
 			'config' => array (
-				'type' => 'input',	
-				'size' => '20',	
+				'type' => 'input',
+				'size' => '20',
 				'eval' => 'trim',
 			)
 		),
-		'question_id' => array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting.question_id',	
+		'question_id' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting.question_id',
 			'config' => array (
-				'type' => 'group',	
-				'internal_type' => 'db',	
-				'allowed' => 'tx_myquizpoll_question',	
-				'size' => 1,	
+				'type' => 'group',
+				'internal_type' => 'db',
+				'allowed' => 'tx_myquizpoll_question',
+				'size' => 1,
 				'minitems' => 0,
 				'maxitems' => 1,
 			)
 		),
-		'foreign_val' => array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting.foreign_val',		
+		'foreign_val' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting.foreign_val',
 			'config' => array (
 				'type'     => 'input',
 				'size'     => '15',
 				'max'      => '255'
 			)
 		),
-		'answer_no' => array (		
-			'exclude' => 1,		
-			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting.answer_no',		
+		'answer_no' => array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:myquizpoll/locallang_db.xml:tx_myquizpoll_voting.answer_no',
 			'config' => array (
 				'type'     => 'input',
 				'size'     => '4',
