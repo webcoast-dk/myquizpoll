@@ -40,10 +40,10 @@ class tx_myquizpoll_helper {
 	private $submitJsc;		// javascript
 	private $cObj = null; // for making typo3 links
 	public $writeDevLog = FALSE;	// ausnahmsweise public, wegen dem speed
-	
+
   /**
     * Constructor
-    * 
+    *
     * @param	int		$pid: PID
     * @param	int		$lang: lanugage-ID
     * @param	int		$answerChoiceMax: max no. of answers
@@ -52,7 +52,7 @@ class tx_myquizpoll_helper {
     * @param	string	$tableRelation: DB-table
     * @param	array	$settings: is $conf
     */
-	public function __construct($pid, $lang, $answerChoiceMax, $tableQuestions, $tableAnswers, $tableRelation, $settings) { 
+	public function __construct($pid, $lang, $answerChoiceMax, $tableQuestions, $tableAnswers, $tableRelation, $settings) {
 		$this->pid 	= $pid;
 		$this->lang = $lang;
 		$this->answerChoiceMax	= $answerChoiceMax;
@@ -67,20 +67,20 @@ class tx_myquizpoll_helper {
 			$this->where_lang = ' AND sys_language_uid IN (0, -1)';
 		else
 			$this->where_lang = ' AND sys_language_uid = ' . intval($lang);
-	}	
-	
+	}
+
   /**
     * Where für Sprach-Abfrage
-    * 
+    *
     * @return	string	where-Abfrage
     */
 	public function getWhereLang() {
 		return $this->where_lang;
 	}
-	
+
   /**
     * Sets JavaScript text
-    * 
+    *
     * @param	int	$no: number of the answer
     * @param	int	$answers: number of  answers
     * @param	int	$type: type of the question
@@ -97,19 +97,19 @@ class tx_myquizpoll_helper {
 					break;
 		}
 	}
-	
+
   /**
     * Gets JavaScript text
-    * 
+    *
     * @return	string	JS-text
     */
 	function getSubmitJsc() {
 		return $this->submitJsc;
 	}
-	
+
   /**
     * Sets the starttime of a page
-    * 
+    *
     * @param	int	$uid: uid
     * @param	int	$time: unix-time
     */
@@ -120,10 +120,10 @@ class tx_myquizpoll_helper {
 			if ($this->writeDevLog) \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Storing in Session: pagetime='.$time, 'myquizpoll', 0);
 		}
 	}
-	
+
   /**
     * Gets the starttime of a page
-    * 
+    *
     * @param	int	$uid: uid
     * @return	int	unix-time
     */
@@ -137,12 +137,12 @@ class tx_myquizpoll_helper {
 
   /**
     * Sets the starttime of a quiz
-    * 
+    *
     * @param	int	$uid: uid
     * @param	int	$time: unix-time
     */
 	function setFirstTime($uid, $time) {
-		$this->firsttime = $time;		
+		$this->firsttime = $time;
 		if ($this->settings['userSession']) {
 			$GLOBALS['TSFE']->fe_user->setKey('ses','firsttime'.$uid, $time);
 			$GLOBALS["TSFE"]->fe_user->storeSessionData();
@@ -151,10 +151,10 @@ class tx_myquizpoll_helper {
 			if ($this->writeDevLog) \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Storing in Object: firsttime='.$time, 'myquizpoll', 0);
 		}
 	}
-	
+
   /**
     * Gets the starttime of a quiz
-    * 
+    *
     * @param	int	$uid: uid
     * @return	int	unix-time
     */
@@ -186,10 +186,10 @@ class tx_myquizpoll_helper {
 		}
 		return intval($time);
 	}
-	
+
   /**
     * Sets the start_uid of a quiz
-    * 
+    *
     * @param	int	$uid: uid
     * @param	int	$start_uid: uid
     */
@@ -200,10 +200,10 @@ class tx_myquizpoll_helper {
 			if ($this->writeDevLog) \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Storing in Session: start_uid='.$start_uid, 'myquizpoll', 0);
 		}
 	}
-	
+
   /**
     * Gets the start_uid of a quiz
-    * 
+    *
     * @param	int	$uid: uid
     * @return	int	start_uid
     */
@@ -224,10 +224,10 @@ class tx_myquizpoll_helper {
 		if (!$start_uid) $start_uid = $GLOBALS['TSFE']->id;
 		return intval($start_uid);
 	}
-	
+
 	/**
 	 * Get the page title
-	 * 
+	 *
 	 * @param	int		$uid: uid einer seite
 	 * @return	string	page title
 	 */
@@ -241,7 +241,7 @@ class tx_myquizpoll_helper {
 			$rowP = $GLOBALS['TSFE']->sys_page->getRecordOverlay('pages', $rowP, $this->lang, $OLmode);
 		return $rowP['title'];
 	}
-	
+
   /**
     * Calculate the total maximum scores of all questions of a quiz and no. of all questions
     */
@@ -250,14 +250,14 @@ class tx_myquizpoll_helper {
 		$numberQuestions = 0;
 		$pages = 0;
 		$whereCat = ( $this->settings['onlyCategories'] ) ? " AND category IN (".preg_replace('/[^0-9,]/','',$this->settings['onlyCategories']).")" : '';
-				
+
 		// Get all questions from the database
 		$res5 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
 				$this->tableQuestions,
 				'pid IN ('.$this->pid.')' . $this->where_lang . ' ' . $this->cObj->enableFields($this->tableQuestions) . $whereCat);
 		$rows = $GLOBALS['TYPO3_DB']->sql_num_rows($res5);
 		if ($rows>0) {
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){ 
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){
 				$numberQuestions++;
 				if (!$this->settings['dontShowPoints']) {
 					$points = 0;
@@ -288,7 +288,7 @@ class tx_myquizpoll_helper {
 			$pages = ceil($maxqno/$pageqno);
 		}
 		$GLOBALS['TYPO3_DB']->sql_free_result($res5);
-		
+
 		// doppelt speichern (falls jemand cookies nicht mag)
 		$this->maximumPoints = intval($maxPoints);
 		$this->numberQuestions = intval($numberQuestions);
@@ -305,8 +305,8 @@ class tx_myquizpoll_helper {
 		}
 		$this->setQuestionsBool = true;
     }
-		
-		
+
+
   /**
     * Returns the max. points of all questions
 	*
@@ -327,7 +327,7 @@ class tx_myquizpoll_helper {
 		if ($this->writeDevLog) \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("Loading: maximumPoints=" . $max, 'myquizpoll', 0);
 		return $max;
 	}
-	
+
   /**
     * Returns how many questios are there in the DB
 	*
@@ -348,7 +348,7 @@ class tx_myquizpoll_helper {
 		if ($this->writeDevLog) \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("Loading: numberQuestions=" . $no, 'myquizpoll', 0);
 		return $no;
 	}
-	
+
   /**
     * Returns how many questions have been answered yet
 	*
@@ -412,7 +412,7 @@ class tx_myquizpoll_helper {
 		if ($this->writeDevLog) \TYPO3\CMS\Core\Utility\GeneralUtility::devLog("Loading: maxPages=" . $max, 'myquizpoll', 0);
 		return $max;
 	}
-	
+
   /**
     * Returns an image-tag for a question
 	*
@@ -430,11 +430,11 @@ class tx_myquizpoll_helper {
 			$GLOBALS['TSFE']->absRefPrefix = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 		if (is_array($this->settings['images.']))
 			$imgTSConfig['file.'] = $this->settings['images.'];
-		$bild = $this->cObj->IMAGE($imgTSConfig);
+		$bild = $this->cObj->cObjGetSingle('IMAGE', $imgTSConfig);
 		$GLOBALS['TSFE']->absRefPrefix = $vorher;
 		return $bild;
 	}
-	
+
   /**
     * Returns the current foreign ID
 	*
@@ -455,7 +455,7 @@ class tx_myquizpoll_helper {
 		}
 		return $foreign_id;
 	}
-	
+
 	/**
 	 * Function makePlain() removes html tags and add linebreaks
 	 * 		Easy generate a plain email bodytext from a html bodytext
@@ -521,7 +521,7 @@ class tx_myquizpoll_helper {
 
 		return $content;
 	}
-	
+
   /**
     * Send email to...
 	*
@@ -543,7 +543,7 @@ class tx_myquizpoll_helper {
 			  ->addPart($this->makePlain($html_content), 'text/plain')
 			  ->send();
 		} else {
-			require_once(PATH_t3lib.'class.t3lib_htmlmail.php');		
+			require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 			$htmlMail = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_htmlmail');
 			$htmlMail->start();
 			$htmlMail->recipient = $to_mail;
@@ -558,7 +558,7 @@ class tx_myquizpoll_helper {
 			$htmlMail->send($to_mail);
 		}
 	}
-	
+
   /**
     * Get the real IP address
 	*
@@ -596,7 +596,7 @@ class tx_myquizpoll_helper {
 		}
 		return $result;
 	}
-	
+
    /**
     * Set a myVars array for questions
 	*
@@ -617,7 +617,7 @@ class tx_myquizpoll_helper {
 		}
 		return $result;
 	}
-	
+
    /**
     * Set a myVars array for answers
 	*
@@ -639,7 +639,7 @@ class tx_myquizpoll_helper {
 		}
 		return $result;
 	}
-	
+
    /**
     * Get: ask for user data at question?
 	*
