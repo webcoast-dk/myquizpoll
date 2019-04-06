@@ -53,7 +53,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			$this->include_once[] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('core') . 'Classes/DataHandling/DataHandler.php';
 		}
 		*/
-		$this->path = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath("myquizpoll").'mod1/';
+		$this->path = 'EXT:myquizpoll/mod1/';
 	}
 
 	/**
@@ -80,11 +80,11 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			);
 		}
 		$this->MOD_MENU = Array (
-			'function' => $fArray 
+			'function' => $fArray
 		);
 		parent::menuConfig();
 	}
-	
+
 	/**
 	 * Inserts a line to the database
 	 *
@@ -130,7 +130,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Replace textftrenner and feldtrenner
 	 * @param	string	$feldtrenner
@@ -160,7 +160,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		// The page will show only if there is a valid page and if this page may be viewed by the user
 		$this->pageinfo = \TYPO3\CMS\Backend\Utility\BackendUtility::readPageAccess($this->id,$this->perms_clause);
 		$access = is_array($this->pageinfo) ? 1 : 0;
-		
+
 		if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id))	{
 
 				// Draw the header.
@@ -173,7 +173,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 //			$this->doc->form.='<input type="hidden" name="M" value="tools_txextensionlistM1" />'."\n";
 //			$this->doc->form.='<input type="hidden" name="id" value="'.\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id').'" />'."\n";
 			$this->doc->form.='<input type="hidden" name="delall" value="0" />'."\n";
-			
+
 			// Styles
 			//$this->doc->styleSheetFile2=$GLOBALS["temp_modPath"].'style.css' ODER "../".substr(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extName),strlen(PATH_site))."mod1/style.css";
 			if (file_exists(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_DOCUMENT_ROOT').'/uploads/tx_myquizpoll/style.css'))
@@ -181,7 +181,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			else
 				$filename = $this->path.'style.css';
 			$this->doc->styleSheetFile2 = $filename;
-			
+
 				// JavaScript
 			$this->doc->JScode = '
 				<script language="javascript" type="text/javascript">
@@ -229,7 +229,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			$this->content.=$this->doc->spacer(5);
 			$this->content.=$this->doc->spacer(10);
 		}
-	
+
 	}
 
 	/**
@@ -254,7 +254,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$ep = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('ep'));
 		if (!$ep) $ep=10;
 		$pointer = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pointer'));
-		$path = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath("myquizpoll").'mod1/';
+		$path = 'EXT:myquizpoll/mod1/';
 		$path_abs = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_DOCUMENT_ROOT').'/'.\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath("myquizpoll").'mod1/';
 		$filename_new = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_DOCUMENT_ROOT').'/uploads/tx_myquizpoll/style.css';	// statt $_SERVER["DOCUMENT_ROOT"]
 		$filename_old = $path_abs.'style.css';
@@ -272,7 +272,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$columns['tx_myquizpoll_voting']['ano'] = 'answer_no';
 		$columns['tx_myquizpoll_voting']['fno'] = ',foreign_val';
 		$table = (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('table')=='tx_myquizpoll_voting') ? 'tx_myquizpoll_voting' : 'tx_myquizpoll_result';
-				
+
 		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delall')==1) {	// delete all rows
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('1',
 				$table,
@@ -281,15 +281,15 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			if ($table=='tx_myquizpoll_result')
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_myquizpoll_relation', "PID=$id AND sys_language_uid=$lid");
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, "PID=$id AND sys_language_uid=$lid");
-			$content .= '<p><strong>'.$LANG->getLL('action').": $rows ".$LANG->getLL('deleted').'</strong></p><br /><br />';		
-		} else if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('del_some') && is_array(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit')) && (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit') === array_filter(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit'),'is_numeric'))) {	// deleting rows... 
+			$content .= '<p><strong>'.$LANG->getLL('action').": $rows ".$LANG->getLL('deleted').'</strong></p><br /><br />';
+		} else if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('del_some') && is_array(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit')) && (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit') === array_filter(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit'),'is_numeric'))) {	// deleting rows...
 			$delArray = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit');
 			$delString = implode(",", $delArray);
 			if ($table=='tx_myquizpoll_result')
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_myquizpoll_relation', "PID=$id AND user_id IN ($delString)");
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, "PID=$id AND uid IN ($delString)");
 			$content .= '<p><strong>'.$LANG->getLL('action').': '.count($delArray).' '.$LANG->getLL('deleted').'</strong></p><br /><br />';
-		} else if ((\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hide_some') || \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('release_some')) && is_array(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit')) && (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit') === array_filter(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit'),'is_numeric'))) {	// hiding/releasing rows... 
+		} else if ((\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hide_some') || \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('release_some')) && is_array(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit')) && (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit') === array_filter(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit'),'is_numeric'))) {	// hiding/releasing rows...
 			$eArray = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delit');
 			$eString = implode(",", $eArray);
 			$hide = (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('hide_some')) ? 1 : 0;
@@ -320,7 +320,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					$questions.=','.intval($qno);
 				}
 				$questions=substr($questions,1);
-				
+
 				// Get all questions and answers from the database
 				$questionsArray = array();
 				$questionNumber = 0;
@@ -339,29 +339,29 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						$this->content.='<div class="quizpoll_stat2_answer_h">'.$LANG->getLL('answer').'</div>';
 						$this->content.='<div class="quizpoll_stat2_correct_h">'.$LANG->getLL('correct_answer').'</div>';
 					}
-					
+
 					while($rowA = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res5)){
 						$questionUID = $rowA['uid'];
-						$questionNumber++;					
+						$questionNumber++;
 						if (!is_array($userHash[$questionUID]))	// eigentlich Kaese, da nur beantw. Fragen geholt werden!
 							continue;				// vorher nicht angezeigte Fragen auch jetzt nicht anzeigen!
-						
+
 						$this->content.='<div class="quizpoll_stat_around">';
 						if ($detail) {
 							$this->content.=$questionNumber.'.) '.$rowA['title'].': '.$userHash[$questionUID]['points'].' '.$LANG->getLL('points').'<br />';
 							$this->content.='<div class="quizpoll_stat_question">'.$rowA['name'].'</div>';
 							for( $answerNumber=1; $answerNumber <= 12; $answerNumber++ ) {
-								if ($userHash[$questionUID]['c'.$answerNumber]) {	// was a answer checked by the user?									
+								if ($userHash[$questionUID]['c'.$answerNumber]) {	// was a answer checked by the user?
 									if ($rowA['qtype']!=3 && $rowA['qtype']!=5) {
 										$this->content.='<div class="quizpoll_stat_answer">'.$rowA['answer'.$answerNumber]."</div>\n";
-									} else {							
+									} else {
 										$this->content.='<div class="quizpoll_stat_answer">'.str_replace('\r\n','<br />',$userHash[$questionUID]['textinput'])."</div>\n";
 									}
 								}
 								if ($rowA['qtype']==5) break;
 							}
 						} else {
-							for( $answerNumber=1; $answerNumber <= 12; $answerNumber++ ) {								
+							for( $answerNumber=1; $answerNumber <= 12; $answerNumber++ ) {
 								if ($userHash[$questionUID]['c'.$answerNumber]) {
 									if ($lastQuestion!=$questionNumber && $lastQuestion>0)
 										$this->content.='<hr style="clear:both;width:415px;" />'."\n";
@@ -369,12 +369,12 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 									$this->content.='<div class="quizpoll_stat2_answer">'.$answerNumber.'</div>';
 									$this->content.='<div class="quizpoll_stat2_correct">';
 									if (($rowA['qtype']!=3 || ($answerNumber==1 && $rowA['correct1'])) && $rowA['qtype']!=5) {
-										if ($rowA['correct'.$answerNumber]) {											
+										if ($rowA['correct'.$answerNumber]) {
 											$this->content.='<span class="quizpoll_yes">'.$LANG->getLL('yes').'</span>';
 										} else {
 											$this->content.='<span class="quizpoll_no">'.$LANG->getLL('no').'</span>';
 										}
-									} else {							
+									} else {
 										$this->content.=$userHash[$questionUID]['textinput'];
 									}
 									$this->content.='</div>';
@@ -386,7 +386,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						$this->content.="</div>\n";
 					}
 					$this->content.="</div>\n";
-				}				
+				}
 			} else {
 				$this->content.='<div align="center"><strong>0 '.$LANG->getLL('quiz_results')."</strong></div><br />\n";
 			}
@@ -471,9 +471,9 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				}
 			}
 		}
-		
-		
-		
+
+
+
 		// begin output
 		$link = htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript()); // . "?M=tools_txextensionlistM1&id=$id";
 		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('sortBy')) {
@@ -501,7 +501,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$category = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('category'));
 		$selectOnly = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('selectonly');
 		$categories = array();
-		
+
 		if ($mode<3 || $mode==4 || $mode==7) {
 			// voting- oder result-Tabelle?
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('count(1)',
@@ -559,9 +559,9 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				}
 			}
 		}
-		
+
 		switch($mode)	{
-			case 1:			
+			case 1:
 				$head=$LANG->getLL('function1');
 				$catArray = array();
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,name',
@@ -575,7 +575,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					}
 				}
 				$GLOBALS['TYPO3_DB']->sql_free_result($res);
-				
+
 				$userAray = array();
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT user_id',
 					'tx_myquizpoll_relation',
@@ -588,7 +588,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					}
 				}
 				$GLOBALS['TYPO3_DB']->sql_free_result($res);
-				
+
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
 								'tx_myquizpoll_result',
 								'PID='.$id.' AND sys_language_uid='.$lid,
@@ -663,7 +663,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					}
 					$questions=substr($questions,1);
 					$GLOBALS['TYPO3_DB']->sql_free_result($res);
-				
+
 					$questArray = array();
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
 						'tx_myquizpoll_question',
@@ -678,7 +678,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					}
 					$GLOBALS['TYPO3_DB']->sql_free_result($res);
 				}
-		
+
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'uid,sys_language_uid,hidden,crdate,'.$columns[$table]['ano'].' AS ano,'.$columns[$table]['qno'].' AS qno'.$columns[$table]['fno'],
 					$table,
@@ -740,7 +740,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					$content .= '<h3>'.$LANG->getLL('category').': '.$categories[$category].'</h3>';
 					$whereRel = ' AND quest.category='.$category;
 				}
-				
+
 				/* user-select - begin */
 				$where = '';
 				$selectAnswers = array();
@@ -750,7 +750,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					if ($matches[2])
 						$selectAnswers[intval($matches[1])][] = intval($matches[2]);
 				}
-				
+
 				if(count($selectAnswers)>0) {
 					// return selection: Fragen und Antworten merken
 					$questionsArray = array();
@@ -770,7 +770,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 							}
 						}
 					}
-					
+
 					$content .= '<h4>'.$LANG->getLL('only_select').':</h4>';
 					$content .= '<p>';
 					foreach($selectAnswers as $questionId => $answerArray) {
@@ -779,10 +779,10 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						}
 					}
 					$content .= "</p><br />\n";
-					
+
 					// all answers with correct id answer
 					foreach($selectAnswers as $questionId => $answerArray) {
-						foreach($answerArray as $answerNumber) 
+						foreach($answerArray as $answerNumber)
 							$where .= '(question_id = '.$questionId.' AND checked'.$answerNumber.' = 1) OR ';
 					}
 					$where = '('.substr($where, 0, (strlen($where)-3)).')';
@@ -820,15 +820,15 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 							}
 							if(!$checkA)
 								$check = false;
-								
+
 						}
 						if($check)
 							$userIds[] = $userId;
 					}
-					if (count($userIds)>0) $whereRel .= ' AND rel.user_id IN ('.implode(',',$userIds).')';					
+					if (count($userIds)>0) $whereRel .= ' AND rel.user_id IN ('.implode(',',$userIds).')';
 				}
 				/* user-select - end */
-				
+
 				$ansArray = array();
 				$ansArray[0] = array();
 				$votesTotal = 0;
@@ -859,7 +859,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			case 4:
 				$head = $LANG->getLL('function4');
 				$content .= '<div align="center"><strong>'.$LANG->getLL('evaluation')."</strong></div><br />\n";
-				
+
 				$ansArray = array();
 				$votesTotal = 0;
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -902,12 +902,12 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					$feldtrenner = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('feldtrenner');
 					$texttrenner = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('texttrenner');
 					$dateformat =  \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('dateformat');
-					
+
 					$catArray = array();
 					$userHash = array();
 					$questHash = array();
 					$questions = '';
-					
+
 /*					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('count(*) AS anzahl',
 									'tx_myquizpoll_result',
 									'PID='.$id.' AND sys_language_uid='.$lid,
@@ -938,7 +938,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 								$catArray[$uid] = $row['name'];
 							}
 						}
-						
+
 						$res5 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
 							'tx_myquizpoll_relation',
 							'pid='.$id.' AND sys_language_uid='.$lid,
@@ -965,7 +965,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 							$questions = implode(',', $questHash);
 						}
 					}
-					
+
 					if ($questions) {
 						// Get all questions and answers from the database
 						$questionsArray = array();
@@ -990,7 +990,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 										if ($i>$maxAnswers) $maxAnswers=$i;
 									}
 								}
-							/*	$category_next = $rowA['category_next']; 
+							/*	$category_next = $rowA['category_next'];
 								if ($category_next)
 									$questionsArray[$questionUID]['category_next'] = $catArray[$category_next];
 								else
@@ -998,7 +998,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 							}
 						}
 					}
-		
+
 					$resCols = 16;
 					$output=$texttrenner.'UID'.$texttrenner.$feldtrenner;
 					if ($table == 'tx_myquizpoll_result') {
@@ -1044,7 +1044,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 							$output.=$feldtrenner.$texttrenner.'foreign value'.$texttrenner;
 					}
 					$output.="\n";
-					
+
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
 									$table,
 									'PID='.$id.' AND sys_language_uid='.$lid,
@@ -1139,7 +1139,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 									if ($foreign_array[$fval]) $fval = $this->myReplace($feldtrenner, $texttrenner, $foreign_array[$fval]);
 									$output.=$feldtrenner.$texttrenner.$fval.$texttrenner;
 								}
-							}					
+							}
 							$output.="\n";
 						}
 					}
@@ -1174,7 +1174,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			  $head = $LANG->getLL('function9');
 			  if ($GLOBALS['BE_USER']->user['admin']) {
 				$content .= '<div align="center"><strong>'.$LANG->getLL('mystyles')."</strong></div><br />\n";
-				
+
 				if (file_exists($filename_new))
 					$filename = $filename_new;
 				else
@@ -1192,7 +1192,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			  } else $content .= '<div align="center"><strong>Only for Admins!!!</strong></div><br />';
 			break;
 		}
-		
+
 		if (($mode==3 || $mode==4) && $questions) {
 			$where = ($category>0) ? ' AND category = '.$category : '';
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',
@@ -1278,7 +1278,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				}
 				$content .= '</select><br />';
 			}
-		} else if ($mode<3) {	
+		} else if ($mode<3) {
 			if ($rowsTotal>$ep) {
 				$fin = ceil($rowsTotal/$ep)-1;
 				$content .= '<hr />'.$LANG->getLL('page').': ';
@@ -1294,7 +1294,7 @@ class  tx_myquizpoll_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			}
 			$content .= "<hr />\n".$LANG->getLL('entriesPage').': <input type="text" name="ep" value="'.$ep.'" size="4" /> ';
 		}
-		
+
 		if ($mode<8) {
 			if ($columns[$table]['fno']) {
 				$content .= "<br />\n".$LANG->getLL('foreign_table');
@@ -1350,7 +1350,7 @@ function nix() {
 </script>
 ';
 		}
-		
+
 		$this->content.=$this->doc->section($head.':',$content,0,1);
 	}
 }
