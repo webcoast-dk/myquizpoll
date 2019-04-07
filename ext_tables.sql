@@ -23,7 +23,7 @@ CREATE TABLE tx_myquizpoll_question (
 	sorting int(10) DEFAULT '0' NOT NULL,
 	deleted tinyint(4) DEFAULT '0' NOT NULL,
 	hidden tinyint(4) DEFAULT '0' NOT NULL,
-	fe_group int(11) DEFAULT '0' NOT NULL,
+	fe_group varchar(255) DEFAULT '0' NOT NULL,
 	title varchar(255) DEFAULT '' NOT NULL,
 	title_hide tinyint(3) DEFAULT '0' NOT NULL,
 	name text,
@@ -71,7 +71,7 @@ CREATE TABLE tx_myquizpoll_question (
 	category_next int(11) DEFAULT '0' NOT NULL,
 	image text,
 	alt_text varchar(255) DEFAULT '' NOT NULL,
-	
+
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid)
@@ -95,7 +95,7 @@ CREATE TABLE tx_myquizpoll_voting (
 	question_id int(11) DEFAULT '0' NOT NULL,
 	foreign_val varchar(255) DEFAULT '' NOT NULL,
 	ip varchar(255) DEFAULT '' NOT NULL,
-	
+
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY my_voting_answer (answer_no),
@@ -139,7 +139,7 @@ CREATE TABLE tx_myquizpoll_result (
 	nextcat int(11) DEFAULT '0' NOT NULL,
 	fe_uid int(11) DEFAULT '0' NOT NULL,
 	start_uid int(11) DEFAULT '0' NOT NULL,
-	
+
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
@@ -171,7 +171,7 @@ CREATE TABLE tx_myquizpoll_relation (
 	checked6 tinyint(3) DEFAULT '0' NOT NULL,
 	points int(11) DEFAULT '0' NOT NULL,
 	nextcat int(11) DEFAULT '0' NOT NULL,
-	
+
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY my_user (user_id),
@@ -195,7 +195,7 @@ CREATE TABLE tx_myquizpoll_category (
 	notes text,
 	celement int(11) DEFAULT '0' NOT NULL,
 	pagetime int(11) DEFAULT '0' NOT NULL,
-	
+
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
