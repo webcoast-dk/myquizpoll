@@ -28,7 +28,7 @@ CREATE TABLE tx_myquizpoll_question (
 	title_hide tinyint(3) DEFAULT '0' NOT NULL,
 	name text,
 	qtype int(11) DEFAULT '0' NOT NULL,
-	category int(11) DEFAULT '0' NOT NULL,
+	category int(11) DEFAULT '0',
 	answer1 tinytext,
 	correct1 tinyint(3) DEFAULT '0' NOT NULL,
 	points1 int(11) DEFAULT '0' NOT NULL,

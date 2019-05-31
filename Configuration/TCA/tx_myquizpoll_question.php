@@ -175,9 +175,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
@@ -235,9 +232,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
@@ -295,9 +289,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
@@ -355,9 +346,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
@@ -415,9 +403,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
@@ -475,9 +460,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
@@ -535,9 +517,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
@@ -582,9 +561,6 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
                 'foreign_table' => 'tx_myquizpoll_category',
                 'foreign_table_where' => 'AND tx_myquizpoll_category.pid=###CURRENT_PID### ORDER BY tx_myquizpoll_category.uid',
                 'size' => 1,
